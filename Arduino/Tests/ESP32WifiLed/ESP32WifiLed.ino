@@ -20,11 +20,12 @@ const int LED_PIN = 13;
 CRGB leds[NUM_LEDS];
 
 // Timer vars
-unsigned long timer1 = millis();
-
+unsigned long timer[2] = {millis(), millis()};
 // LED Indexs
-int ledIndex[10] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+int ledIndex[12] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
 
+//Sequence vars
+int flashRef[12] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
 
 void setup()
 {
@@ -57,8 +58,7 @@ void loop()
     digitalWrite(LED_PIN, LOW); // Turn off LED
   }
 
-  //  testPattern();
-  DisplayConnectionCode(0);
+  DisplayConnectionCode(1);
 }
 
 void connectToWiFi(const char * ssid, const char * pwd)
@@ -72,12 +72,14 @@ void connectToWiFi(const char * ssid, const char * pwd)
 
   while (WiFi.status() != WL_CONNECTED)
   {
-    // Blink LED while we're connecting:
-    digitalWrite(LED_PIN, ledState);
-    ledState = (ledState + 1) % 2; // Flip ledState
-
-    delay(500);
-    Serial.print(".");
+    //    // Blink LED while we're connecting:
+    //    digitalWrite(LED_PIN, ledState);
+    //    ledState = (ledState + 1) % 2; // Flip ledState
+    //
+    //    delay(500);
+    //    Serial.print(".");
+    //    ChaseLoop(500, 5, CRGB::White);
+    DisplayConnectionCode(0);
   }
 
 
@@ -85,6 +87,7 @@ void connectToWiFi(const char * ssid, const char * pwd)
   Serial.println("WiFi connected!");
   Serial.print("IP address: ");
   Serial.println(WiFi.localIP());
+  //  DisplayConnectionCode(1);
 }
 
 void requestURL(const char * host, uint8_t port)
@@ -155,21 +158,30 @@ void testPattern() {
 void DisplayConnectionCode(int code) {
   switch (code) {
     case 0: // Connecting
-      ChaseLoop(500, 5, CRGB::Green);
+      ChaseLoop(500, 5, CRGB::Blue);
+      //      int target[2] = {2, 5};
+      //      Flash(250, 0, 2, 5, CRGB::Blue);
       break;
     case 1: // Connection Established
+      //            Flash(500, 2, CRGB::Blue);
+      ChaseLoop(500, 5, CRGB::Green);
       break;
     case 2: // Connection Error
+      //      Flash(500, 0, 2, 5, CRGB::Red);
+      ChaseLoop(500, 5, CRGB::Green);
       break;
-    default:
-      break;
+      //    default:
+      //      //        Flash(500, 0, CRGB::Red);
+      //      int target[2] = {2, 5};
+      //      Flash(250, 2, target, CRGB::Red);
+      //      break;
   }
 }
 
 void ChaseLoop(int reqTime, int ledAmount, CRGB myColor) {
   CRGB targetColor = myColor;
-  if (millis() - timer1 > reqTime) {
-    timer1 = millis();
+  if (millis() - timer[0] > reqTime) {
+    timer[0] = millis();
 
     // Set LED color
     //    leds[ledIndex[0]] = CRGB(0, 255, 255);
@@ -191,6 +203,28 @@ void ChaseLoop(int reqTime, int ledAmount, CRGB myColor) {
   }
 }
 
+void Flash(int interval, int flashAmount, int startLED, int endLED, CRGB color) {
+  CRGB targetColor = color;
+
+
+  if (millis() - timer[1] > interval) {
+    timer[1] = millis();
+
+    if (!flashRef[0]) {
+      for (int i = startLED; i > endLED; i++) {
+        leds[i] = color;
+        FastLED.show();
+      }
+    } else {
+      for (int i = startLED; i > endLED; i++) {
+        leds[i] = CRGB::Black;
+        FastLED.show();
+      }
+    }
+
+    flashRef[0] = !flashRef[0];
+  }
+}
 
 void AllOff() {
   for (int i = 0; i < NUM_LEDS; i++) {

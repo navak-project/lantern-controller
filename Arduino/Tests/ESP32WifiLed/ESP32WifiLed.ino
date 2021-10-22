@@ -1,5 +1,10 @@
 #include <WiFi.h>
 #include <FastLED.h>
+#include <WifiUdp.h>
+#include <OSCMessage.h>
+#include <OSCBundle.h>
+#include <OSCData.h>
+
 
 #define NUM_LEDS 5
 #define DATA_PIN 19
@@ -27,6 +32,19 @@ int ledIndex[12] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
 //Sequence vars
 bool flashState = false;
 
+//OSC
+// A UDP instance to let us send and receive packets over UDP
+WiFiUDP Udp;
+//const IPAddress outIp(10,40,10,105);        // remote IP (not needed for receive)
+const unsigned int outPort = 9999;          // remote port (not needed for receive)
+const unsigned int localPort = 10000;        // local port to listen for UDP packets (here's where we send the packets)
+
+
+
+OSCErrorCode error;
+float ledState = 0;  
+
+
 void setup()
 {
   // Initilize hardware:
@@ -41,6 +59,16 @@ void setup()
 
   // Connect to the WiFi network (see function below loop)
   connectToWiFi(networkName, networkPswd);
+
+  //UDP
+  Serial.println("Starting UDP");
+  Udp.begin(localPort);
+  Serial.print("Local port: ");
+#ifdef ESP32
+  Serial.println(localPort);
+#else
+  Serial.println(Udp.localPort());
+#endif
 
   digitalWrite(LED_PIN, LOW); // LED off
   Serial.print("Press button 0 to connect to ");
@@ -59,8 +87,37 @@ void loop()
     digitalWrite(LED_PIN, LOW); // Turn off LED
   }
 
+  //OSC
+  ReadIncomingOSC();
+
   //  DisplayConnectionCode(1);
   Flash(500, 2, 5, CRGB::White);
+}
+
+void ReadIncomingOSC() {
+  OSCBundle msg;
+  int size = Udp.parsePacket();
+
+  if (size > 0) {
+    while (size--) {
+      msg.fill(Udp.read());
+    }
+    if (!msg.hasError()) {
+      msg.dispatch("/led", led);
+      
+    } else {
+      error = msg.getError();
+      Serial.print("error: ");
+      Serial.println(error);
+    }
+  }
+}
+
+void led(OSCMessage &msg) {
+  ledState = msg.getFloat(0);
+//  digitalWrite(BUILTIN_LED, ledState);
+  Serial.print("/led: ");
+  Serial.println(ledState);
 }
 
 void connectToWiFi(const char * ssid, const char * pwd)
@@ -155,15 +212,12 @@ void DisplayConnectionCode(int code) {
   switch (code) {
     case 0: // Connecting
       ChaseLoop(500, 5, CRGB::Blue);
-      //      int target[2] = {2, 5};
-      //      Flash(250, 0, 2, 5, CRGB::Blue);
       break;
     case 1: // Connection Established
       ChaseLoop(500, 5, CRGB::Green);
       break;
     case 2: // Connection Error
       ChaseLoop(500, 5, CRGB::Red);
-      
       break;
   }
 }
@@ -213,9 +267,10 @@ void Flash(int interval, int startLED, int endLED, CRGB color) {
       flashState = false;
     }
 
-    Serial.print("Flash: ");
-    Serial.print(flashState, DEC);
-    Serial.println("");
+    // DEBUG
+    //    Serial.print("Flash: ");
+    //    Serial.print(flashState, DEC);
+    //    Serial.println("");
   }
 }
 

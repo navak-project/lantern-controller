@@ -6,7 +6,7 @@
 #include <OSCData.h>
 
 
-#define NUM_LEDS 5
+#define NUM_LEDS 104
 #define DATA_PIN 19
 
 // WiFi network name and password:
@@ -23,6 +23,7 @@ const int LED_PIN = 13; //On board LED
 
 // Define the array of leds
 CRGB leds[NUM_LEDS];
+
 
 // Timer vars
 unsigned long timer[2] = {millis(), millis()};
@@ -88,14 +89,16 @@ void loop()
   }
 
   //OSC
-  ReadIncomingOSC();
+//  ReadIncomingOSC();
 
-  //  DisplayConnectionCode(1);
-  Flash(500, 2, 5, CRGB::White);
+//    DisplayConnectionCode(1);
+//  Flash(500, 0, 5, CRGB::White);
+ChaseLoop(250, 26, CRGB::White);
+  
 }
 
 void ReadIncomingOSC() {
-  OSCBundle msg;
+  OSCMessage msg;
   int size = Udp.parsePacket();
 
   if (size > 0) {
@@ -114,10 +117,20 @@ void ReadIncomingOSC() {
 }
 
 void led(OSCMessage &msg) {
-  ledState = msg.getFloat(0);
+  setColor(msg.getInt(0), msg.getInt(1), msg.getInt(2));
 //  digitalWrite(BUILTIN_LED, ledState);
   Serial.print("/led: ");
-  Serial.println(ledState);
+  Serial.print(msg.getInt(0));
+  Serial.print(" ");
+  Serial.print(msg.getInt(1));
+  Serial.print(" ");
+  Serial.print(msg.getInt(2));
+  Serial.println(" ");
+}
+
+void setColor(int r, int g, int b){
+  fill_solid(leds, NUM_LEDS, CRGB(r,g,b));
+  FastLED.show();
 }
 
 void connectToWiFi(const char * ssid, const char * pwd)
@@ -211,13 +224,13 @@ void testPattern() {
 void DisplayConnectionCode(int code) {
   switch (code) {
     case 0: // Connecting
-      ChaseLoop(500, 5, CRGB::Blue);
+      ChaseLoop(500, NUM_LEDS, CRGB::Blue);
       break;
     case 1: // Connection Established
-      ChaseLoop(500, 5, CRGB::Green);
+      ChaseLoop(500, NUM_LEDS, CRGB::Green);
       break;
     case 2: // Connection Error
-      ChaseLoop(500, 5, CRGB::Red);
+      ChaseLoop(500, NUM_LEDS, CRGB::Red);
       break;
   }
 }

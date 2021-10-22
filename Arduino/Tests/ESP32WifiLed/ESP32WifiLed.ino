@@ -19,6 +19,12 @@ const int LED_PIN = 13;
 // Define the array of leds
 CRGB leds[NUM_LEDS];
 
+// Timer vars
+unsigned long timer1 = millis();
+
+// LED Indexs
+int ledIndex[10] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+
 
 void setup()
 {
@@ -28,6 +34,7 @@ void setup()
   pinMode(LED_PIN, OUTPUT);
 
   FastLED.addLeds<WS2812B, DATA_PIN, GRB>(leds, NUM_LEDS);  // GRB ordering is typical
+  FastLED.setBrightness(50);
 
 
   // Connect to the WiFi network (see function below loop)
@@ -50,7 +57,8 @@ void loop()
     digitalWrite(LED_PIN, LOW); // Turn off LED
   }
 
-  testPattern();
+  //  testPattern();
+  DisplayConnectionCode(0);
 }
 
 void connectToWiFi(const char * ssid, const char * pwd)
@@ -67,9 +75,11 @@ void connectToWiFi(const char * ssid, const char * pwd)
     // Blink LED while we're connecting:
     digitalWrite(LED_PIN, ledState);
     ledState = (ledState + 1) % 2; // Flip ledState
+
     delay(500);
     Serial.print(".");
   }
+
 
   Serial.println();
   Serial.println("WiFi connected!");
@@ -129,15 +139,70 @@ void printLine()
 
 void testPattern() {
   delay(500);
-  for (int i = 0; i < NUM_LEDS; i++) {
+  for (int i = 5; i < NUM_LEDS; i++) {
     leds[i] = CRGB::White;
     FastLED.show();
   }
   // Turn the LED on, then pause
   delay(500);
+  for (int i = 5; i < NUM_LEDS; i++) {
+    // Now turn the LED off, then pause
+    leds[i] = CRGB::Black;
+    FastLED.show();
+  }
+}
+
+void DisplayConnectionCode(int code) {
+  switch (code) {
+    case 0: // Connecting
+      ChaseLoop(500, 5, CRGB::Green);
+      break;
+    case 1: // Connection Established
+      break;
+    case 2: // Connection Error
+      break;
+    default:
+      break;
+  }
+}
+
+void ChaseLoop(int reqTime, int ledAmount, CRGB myColor) {
+  CRGB targetColor = myColor;
+  if (millis() - timer1 > reqTime) {
+    timer1 = millis();
+
+    // Set LED color
+    //    leds[ledIndex[0]] = CRGB(0, 255, 255);
+    leds[ledIndex[0]] = targetColor;
+    FastLED.show();
+
+    // Increment led index
+    ledIndex[0]++;
+    Serial.println(ledIndex[0]);
+
+    // Loop to start
+    if (ledIndex[0] > ledAmount) {
+      AllOff();
+      ledIndex[0] = 0;
+    } else if (ledAmount = 0 && ledIndex[0] > NUM_LEDS) {
+      AllOff();
+      ledIndex[0] = 0;
+    }
+  }
+}
+
+
+void AllOff() {
   for (int i = 0; i < NUM_LEDS; i++) {
     // Now turn the LED off, then pause
     leds[i] = CRGB::Black;
     FastLED.show();
   }
 }
+
+
+
+
+
+
+//Dont mind me

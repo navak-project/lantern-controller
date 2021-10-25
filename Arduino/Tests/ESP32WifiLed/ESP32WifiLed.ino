@@ -1,4 +1,5 @@
 #include <WiFi.h>
+#include <ArtnetWifi.h>
 #include <FastLED.h>
 #include <WifiUdp.h>
 #include <OSCMessage.h>
@@ -6,7 +7,7 @@
 #include <OSCData.h>
 
 
-#define NUM_LEDS 104
+//#define NUM_LEDS 52
 #define DATA_PIN 19
 
 // WiFi network name and password:
@@ -22,8 +23,19 @@ const int LED_PIN = 13; //On board LED
 
 
 // Define the array of leds
+const int NUM_LEDS = 52;
+const int num_channels = NUM_LEDS * 3;
 CRGB leds[NUM_LEDS];
 
+//Artnet settings
+ArtnetWifi artnet;
+const int startUniverse = 0;
+
+// Check if we got all universes
+const int maxUniverses = num_channels / 512 + ((num_channels % 512) ? 1 : 0);
+bool universesReceived[maxUniverses];
+bool sendFrame = 1;
+int previousDataLength = 0;
 
 // Timer vars
 unsigned long timer[2] = {millis(), millis()};
@@ -43,7 +55,7 @@ const unsigned int localPort = 10000;        // local port to listen for UDP pac
 
 
 OSCErrorCode error;
-float ledState = 0;  
+float ledState = 0;
 
 
 void setup()
@@ -60,6 +72,7 @@ void setup()
 
   // Connect to the WiFi network (see function below loop)
   connectToWiFi(networkName, networkPswd);
+  artnet.begin();
 
   //UDP
   Serial.println("Starting UDP");
@@ -74,6 +87,9 @@ void setup()
   digitalWrite(LED_PIN, LOW); // LED off
   Serial.print("Press button 0 to connect to ");
   Serial.println(hostDomain);
+
+  // Called when packet received
+  artnet.setArtDmxCallback(onDmxFrame);
 }
 
 void loop()
@@ -89,13 +105,67 @@ void loop()
   }
 
   //OSC
-//  ReadIncomingOSC();
+  //  ReadIncomingOSC();
 
-//    DisplayConnectionCode(1);
-//  Flash(500, 0, 5, CRGB::White);
-ChaseLoop(250, 26, CRGB::White);
-  
+  //    DisplayConnectionCode(1);
+  //  Flash(500, 0, 5, CRGB::White);
+//  ChaseLoop(250, NUM_LEDS, CRGB::White);
+
+
+  // Artnet
+  artnet.read();
+
 }
+
+void onDmxFrame(uint16_t universe, uint16_t length, uint8_t sequence, uint8_t* data)
+{
+  sendFrame = 1;
+  // set brightness of the whole strip
+  if (universe == 15)
+  {
+    FastLED.setBrightness(data[0]);
+    FastLED.show();
+  }
+
+  // range check
+  if (universe < startUniverse) {
+    return;
+  }
+  uint8_t index = universe - startUniverse;
+  if (index >= maxUniverses) {
+    return;
+  }
+
+  // Store which universe has got in
+  universesReceived[index] = true;
+
+  for (int i = 0 ; i < maxUniverses ; i++)
+  {
+    if (universesReceived[i] == 0)
+    {
+      //Serial.println("Broke");
+      sendFrame = 0;
+      break;
+    }
+  }
+
+  // read universe and put into the right part of the display buffer
+  for (int i = 0; i < length / 3; i++)
+  {
+    int led = i + (index * (previousDataLength / 3));
+    if (led < NUM_LEDS)
+      leds[led] = CRGB(data[i * 3], data[i * 3 + 1], data[i * 3 + 2]);
+  }
+  previousDataLength = length;
+
+  if (sendFrame)
+  {
+    FastLED.show();
+    // Reset universeReceived to 0
+    memset(universesReceived, 0, maxUniverses);
+  }
+}
+
 
 void ReadIncomingOSC() {
   OSCMessage msg;
@@ -107,7 +177,7 @@ void ReadIncomingOSC() {
     }
     if (!msg.hasError()) {
       msg.dispatch("/led", led);
-      
+
     } else {
       error = msg.getError();
       Serial.print("error: ");
@@ -118,7 +188,7 @@ void ReadIncomingOSC() {
 
 void led(OSCMessage &msg) {
   setColor(msg.getInt(0), msg.getInt(1), msg.getInt(2));
-//  digitalWrite(BUILTIN_LED, ledState);
+  //  digitalWrite(BUILTIN_LED, ledState);
   Serial.print("/led: ");
   Serial.print(msg.getInt(0));
   Serial.print(" ");
@@ -128,8 +198,8 @@ void led(OSCMessage &msg) {
   Serial.println(" ");
 }
 
-void setColor(int r, int g, int b){
-  fill_solid(leds, NUM_LEDS, CRGB(r,g,b));
+void setColor(int r, int g, int b) {
+  fill_solid(leds, NUM_LEDS, CRGB(r, g, b));
   FastLED.show();
 }
 
@@ -250,10 +320,10 @@ void ChaseLoop(int interval, int ledAmount, CRGB myColor) {
     Serial.println(ledIndex[0]);
 
     // Loop to start
-    if (ledIndex[0] > ledAmount) {
+    if (ledIndex[0] > NUM_LEDS) {
       AllOff();
       ledIndex[0] = 0;
-    } else if (ledAmount = 0 && ledIndex[0] > NUM_LEDS) {
+    } else if (ledAmount = 0 && ledIndex[0] > ledAmount) {
       AllOff();
       ledIndex[0] = 0;
     }

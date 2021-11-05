@@ -31,7 +31,7 @@ const int hostPort = 80;
 //Artnet stuff
 //Artnet settings
 ArtnetWifi artnet;
-const int startUniverse = 1;
+int startUniverse = 1;
 // Check if we got all universes
 const int maxUniverses = num_channels / 512 + ((num_channels % 512) ? 1 : 0);
 bool universesReceived[maxUniverses];

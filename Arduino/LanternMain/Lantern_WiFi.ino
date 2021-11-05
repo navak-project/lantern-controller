@@ -63,27 +63,21 @@ void Register() {
   // Send HTTP POST request
   String mac = WiFi.macAddress();
   String ip = WiFi.localIP().toString();
-  String requestQuote = "{\"macAddress\":\"" + mac + "\", \"ipAddress\":\"" + ip + "\"}";
+  String hostName = WiFi.getHostname();
+  String requestQuote = "{\"hostName\":\"" + hostName + "\", \"macAddress\":\"" + mac + "\", \"ipAddress\":\"" + ip + "\"}";
   int httpResponseCode = http.POST(requestQuote);
   String payload = "{}";
 
   if (httpResponseCode > 0) {
     Serial.println("HTTP Response code: ");
     Serial.println(httpResponseCode);
-
-    //    char json[] = http.getString();
-    //    DeserializationError error = deserializeJson(doc, json);
-
-//    if (error) {
-//      Serial.print(F("deserializeJson() failed: "));
-//      Serial.println(error.f_str());
-//      //      return;
-//    }
+    
     deserializeJson(doc, http.getStream());
-//    Serial.println(doc);
-    int test = doc["startUniverse"];
+    Serial.print("INITIAL UNIVERSE: ");
+    Serial.println(startUniverse);
+    startUniverse = doc["startUniverse"];
     Serial.print("RECEIVED UNIVERSE: ");
-    Serial.println(test);
+    Serial.println(startUniverse);
     
 
     payload = http.getString();

@@ -9,7 +9,7 @@
 
 //FastLED stuff
 // Define the array of leds
-const int NUM_LEDS = 52;
+const int NUM_LEDS = 65;
 const int num_channels = NUM_LEDS * 3;
 CRGB leds[NUM_LEDS];
 

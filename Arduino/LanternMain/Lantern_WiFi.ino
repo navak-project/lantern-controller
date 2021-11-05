@@ -61,6 +61,7 @@ void Register() {
 
   // Data to send with HTTP POST
   // Send HTTP POST request
+  
   String mac = WiFi.macAddress();
   String ip = WiFi.localIP().toString();
   String hostName = WiFi.getHostname();

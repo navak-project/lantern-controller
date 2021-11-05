@@ -24,7 +24,7 @@ void ChaseLoop(int interval, int ledAmount, CRGB myColor) {
 
     // Increment led index
     ledIndex[0]++;
-    Serial.println(ledIndex[0]);
+//    Serial.println(ledIndex[0]);
 
     // Loop to start
     if (ledIndex[0] > NUM_LEDS) {

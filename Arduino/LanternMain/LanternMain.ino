@@ -22,11 +22,13 @@ int ledIndex[12] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
 // WiFi network name and password:
 const char * networkName = "Silva-WIFI";
 const char * networkPswd = "silvaFTW";
-//String hostname = "Lantern2";
+//// WORK FROM HOME
+//const char * networkName = "BELL034";
+//const char * networkPswd = "D2AA4CA6F4F4";
 
-// Internet domain to request from:
-const char * hostDomain = "example.com";
-const int hostPort = 80;
+//// Internet domain to request from:
+//const char * hostDomain = "example.com";
+//const int hostPort = 80;
 
 //Artnet stuff
 //Artnet settings
@@ -62,15 +64,11 @@ void setup()
   pinMode(BUTTON_PIN, INPUT_PULLUP);
   pinMode(LED_PIN, OUTPUT);
 
-  
-
   InitLeds();
   InitWifi();
   InitArtnet();
 
   digitalWrite(LED_PIN, LOW); // LED off
-  Serial.print("Press button 0 to connect to ");
-  Serial.println(hostDomain);
 }
 
 void loop()

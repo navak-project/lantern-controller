@@ -1,14 +1,5 @@
 #include <HTTPClient.h>
 //#include <Arduino_JSON.h>
-#include <ArduinoJson.h>
-
-const String local_pc_ip = "192.168.1.195";
-const String local_pc_port = "8080";
-
-String serverName = "http://" + local_pc_ip + ":" + local_pc_port + "/";
-
-
-// SAVE BY MAC ADDRESS
 
 void printLine()
 {
@@ -31,65 +22,78 @@ void connectToWiFi(const char * ssid, const char * pwd)
   {
     DisplayConnectionCode(0);
   }
+  
+  SetNetworkInfo();
+  
   Serial.println();
   Serial.println("WiFi connected!");
   Serial.print("IP address: ");
-  Serial.println(WiFi.localIP());
+  Serial.println(esp_ip);
+  
   Register();
-
-  //  DisplayConnectionCode(1);
+  
   AllOff();
 }
 
 void InitWifi() {
   connectToWiFi(networkName, networkPswd);
-
-  //  Serial.println(WiFi.macAddress());
 }
 
+void SetNetworkInfo(){
+  esp_macAddress = WiFi.macAddress();
+  esp_ip = WiFi.localIP().toString();
+  esp_hostName_String = WiFi.getHostname();
+  esp_hostName_char = WiFi.getHostname();
+}
+
+void doConcat(const char *a, const char *b, char *out) {
+    strcpy(out, a);
+    strcat(out, b);
+}
 
 void Register() {
   HTTPClient http;
-  String registerUrl = serverName + "api/lanterns/register/";
-  
-  //  StaticJsonDocument<200> doc;
   DynamicJsonDocument doc(2048);
   
+  String registerRequest = "{\"hostName\":\"" + esp_hostName_String + "\", \"macAddress\":\"" + esp_macAddress + "\", \"ipAddress\":\"" + esp_ip + "\"}";
+  
   http.begin(registerUrl);
+  Serial.print("HTTP Requesting to: ");
   Serial.println(registerUrl);
   http.addHeader("Content-Type", "application/json");
 
-  // Data to send with HTTP POST
-  // Send HTTP POST request
+  Serial.print("HTTP POST with: ");
+  Serial.println(registerRequest);
   
-  String mac = WiFi.macAddress();
-  String ip = WiFi.localIP().toString();
-  String hostName = WiFi.getHostname();
-  String requestQuote = "{\"hostName\":\"" + hostName + "\", \"macAddress\":\"" + mac + "\", \"ipAddress\":\"" + ip + "\"}";
-  int httpResponseCode = http.POST(requestQuote);
+  int httpResponseCode = http.POST(registerRequest);
   String payload = "{}";
 
   if (httpResponseCode > 0) {
-    Serial.println("HTTP Response code: ");
+    Serial.print("HTTP Response code: ");
     Serial.println(httpResponseCode);
-    
+
+
     deserializeJson(doc, http.getStream());
-    Serial.print("INITIAL UNIVERSE: ");
-    Serial.println(startUniverse);
     startUniverse = doc["startUniverse"];
-    Serial.print("RECEIVED UNIVERSE: ");
-    Serial.println(startUniverse);
+    mqtt_panID = doc["id"];
     
+//    mqtt_panID = test;
+    Serial.println("#### API INFO RESPONSE ####");
+    Serial.print("startUniverse: ");
+    Serial.println(startUniverse);
+    Serial.print("panID: ");
+    Serial.println(mqtt_panID);
 
     payload = http.getString();
     Serial.println(payload);
 
-    //users = [payload];
-    //Serial.println(users);
+    doConcat(mqtt_topicParent, mqtt_panID, mqtt_clientTopic);
+    
   }
   else {
-    Serial.print("Error code: ");
-    Serial.println(httpResponseCode);
+    Serial.println("Error code: ");
+    Serial.print(httpResponseCode);
+    Serial.println();
   }
 
   http.end();

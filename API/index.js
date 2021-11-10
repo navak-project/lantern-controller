@@ -32,12 +32,14 @@ client.on('connect', () => {
 //   })
 
     // Get all topics
-    client.subscribe(scanTopics,() => {
-        console.log('Scanning for topics!');
-        client.unsubscribe(scanTopics, () => {
-            console.log('Got all topics.')
-        })
-    })
+    // client.subscribe(scanTopics,() => {
+    //     console.log('Scanning for topics!');
+    //     client.unsubscribe(scanTopics, () => {
+    //         console.log('Got all topics.')
+    //     })
+    // })
+
+    SendTestData('/nodejs/test', '{"thing": 5}', false);
 })
 
 client.on('message', (topic, message) => {
@@ -65,6 +67,14 @@ client.on('message', (topic, message) => {
         }
     }
 })
+
+function SendTestData(topic, data, retain){
+    client.publish(topic, data, {qos: 0, retain: retain }, (error) => {
+        if(error) {
+            console.error(error);
+        }
+    })
+}
 
 function SendAnchorData(name, data){
     // console.log(name, data);

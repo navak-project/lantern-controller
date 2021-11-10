@@ -17,6 +17,7 @@ void MqttCallback(char* topic, byte* message, unsigned int length){
     messageTemp += (char)message[i];
   }
   Serial.println();
+  SendToTeensy(messageTemp);
 }
 
 void LoopMQTT(){

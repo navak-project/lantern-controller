@@ -60,6 +60,8 @@ const int BUTTON_PIN = 0;
 const int LED_PIN = 13; //On board LED
 bool flashState = false;
 float ledState = 0;
+// ----------- [TEENSY COM] ---------
+const String COM_OUT_HEADER = "/audio/";
 
 
 void setup()

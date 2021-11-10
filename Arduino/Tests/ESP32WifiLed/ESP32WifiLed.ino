@@ -13,6 +13,7 @@
 // WiFi network name and password:
 const char * networkName = "Silva-WIFI";
 const char * networkPswd = "silvaFTW";
+String hostname = "Lantern2";
 
 // Internet domain to request from:
 const char * hostDomain = "example.com";
@@ -29,7 +30,7 @@ CRGB leds[NUM_LEDS];
 
 //Artnet settings
 ArtnetWifi artnet;
-const int startUniverse = 0;
+const int startUniverse = 1;
 
 // Check if we got all universes
 const int maxUniverses = num_channels / 512 + ((num_channels % 512) ? 1 : 0);
@@ -209,7 +210,7 @@ void connectToWiFi(const char * ssid, const char * pwd)
 
   printLine();
   Serial.println("Connecting to WiFi network: " + String(ssid));
-
+  WiFi.setHostname(hostname.c_str());
   WiFi.begin(ssid, pwd);
 
   while (WiFi.status() != WL_CONNECTED)

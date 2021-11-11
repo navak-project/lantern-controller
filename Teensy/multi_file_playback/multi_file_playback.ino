@@ -39,7 +39,7 @@ Bounce button0 = Bounce(0, 15);
 
 void setup() {
   // initialize serial + audio memory
-  Serial.begin(9600);
+  Serial.begin(115200);
   AudioMemory(20);
 
   // enable soundchip

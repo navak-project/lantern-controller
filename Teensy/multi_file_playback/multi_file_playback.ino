@@ -1,9 +1,14 @@
+#include <Vector.h>
+
 #include <Audio.h>
 #include <Wire.h>
 #include <SPI.h>
 #include <SD.h>
 #include <SerialFlash.h>
 #include <Bounce.h>
+#include <OscMessage.h>
+
+using namespace std;
 
 // GUItool: begin automatically generated code
 AudioPlaySdWav           playSdWav1;     //xy=189,220
@@ -70,8 +75,8 @@ void setup() {
 
   // connect to ESP32 controller
   Wire1.setSCL(16);
-  Wire1.setSDA(18);
-  Wire1.begin(4);        // Wire1 because we are using the 2nd I2C bus
+  Wire1.setSDA(17);
+  Wire1.begin(4);        // Wire1 because the audio shield is already using the first I2C bus
   Wire1.onReceive(receiveEvent);
 }
 
@@ -79,10 +84,19 @@ elapsedMillis absTime;
 elapsedMillis blockReport;
 
 void receiveEvent(int howMany) {
-  while (1 < Wire1.available()) {
-    char c = Wire1.read();
-    Serial.print(c);
+  // decode OSC message from serial read
+  OscMessage msg;
+  char* addr;
+  
+  // read incoming OSC message
+  while (Wire1.available()) {
+    msg.fill(Wire1.read());
   }
+
+  msg.getAddress(addr);
+  Serial.println(addr);
+
+  // address switch
 }
 
 void loop() {
@@ -103,13 +117,6 @@ void loop() {
   if (playSdWav3.isPlaying() == false && absTime > 6000) {
     Serial.println("Start playing tone3.wav");
     playSdWav3.play("tone3.wav");
-    delay(10);
-  }
-
-  button0.update();
-  if (button0.fallingEdge() && playSdWav4.isPlaying() == false) {
-    Serial.println("Start playing tone4.wav");
-    playSdWav4.play("netflix.wav");
     delay(10);
   }
  

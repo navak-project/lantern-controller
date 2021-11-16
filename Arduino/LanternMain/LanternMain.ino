@@ -3,6 +3,8 @@
 #include <WiFi.h>
 #include <PubSubClient.h>
 #include <ArduinoJson.h>
+#include <Wire.h>
+#include <OSCMessage.h>
 
 // **********************
 // **** Device info *****
@@ -75,6 +77,7 @@ void setup()
   InitWifi();
   InitMQTT();
   InitArtnet();
+  InitWire();
 
   digitalWrite(LED_PIN, LOW); // LED off
 }

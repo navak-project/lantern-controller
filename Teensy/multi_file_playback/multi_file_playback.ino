@@ -82,20 +82,23 @@ elapsedMillis blockReport;
 void receiveOSC(int howMany) {
   Serial.println("a");
   
-  // decode OSC message from serial read
+  // define OSC bundle
   OSCBundle bundleIN;
-  char* addr;
 
-  // read incoming OSC message
+  // decode incoming message
   while (Wire1.available()) {
     bundleIN.fill(Wire1.read());
   }
 
+  // msg-exclusive callbacks
   if (!bundleIN.hasError()) {
     bundleIN.dispatch("/audio/test", audioTest);
+    // bundleIN.dispatch("/audio/test2", audioTest2);
+    // bundleIN.dispatch("/audio/test3", audioTest3);
   }
 }
 
+// callback
 void audioTest(OSCMessage &msg) {
   Serial.println(msg.getInt(0));
 }

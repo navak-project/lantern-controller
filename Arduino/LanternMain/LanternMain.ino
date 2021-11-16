@@ -4,7 +4,7 @@
 #include <PubSubClient.h>
 #include <ArduinoJson.h>
 #include <Wire.h>
-//#include <TwoWire.h>
+#include <OSCMessage.h>
 
 // **********************
 // **** Device info *****
@@ -38,7 +38,7 @@ String registerUrl = serverName + "api/lanterns/register/";
 //String registerRequest = "{\"hostName\":\"" + esp_hostName_String + "\", \"macAddress\":\"" + esp_macAddress + "\", \"ipAddress\":\"" + esp_ip + "\"}"; // SEE LANTERN WIFI FILE
 // ----------- [FASTLED] -----------
 #define DATA_PIN 19
-const int NUM_LEDS = 80;
+const int NUM_LEDS = 65;
 const int num_channels = NUM_LEDS * 3;
 CRGB leds[NUM_LEDS];
 // ----------- [ARTNET] ------------
@@ -63,15 +63,13 @@ const int LED_PIN = 13; //On board LED
 bool flashState = false;
 float ledState = 0;
 // ----------- [TEENSY COM] ---------
-String COM_OUT_HEADER = "/audio/";
-
+const String COM_OUT_HEADER = "/audio/";
 
 
 void setup()
 {
   // Initilize hardware:
   Serial.begin(115200);
-  Serial1.begin(9600);
   pinMode(BUTTON_PIN, INPUT_PULLUP);
   pinMode(LED_PIN, OUTPUT);
 

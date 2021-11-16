@@ -1,9 +1,12 @@
 #include <Audio.h>
-#include <Wire.h>
+#include <i2c_driver_wire.h>    // MANDATORY FOR TEENSY 4.x!!!!!
 #include <SPI.h>
 #include <SD.h>
 #include <SerialFlash.h>
 #include <Bounce.h>
+
+#include <OSCMessage.h>
+#include <OSCBundle.h>
 
 // GUItool: begin automatically generated code
 AudioPlaySdWav           playSdWav1;     //xy=189,220
@@ -26,15 +29,12 @@ AudioConnection          patchCord10(mixer1, 0, i2s, 0);
 AudioControlSGTL5000     sgtl5000_1;     //xy=500,573
 // GUItool: end automatically generated code
 
-Bounce button0 = Bounce(0, 15);
-
 #define SDCARD_CS_PIN   10
 #define SDCARD_MOSI_PIN 7
 #define SDCARD_SCK_PIN  14
 
 void setup() {
   // initialize serial + audio memory
-  Serial.begin(9600);
   AudioMemory(20);
 
   // enable soundchip
@@ -62,61 +62,77 @@ void setup() {
     }
   }
 
-  // button input
-  pinMode(0, INPUT_PULLUP);
-
   // initial delay
   delay(1000);
 
   // connect to ESP32 controller
-  Wire1.setSCL(16);
-  Wire1.setSDA(18);
-  Wire1.begin(4);        // Wire1 because we are using the 2nd I2C bus
-  Wire1.onReceive(receiveEvent);
+  Wire1.begin(0x2D);        // Wire1 because the audio shield is already using the first I2C bus
+  Wire1.onReceive(receiveOSC);
+  Serial.begin(115200);
 }
 
 elapsedMillis absTime;
 elapsedMillis blockReport;
 
-void receiveEvent(int howMany) {
-  while (1 < Wire1.available()) {
-    char c = Wire1.read();
-    Serial.print(c);
+
+
+// #################################
+// #         OSC MANAGEMENT        #
+// #################################
+void receiveOSC(int howMany) {
+  Serial.println("a");
+  
+  // define OSC bundle
+  OSCBundle bundleIN;
+
+  // decode incoming message
+  while (Wire1.available()) {
+    bundleIN.fill(Wire1.read());
+  }
+
+  // msg-exclusive callbacks
+  if (!bundleIN.hasError()) {
+    bundleIN.dispatch("/audio/test", audioTest);
+    // bundleIN.dispatch("/audio/test2", audioTest2);
+    // bundleIN.dispatch("/audio/test3", audioTest3);
   }
 }
 
+// callback
+void audioTest(OSCMessage &msg) {
+  Serial.println(msg.getInt(0));
+}
+
+
+
+// #################################
+// #               LOOP            #
+// #################################
 void loop() {
   // put your main code here, to run repeatedly:
 
   if (playSdWav1.isPlaying() == false) {
-    Serial.println("Start playing tone1.wav");
+    // Serial.println("Start playing tone1.wav");
     playSdWav1.play("tone1.wav");
     delay(10);
   }
 
   if (playSdWav2.isPlaying() == false && absTime > 3000) {
-    Serial.println("Start playing tone2.wav");
+    // Serial.println("Start playing tone2.wav");
     playSdWav2.play("tone2.wav");
     delay(10);
   }
 
   if (playSdWav3.isPlaying() == false && absTime > 6000) {
-    Serial.println("Start playing tone3.wav");
+    // Serial.println("Start playing tone3.wav");
     playSdWav3.play("tone3.wav");
-    delay(10);
-  }
-
-  button0.update();
-  if (button0.fallingEdge() && playSdWav4.isPlaying() == false) {
-    Serial.println("Start playing tone4.wav");
-    playSdWav4.play("netflix.wav");
     delay(10);
   }
  
   // check max audio memory usage twice every second
   // the value displayed here will gauge the value we'll need to enter in the call to AudioMemory() earlier in the code
   if (blockReport > 500) {
-    Serial.println(AudioMemoryUsageMax());
+    //Serial.println(AudioMemoryUsageMax());
     blockReport = 0;
   }
 }

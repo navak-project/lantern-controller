@@ -20,7 +20,7 @@ Bounce button0 = Bounce(0, 15);   // 15 = 15 ms debounce time
 #define SDCARD_SCK_PIN  14
 
 void setup() {
-  Serial.begin(9600);
+  Serial.begin(115200);
   AudioMemory(8);
 
   // initialize audio chip

@@ -9,11 +9,13 @@
 
 void setup() {
   // put your setup code here, to run once:
+  
+  initAudio();
   initOSC();
 }
 
 
 void loop() {
-  // put your main code here, to run repeatedly:
-
+  // for monitoring audio memory usage; uncomment if necessary
+  monitorBlocks();
 }

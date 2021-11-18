@@ -38,7 +38,7 @@ String registerUrl = serverName + "api/lanterns/register/";
 //String registerRequest = "{\"hostName\":\"" + esp_hostName_String + "\", \"macAddress\":\"" + esp_macAddress + "\", \"ipAddress\":\"" + esp_ip + "\"}"; // SEE LANTERN WIFI FILE
 // ----------- [FASTLED] -----------
 #define DATA_PIN 19
-const int NUM_LEDS = 65;
+const int NUM_LEDS = 80;
 const int num_channels = NUM_LEDS * 3;
 CRGB leds[NUM_LEDS];
 // ----------- [ARTNET] ------------

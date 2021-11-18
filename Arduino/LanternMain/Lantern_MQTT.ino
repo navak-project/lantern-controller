@@ -17,7 +17,11 @@ void MqttCallback(char* topic, byte* message, unsigned int length){
     messageTemp += (char)message[i];
   }
   Serial.println();
-  SendToTeensy(messageTemp);
+//  SendToTeensy(messageTemp);
+  OSCMessage msg("/audio/test");
+  msg.add(messageTemp);
+  SendToTeensy(msg);
+   
 }
 
 void LoopMQTT(){

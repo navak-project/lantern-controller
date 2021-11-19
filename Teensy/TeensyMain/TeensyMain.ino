@@ -27,13 +27,20 @@ AudioControlSGTL5000     sgtl5000_1;     //xy=500,573
 
 
 // constants
-#define WIRE_ADDR 0x2D
+#define WIRE_ADDR        0x2D
+#define SDCARD_CS_PIN    10
+#define SDCARD_MOSI_PIN  7
+#define SDCARD_SCK_PIN   14
+// properties
+int lanternID = 0;
 
 
 void setup() {
-  // put your setup code here, to run once:
-  
+  // init Teensy Audio + SD
   initAudio();
+  initSD();
+
+  // init OSC thru Wire
   initOSC();
 }
 

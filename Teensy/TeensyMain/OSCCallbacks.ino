@@ -7,6 +7,10 @@ void audioTest(OSCMessage &msg) {
 //      LANTERN EVENTS
 // #########################
 
+void setLanternID(OSCMessage &msg) {
+  lanternID = msg.getInt(0);
+}
+
 void igniteLantern(OSCMessage &msg) {
   playAudioFile(&lanternEvents, "ignite.wav");
 }

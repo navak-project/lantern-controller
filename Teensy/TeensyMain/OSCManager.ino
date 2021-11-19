@@ -16,6 +16,10 @@ void receiveOSC(int byteLength) {
 
   if (!bundleIN.hasError()) {
     // list of callbacks
-    // bundleIN.dispatch("/audio/test", audioTest);
+    bundleIN.dispatch("/audio/test", audioTest);
+
+    // lantern events
+    bundleIN.dispatch("/lantern/ignite", igniteLantern);
+    bundleIN.dispatch("/lantern/extinguish", extinguishLantern);
   }
 }

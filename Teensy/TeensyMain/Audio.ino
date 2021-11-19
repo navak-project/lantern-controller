@@ -19,9 +19,9 @@ void monitorBlocks() {
 
 
 // play an audio file
-void playAudioFile(AudioPlaySdWav &file, String path) {
-  if (file.isPlaying() == false) {
-    file.play(path);
+void playAudioFile(AudioPlaySdWav *file, const char* path) {
+  if (file->isPlaying() == false) {
+    file->play(path);
     delay(10);
   }
 }

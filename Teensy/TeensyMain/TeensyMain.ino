@@ -1,4 +1,6 @@
 // includes
+// FUN FACT: using this Wire library will require you to change
+// every single instance of Wire.h in the entirety of Teensyduino's code :o)
 #include <Audio.h>
 #include <i2c_driver_wire.h>
 #include <SPI.h>
@@ -48,4 +50,7 @@ void setup() {
 void loop() {
   // for monitoring audio memory usage; uncomment if necessary
   monitorBlocks();
+
+  // lantern loop manager
+  updateLanternLoop();
 }

@@ -22,5 +22,9 @@ void receiveOSC(int byteLength) {
     bundleIN.dispatch("/lantern/setID", setLanternID);
     bundleIN.dispatch("/lantern/ignite", igniteLantern);
     bundleIN.dispatch("/lantern/extinguish", extinguishLantern);
+
+    // organique events
+
+    // silva events
   }
 }

@@ -1,5 +1,10 @@
 elapsedMillis blockReportTimer;
 
+struct AudioLoops {
+  AudioPlaySdWav *file;
+  const char* path;
+};
+
 
 // initialize audio library
 void initAudio() {
@@ -33,9 +38,12 @@ void monitorBlocks() {
 
 
 // play an audio file
-void playAudioFile(AudioPlaySdWav *file, const char* path) {
-  if (file->isPlaying() == false) {
-    file->play(path);
-    delay(10);
-  }
+void playAudioFile(AudioPlaySdWav *file, String path, bool steal = false) {
+  // block file playback if it's playing and we're not stealing its voice
+  if (file->isPlaying() == true && steal == false) return;
+
+  // stop and replay file at path
+  file->stop();
+  file->play(path.c_str());
+  delay(10);
 }

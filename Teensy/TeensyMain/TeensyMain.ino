@@ -1,6 +1,8 @@
 // includes
+// FUN FACT: using this Wire library will require you to change
+// every single instance of Wire.h in the entirety of Teensyduino's code :o)
 #include <Audio.h>
-#include <i2c_driver_wire.h>      
+#include <i2c_driver_wire.h>
 #include <SPI.h>
 #include <SD.h>
 #include <SerialFlash.h>
@@ -27,13 +29,20 @@ AudioControlSGTL5000     sgtl5000_1;     //xy=500,573
 
 
 // constants
-#define WIRE_ADDR 0x2D
+#define WIRE_ADDR        0x2D
+#define SDCARD_CS_PIN    10
+#define SDCARD_MOSI_PIN  7
+#define SDCARD_SCK_PIN   14
+// properties
+int lanternID = 0;
 
 
 void setup() {
-  // put your setup code here, to run once:
-  
+  // init Teensy Audio + SD
   initAudio();
+  initSD();
+
+  // init OSC thru Wire
   initOSC();
 }
 
@@ -41,4 +50,7 @@ void setup() {
 void loop() {
   // for monitoring audio memory usage; uncomment if necessary
   monitorBlocks();
+
+  // lantern loop manager
+  updateLanternLoop();
 }

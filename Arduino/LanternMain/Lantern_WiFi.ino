@@ -88,6 +88,9 @@ void Register() {
     Serial.println(payload);
 
     doConcat(mqtt_topicParent, mqtt_panID, mqtt_clientTopic);
+
+    const char* wildcard = "/#";
+    doConcat(mqtt_clientTopic, wildcard, mqtt_clientTopic);
     
   }
   else {

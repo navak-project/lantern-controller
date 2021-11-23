@@ -6,36 +6,45 @@ PubSubClient client(mqtt_client);
 
 unsigned long mqttConnectionTimer = millis();
 
-void MqttCallback(char* topic, byte* message, unsigned int length){
+void MqttCallback(char* topic, byte* message, unsigned int length) {
   Serial.print("Message arrived on topic: ");
   Serial.print(topic);
   Serial.print(". Message: ");
   String messageTemp;
 
-  for (int i = 0; i < length; i++){
+  String control = "/lantern/" + String(mqtt_panID) + "/control";
+  String audio = "/lantern/" + String(mqtt_panID) + "/audio";
+
+  for (int i = 0; i < length; i++) {
     Serial.print((char)message[i]);
     messageTemp += (char)message[i];
   }
   Serial.println();
-  OSCMessage msg(messageTemp.c_str());
-//  msg.add(messageTemp);
-  SendToTeensy(msg);
-//  AudioTest();
+  Serial.println(control.c_str());
+  Serial.println(topic);
+  if (topic.c_string() == control.c_str()) {
+    Serial.println("GOT CONTROL STRING");
+    restart_esp32();
+  } else if (topic == audio.c_str()) {
+    OSCMessage msg(messageTemp.c_str());
+    //  msg.add(messageTemp);
+    SendToTeensy(msg);
+  }
 }
 
-void LoopMQTT(){
-  if(!client.connected()){
+void LoopMQTT() {
+  if (!client.connected()) {
     ConnectToMQTT();
   }
 
   client.loop();
 }
 
-void ConnectToMQTT(){
-  while(!client.connected()){
+void ConnectToMQTT() {
+  while (!client.connected()) {
     Serial.println("Attempting MQTT connection...");
-    
-    if(client.connect(esp_hostName_char)){
+
+    if (client.connect(esp_hostName_char)) {
       Serial.println("Connected to MQTT broker");
       client.subscribe(mqtt_clientTopic);
       Serial.print("Subscribed to: ");
@@ -50,7 +59,7 @@ void ConnectToMQTT(){
   }
 }
 
-void InitMQTT(){
+void InitMQTT() {
   client.setServer(mqtt_broker, mqtt_port);
   client.setCallback(MqttCallback);
 }

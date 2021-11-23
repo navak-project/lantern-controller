@@ -99,5 +99,8 @@ void loop()
   LoopMQTT();
 }
 
+void restart_esp32(){
+  ESP.restart();
+}
 
 //Dont mind me

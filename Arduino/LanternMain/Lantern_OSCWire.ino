@@ -16,8 +16,3 @@ void SendToTeensy(OSCMessage &msg) {
     msg.send(Wire);
     Wire.endTransmission();
 }
-//
-//void SendToTeensyTest(String address, String message){
-//  OSCMessage msg(address);
-//  msg.add(message);
-//}

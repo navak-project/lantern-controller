@@ -46,10 +46,7 @@ void SetNetworkInfo(){
   esp_hostName_char = WiFi.getHostname();
 }
 
-void doConcat(const char *a, const char *b, char *out) {
-    strcpy(out, a);
-    strcat(out, b);
-}
+
 
 void Register() {
   HTTPClient http;
@@ -90,8 +87,7 @@ void Register() {
     doConcat(mqtt_topicParent, mqtt_panID, mqtt_clientTopic);
 
     const char* wildcard = "/#";
-    doConcat(mqtt_clientTopic, wildcard, mqtt_clientTopic);
-    
+    doConcat(mqtt_clientTopic, wildcard, mqtt_clientTopicWildCard);
   }
   else {
     Serial.println("Error code: ");

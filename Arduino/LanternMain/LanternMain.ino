@@ -18,9 +18,12 @@ const char * esp_hostName_char = "";
 int startUniverse = 0;
 // ------- [UWB] --------
 const char* mqtt_panID = "";
+String mqtt_panIDString = "";
 // ------- [MQTT] -------
 const char* mqtt_topicParent = "/lantern/";
-char mqtt_clientTopic[14];
+char mqtt_clientTopicWildCard[20];
+char mqtt_clientTopic[20];
+char mqtt_lanternControl[20];
 
 // *********************************
 // **** Device setup variables *****
@@ -101,6 +104,11 @@ void loop()
 
 void restart_esp32(){
   ESP.restart();
+}
+
+void doConcat(const char *a, const char *b, char *out) {
+    strcpy(out, a);
+    strcat(out, b);
 }
 
 //Dont mind me

@@ -4,6 +4,13 @@
 WiFiClient mqtt_client;
 PubSubClient client(mqtt_client);
 
+//const char* lanternHeader = "/lantern/";
+//const char* controlString = "/control";
+//const char* soundString = "/audio";
+//
+//String lanternControl;
+//String lanternSound;
+
 unsigned long mqttConnectionTimer = millis();
 
 void MqttCallback(char* topic, byte* message, unsigned int length) {
@@ -12,20 +19,27 @@ void MqttCallback(char* topic, byte* message, unsigned int length) {
   Serial.print(". Message: ");
   String messageTemp;
 
-  String control = "/lantern/" + String(mqtt_panID) + "/control";
-  String audio = "/lantern/" + String(mqtt_panID) + "/audio";
+  //  char* lanternHeader = "/lantern/";
+  //
+  //  doConcat(lanternHeader, mqtt_panID, lanternHeader);
+  //
+  //  char* control = "/control";
+  //
+  //  doConcat(lanternHeader, control, control);
+
+  String control = String() + mqtt_clientTopic + "/control";
+  String audio = String() + mqtt_clientTopic + "/audio";
 
   for (int i = 0; i < length; i++) {
     Serial.print((char)message[i]);
     messageTemp += (char)message[i];
   }
   Serial.println();
-  Serial.println(control.c_str());
-  Serial.println(topic);
-  if (topic.c_string() == control.c_str()) {
+
+  if (String(topic) == String(control)) {
     Serial.println("GOT CONTROL STRING");
     restart_esp32();
-  } else if (topic == audio.c_str()) {
+  } else if (String(topic) == String(audio)) {
     OSCMessage msg(messageTemp.c_str());
     //  msg.add(messageTemp);
     SendToTeensy(msg);
@@ -46,7 +60,7 @@ void ConnectToMQTT() {
 
     if (client.connect(esp_hostName_char)) {
       Serial.println("Connected to MQTT broker");
-      client.subscribe(mqtt_clientTopic);
+      client.subscribe(mqtt_clientTopicWildCard);
       Serial.print("Subscribed to: ");
       Serial.println(mqtt_clientTopic);
     } else {

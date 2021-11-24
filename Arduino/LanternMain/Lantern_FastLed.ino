@@ -37,6 +37,33 @@ void ChaseLoop(int interval, int ledAmount, CRGB myColor) {
   }
 }
 
+void ChaseLoopMore(int interval, int ledAmount, int jump, CRGB myColor) {
+  CRGB targetColor = myColor;
+  if (millis() - timer[0] > interval) {
+    timer[0] = millis();
+
+    // Set LED color
+    //    leds[ledIndex[0]] = CRGB(0, 255, 255);
+//    for(int  = lastIndex, i < jump
+      
+    leds[ledIndex[0]] = targetColor;
+    FastLED.show();
+
+    // Increment led index
+    ledIndex[0]++;
+//    Serial.println(ledIndex[0]);
+
+    // Loop to start
+    if (ledIndex[0] > NUM_LEDS) {
+      AllOff();
+      ledIndex[0] = 0;
+    } else if (ledAmount = 0 && ledIndex[0] > ledAmount) {
+      AllOff();
+      ledIndex[0] = 0;
+    }
+  }
+}
+
 void DisplayConnectionCode(int code) {
   switch (code) {
     case 0: // Connecting

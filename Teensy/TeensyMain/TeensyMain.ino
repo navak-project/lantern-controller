@@ -10,32 +10,34 @@
 #include <OSCBundle.h>
 
 // GUItool: begin automatically generated code
-AudioSynthWavetable      heartbeat;     //xy=249,316
-AudioPlaySdWav           lanternLoop;     //xy=250,162
-AudioFilterStateVariable filter1;        //xy=429,325
-AudioPlaySdWav           lanternEvents;     //xy=445,84
-AudioEffectFade          lanternLoopFade;          //xy=445,156
-AudioMixer4              mixer1;         //xy=657,208
-AudioOutputI2S           i2s1;           //xy=832,207
-AudioConnection          patchCord1(heartbeat, 0, filter1, 0);
-AudioConnection          patchCord2(lanternLoop, 0, lanternLoopFade, 0);
-AudioConnection          patchCord3(filter1, 0, mixer1, 2);
-AudioConnection          patchCord4(lanternEvents, 0, mixer1, 0);
-AudioConnection          patchCord5(lanternLoopFade, 0, mixer1, 1);
-AudioConnection          patchCord6(mixer1, 0, i2s1, 0);
-AudioConnection          patchCord7(mixer1, 0, i2s1, 1);
-AudioControlSGTL5000     sgtl5000_1;     //xy=500,573
+AudioSynthWaveformDc     hbFilterCtrl;            //xy=331,370
+AudioSynthWavetable      hbSynth1;      //xy=333,310
+AudioPlaySdWav           lanternLoop;    //xy=434,170
+AudioFilterStateVariable hbFilter;        //xy=565,316
+AudioEffectFade          lanternLoopFade; //xy=633,168
+AudioPlaySdWav           lanternEvents;  //xy=634,99
+AudioMixer4              hbMixer;         //xy=824,323
+AudioMixer4              mainMixer;         //xy=1048,229
+AudioOutputI2S           i2sOut;           //xy=1223,228
+AudioConnection          patchCord1(hbFilterCtrl, 0, hbFilter, 1);
+AudioConnection          patchCord2(hbSynth1, 0, hbFilter, 0);
+AudioConnection          patchCord3(lanternLoop, 0, lanternLoopFade, 0);
+AudioConnection          patchCord4(hbFilter, 0, hbMixer, 0);
+AudioConnection          patchCord5(lanternLoopFade, 0, mainMixer, 1);
+AudioConnection          patchCord6(lanternEvents, 0, mainMixer, 0);
+AudioConnection          patchCord7(hbMixer, 0, mainMixer, 2);
+AudioConnection          patchCord8(mainMixer, 0, i2sOut, 0);
+AudioConnection          patchCord9(mainMixer, 0, i2sOut, 1);
+AudioControlSGTL5000     sgtl5000_1;     //xy=680,574
 // GUItool: end automatically generated code
-
 
 // constants
 #define WIRE_ADDR        0x2D
 #define SDCARD_CS_PIN    10
 #define SDCARD_MOSI_PIN  7
 #define SDCARD_SCK_PIN   14
-// properties
-int lanternID = 0;
 
+// properties
 
 void setup() {
   // init Teensy Audio + SD
@@ -44,6 +46,10 @@ void setup() {
 
   // init OSC thru Wire
   initOSC();
+
+  // init props
+  initLantern();
+  initHeartbeat();
 }
 
 
@@ -53,4 +59,7 @@ void loop() {
 
   // lantern loop manager
   updateLanternLoop();
+
+  // heartbeat manager
+  updateHeartbeat();
 }

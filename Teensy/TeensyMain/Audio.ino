@@ -8,7 +8,7 @@ struct AudioLoops {
 
 // initialize audio library
 void initAudio() {
-  AudioMemory(20);
+  AudioMemory(40);
   sgtl5000_1.enable();
   sgtl5000_1.volume(0.5);
 

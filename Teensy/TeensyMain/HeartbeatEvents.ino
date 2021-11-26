@@ -7,7 +7,14 @@ elapsedMillis heartbeatTimer;
 // NICE TO HAVE: occasional (40% chance) intermediate random-offset pulse
 
 void initHeartbeat() {
-  setHeartRate(70);
+  setHeartRate(100);
+
+  // initialize instruments
+  hbSynth1.setInstrument(flute_01);
+  hbSynth1.amplitude(1);
+  
+  hbMixer.gain(0, 1);
+  mainMixer.gain(2, 0.5);
 }
 
 void setHeartRate(int rate) {
@@ -39,6 +46,7 @@ void toConstantLight() {
 void fadeOutAll() {
   // turn off all vital energy instruments
   heartbeatStarted = false;
+  hbSynth1.stop();
 }
 
 void updateHeartbeat() {
@@ -48,7 +56,11 @@ void updateHeartbeat() {
     heartbeatTimer = 0;
 
     // trigger instrument
+    hbSynth1.playFrequency(660);
   }
 
-  // add check for stopping wavetable
+//  // add check for stopping wavetable
+  if (heartbeatTimer > heartRateMillis - 200 && hbSynth1.isPlaying()) {
+    hbSynth1.stop();
+  }
 }

@@ -54,3 +54,22 @@ void playAudioFile(AudioPlaySdWav *file, String path, bool steal = false) {
   file->play(path.c_str());
   delay(10);
 }
+
+
+elapsedMillis testSeqTimer;
+bool ignited = false;
+bool extinguished = false;
+
+void testSequence() {
+  OSCMessage dummy;
+
+  if (testSeqTimer > 2000 && !ignited) {
+    igniteLantern(dummy);
+    ignited = true;
+  }
+
+  if (testSeqTimer > 27000 && !extinguished) {
+    extinguishLantern(dummy);
+    extinguished = true;
+  }
+}

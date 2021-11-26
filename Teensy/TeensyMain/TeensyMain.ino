@@ -62,4 +62,7 @@ void loop() {
 
   // heartbeat manager
   updateHeartbeat();
+
+  // test sequence
+  //testSequence();
 }

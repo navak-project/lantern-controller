@@ -7,7 +7,7 @@ bool isLanternLooping = true;
 elapsedMillis lanternLoopTimer = 10000;
 
 void initLantern() {
-  lanternID = 1;
+  lanternID = 0;
 }
 
 void setLanternID(OSCMessage &msg) {
@@ -19,6 +19,7 @@ void igniteLantern(OSCMessage &msg) {
   playAudioFile(&lanternEvents, "ignites/ignite_" + String(lanternID) + ".wav");
 
   // fade in lantern loop
+  mainMixer.gain(1, 1);
   lanternLoopFade.fadeIn(5000);
 
   // start heartbeat
@@ -27,11 +28,11 @@ void igniteLantern(OSCMessage &msg) {
 
 void extinguishLantern(OSCMessage &msg) {
   // play momentary cue
-  playAudioFile(&lanternEvents, "extinguish.wav");
+  playAudioFile(&lanternEvents, "extinguishes/extinguish_" + String(lanternID) + ".wav");
 
   // fade out lantern loop
   // sound will stop looping after 5000ms
-  lanternLoopFade.fadeOut(5000);
+  lanternLoopFade.fadeOut(2000);
 
   // turn off heartbeat
   fadeOutAll();
@@ -39,6 +40,8 @@ void extinguishLantern(OSCMessage &msg) {
 
 // called in loop()
 void updateLanternLoop() {
+  // TODO: optimize so that it isn't constantly called
+  
   String path = "lantern_loops/lantern_loop_" + String(lanternID) + ".wav";
   playAudioFile(&lanternLoop, path);
 }

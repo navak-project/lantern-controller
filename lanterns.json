@@ -1,0 +1,37 @@
+[{
+  "_id": {
+    "$oid": "61895a94f0500b232ef27303"
+  },
+  "id": "0b85",
+  "hostName": "esp32-66F2C0",
+  "macAddress": "F0:08:D1:66:F2:C0",
+  "ipAddress": "192.168.1.10",
+  "startUniverse": 0,
+  "cardID": "00000000",
+  "status": false,
+  "__v": 0
+},{
+  "_id": {
+    "$oid": "61895a98f0500b232ef27306"
+  },
+  "id": "0a99",
+  "hostName": "esp32-D2AE70",
+  "macAddress": "BC:DD:C2:D2:AE:70",
+  "ipAddress": "192.168.1.14",
+  "startUniverse": 1,
+  "cardID": "00000000",
+  "status": false,
+  "__v": 0
+},{
+  "_id": {
+    "$oid": "61969effbf9d6d7b72c1da80"
+  },
+  "id": "5a8e",
+  "hostName": "esp32-66E53C",
+  "macAddress": "F0:08:D1:66:E5:3C",
+  "ipAddress": "192.168.1.11",
+  "startUniverse": 3,
+  "cardID": "00000000",
+  "status": false,
+  "__v": 0
+}]

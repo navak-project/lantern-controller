@@ -1,0 +1,217 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE eagle SYSTEM "eagle.dtd">
+<eagle>
+    <drawing>
+        <grid unitdist="mm" unit="mm"/>
+        <layers>
+            <layer name="Top" color="4" number="1" visible="yes" active="yes" fill="1"/>
+            <layer name="Bottom" color="4" number="16" visible="yes" active="yes" fill="1"/>
+            <layer name="tPlace" color="7" number="21" visible="yes" active="yes" fill="1"/>
+            <layer name="bPlace" color="7" number="22" visible="yes" active="yes" fill="1"/>
+            <layer name="tNames" color="7" number="25" visible="yes" active="yes" fill="1"/>
+            <layer name="bNames" color="7" number="26" visible="yes" active="yes" fill="1"/>
+            <layer name="tValues" color="7" number="27" visible="yes" active="yes" fill="1"/>
+            <layer name="bValues" color="7" number="28" visible="yes" active="yes" fill="1"/>
+            <layer name="tStop" color="7" number="29" visible="yes" active="yes" fill="1"/>
+            <layer name="bStop" color="7" number="30" visible="yes" active="yes" fill="1"/>
+            <layer name="tCream" color="7" number="31" visible="yes" active="yes" fill="1"/>
+            <layer name="bCream" color="7" number="32" visible="yes" active="yes" fill="1"/>
+            <layer name="tKeepout" color="4" number="39" visible="yes" active="yes" fill="1"/>
+            <layer name="bKeepout" color="4" number="40" visible="yes" active="yes" fill="1"/>
+            <layer name="tRestrict" color="0" number="41" visible="yes" active="yes" fill="1"/>
+            <layer name="bRestrict" color="0" number="42" visible="yes" active="yes" fill="1"/>
+            <layer name="tDocu" color="7" number="51" visible="yes" active="yes" fill="1"/>
+            <layer name="bDocu" color="7" number="52" visible="yes" active="yes" fill="1"/>
+            <layer name="Nets" color="2" number="91" visible="yes" active="yes" fill="1"/>
+            <layer name="Busses" color="1" number="92" visible="yes" active="yes" fill="1"/>
+            <layer name="Pins" color="2" number="93" visible="yes" active="yes" fill="1"/>
+            <layer name="Symbols" color="4" number="94" visible="yes" active="yes" fill="1"/>
+            <layer name="Names" color="7" number="95" visible="yes" active="yes" fill="1"/>
+            <layer name="Values" color="7" number="96" visible="yes" active="yes" fill="1"/>
+            <layer name="Info" color="7" number="97" visible="yes" active="yes" fill="1"/>
+            <layer name="Guide" color="6" number="98" visible="yes" active="yes" fill="1"/>
+        </layers>
+        <library name="Upverter Library">
+            <description>Upverter Parts Library
+
+Created by Upverter.com</description>
+            <packages>
+                <package name="CNC_TECH_3220-10-0100-00_0">
+                    <description>BOX HEADER, 0.050 10 POS</description>
+                    <wire layer="51" y2="2.675" width="0.15" x2="-6.425" y1="-2.675" x1="-6.425"/>
+                    <wire layer="51" y2="2.675" width="0.15" x2="6.425" y1="2.675" x1="-6.425"/>
+                    <wire layer="51" y2="-2.675" width="0.15" x2="6.425" y1="2.675" x1="6.425"/>
+                    <wire layer="51" y2="-2.675" width="0.15" x2="-6.425" y1="-2.675" x1="6.425"/>
+                    <wire layer="21" y2="2.675" width="0.15" x2="6.425" y1="2.675" x1="-6.425"/>
+                    <wire layer="21" y2="2.675" width="0.15" x2="6.425" y1="-2.675" x1="6.425"/>
+                    <wire layer="21" y2="-2.675" width="0.15" x2="6.425" y1="-2.675" x1="-6.425"/>
+                    <wire layer="21" y2="2.675" width="0.15" x2="-6.425" y1="-2.675" x1="-6.425"/>
+                    <wire layer="39" y2="2.775" width="0.1" x2="-6.525" y1="-2.775" x1="-6.525"/>
+                    <wire layer="39" y2="2.775" width="0.1" x2="6.525" y1="2.775" x1="-6.525"/>
+                    <wire layer="39" y2="-2.775" width="0.1" x2="6.525" y1="2.775" x1="6.525"/>
+                    <wire layer="39" y2="-2.775" width="0.1" x2="-6.525" y1="-2.775" x1="6.525"/>
+                    <text layer="25" align="bottom-left" y="2.95" x="-6.425" rot="R0" size="1.0">&gt;NAME</text>
+                    <circle y="-3.21" x="-2.54" layer="21" radius="0.25" width="0.0"/>
+                    <pad diameter="1.17" name="1" shape="square" drill="0.7" y="-0.635" x="-2.54" rot="R0"/>
+                    <pad diameter="1.17" name="2" shape="round" drill="0.7" y="0.635" x="-2.54" rot="R0"/>
+                    <pad diameter="1.17" name="3" shape="round" drill="0.7" y="-0.635" x="-1.27" rot="R0"/>
+                    <pad diameter="1.17" name="4" shape="round" drill="0.7" y="0.635" x="-1.27" rot="R0"/>
+                    <pad diameter="1.17" name="5" shape="round" drill="0.7" y="-0.635" x="0.0" rot="R0"/>
+                    <pad diameter="1.17" name="6" shape="round" drill="0.7" y="0.635" x="0.0" rot="R0"/>
+                    <pad diameter="1.17" name="7" shape="round" drill="0.7" y="-0.635" x="1.27" rot="R0"/>
+                    <pad diameter="1.17" name="8" shape="round" drill="0.7" y="0.635" x="1.27" rot="R0"/>
+                    <pad diameter="1.17" name="9" shape="round" drill="0.7" y="-0.635" x="2.54" rot="R0"/>
+                    <pad diameter="1.17" name="10" shape="round" drill="0.7" y="0.635" x="2.54" rot="R0"/>
+                </package>
+            </packages>
+            <symbols>
+                <symbol name="CNC_TECH_3220-10-0100-00_0_0">
+                    <description>BOX HEADER, 0.050 10 POS</description>
+                    <wire layer="94" y2="-5.08" width="0.254" x2="2.54" y1="-35.56" x1="2.54"/>
+                    <wire layer="94" y2="-5.08" width="0.254" x2="7.62" y1="-5.08" x1="2.54"/>
+                    <wire layer="94" y2="-35.56" width="0.254" x2="7.62" y1="-5.08" x1="7.62"/>
+                    <wire layer="94" y2="-35.56" width="0.254" x2="2.54" y1="-35.56" x1="7.62"/>
+                    <wire layer="94" y2="-9.652" width="1.016" x2="3.81" y1="-10.668" x1="3.81"/>
+                    <wire layer="94" y2="-9.652" width="1.016" x2="5.588" y1="-9.652" x1="3.81"/>
+                    <wire layer="94" y2="-10.668" width="1.016" x2="5.588" y1="-9.652" x1="5.588"/>
+                    <wire layer="94" y2="-10.668" width="1.016" x2="3.81" y1="-10.668" x1="5.588"/>
+                    <wire layer="94" y2="-10.16" width="0.508" x2="7.62" y1="-10.16" x1="5.842"/>
+                    <wire layer="94" y2="-14.732" width="1.016" x2="3.81" y1="-15.748" x1="3.81"/>
+                    <wire layer="94" y2="-14.732" width="1.016" x2="5.588" y1="-14.732" x1="3.81"/>
+                    <wire layer="94" y2="-15.748" width="1.016" x2="5.588" y1="-14.732" x1="5.588"/>
+                    <wire layer="94" y2="-15.748" width="1.016" x2="3.81" y1="-15.748" x1="5.588"/>
+                    <wire layer="94" y2="-15.24" width="0.508" x2="7.62" y1="-15.24" x1="5.842"/>
+                    <wire layer="94" y2="-19.812" width="1.016" x2="3.81" y1="-20.828" x1="3.81"/>
+                    <wire layer="94" y2="-19.812" width="1.016" x2="5.588" y1="-19.812" x1="3.81"/>
+                    <wire layer="94" y2="-20.828" width="1.016" x2="5.588" y1="-19.812" x1="5.588"/>
+                    <wire layer="94" y2="-20.828" width="1.016" x2="3.81" y1="-20.828" x1="5.588"/>
+                    <wire layer="94" y2="-20.32" width="0.508" x2="7.62" y1="-20.32" x1="5.842"/>
+                    <wire layer="94" y2="-24.892" width="1.016" x2="3.81" y1="-25.908" x1="3.81"/>
+                    <wire layer="94" y2="-24.892" width="1.016" x2="5.588" y1="-24.892" x1="3.81"/>
+                    <wire layer="94" y2="-25.908" width="1.016" x2="5.588" y1="-24.892" x1="5.588"/>
+                    <wire layer="94" y2="-25.908" width="1.016" x2="3.81" y1="-25.908" x1="5.588"/>
+                    <wire layer="94" y2="-25.4" width="0.508" x2="7.62" y1="-25.4" x1="5.842"/>
+                    <wire layer="94" y2="-29.972" width="1.016" x2="3.81" y1="-30.988" x1="3.81"/>
+                    <wire layer="94" y2="-29.972" width="1.016" x2="5.588" y1="-29.972" x1="3.81"/>
+                    <wire layer="94" y2="-30.988" width="1.016" x2="5.588" y1="-29.972" x1="5.588"/>
+                    <wire layer="94" y2="-30.988" width="1.016" x2="3.81" y1="-30.988" x1="5.588"/>
+                    <wire layer="94" y2="-30.48" width="0.508" x2="7.62" y1="-30.48" x1="5.842"/>
+                    <wire layer="94" y2="-10.16" width="0.15" x2="7.62" y1="-10.16" x1="7.62"/>
+                    <wire layer="94" y2="-15.24" width="0.15" x2="7.62" y1="-15.24" x1="7.62"/>
+                    <wire layer="94" y2="-20.32" width="0.15" x2="7.62" y1="-20.32" x1="7.62"/>
+                    <wire layer="94" y2="-25.4" width="0.15" x2="7.62" y1="-25.4" x1="7.62"/>
+                    <wire layer="94" y2="-30.48" width="0.15" x2="7.62" y1="-30.48" x1="7.62"/>
+                    <text layer="95" align="top-left" y="-2.54" x="2.54" rot="R0" size="2.54">&gt;NAME</text>
+                    <text layer="95" align="top-left" y="-40.64" x="2.54" rot="R0" size="2.54">3220-10-0100-00</text>
+                    <pin direction="pas" name="1" visible="pad" length="middle" y="-10.16" x="12.7" rot="R180"/>
+                    <pin direction="pas" name="3" visible="pad" length="middle" y="-15.24" x="12.7" rot="R180"/>
+                    <pin direction="pas" name="5" visible="pad" length="middle" y="-20.32" x="12.7" rot="R180"/>
+                    <pin direction="pas" name="7" visible="pad" length="middle" y="-25.4" x="12.7" rot="R180"/>
+                    <pin direction="pas" name="9" visible="pad" length="middle" y="-30.48" x="12.7" rot="R180"/>
+                </symbol>
+                <symbol name="CNC_TECH_3220-10-0100-00_0_1">
+                    <description>BOX HEADER, 0.050 10 POS</description>
+                    <wire layer="94" y2="-5.08" width="0.254" x2="2.54" y1="-35.56" x1="2.54"/>
+                    <wire layer="94" y2="-5.08" width="0.254" x2="10.16" y1="-5.08" x1="2.54"/>
+                    <wire layer="94" y2="-35.56" width="0.254" x2="10.16" y1="-5.08" x1="10.16"/>
+                    <wire layer="94" y2="-35.56" width="0.254" x2="2.54" y1="-35.56" x1="10.16"/>
+                    <wire layer="94" y2="-9.652" width="1.016" x2="5.08" y1="-10.668" x1="5.08"/>
+                    <wire layer="94" y2="-9.652" width="1.016" x2="7.62" y1="-9.652" x1="5.08"/>
+                    <wire layer="94" y2="-10.668" width="1.016" x2="7.62" y1="-9.652" x1="7.62"/>
+                    <wire layer="94" y2="-10.668" width="1.016" x2="5.08" y1="-10.668" x1="7.62"/>
+                    <wire layer="94" y2="-10.16" width="0.508" x2="10.16" y1="-10.16" x1="7.112"/>
+                    <wire layer="94" y2="-14.732" width="1.016" x2="5.08" y1="-15.748" x1="5.08"/>
+                    <wire layer="94" y2="-14.732" width="1.016" x2="7.62" y1="-14.732" x1="5.08"/>
+                    <wire layer="94" y2="-15.748" width="1.016" x2="7.62" y1="-14.732" x1="7.62"/>
+                    <wire layer="94" y2="-15.748" width="1.016" x2="5.08" y1="-15.748" x1="7.62"/>
+                    <wire layer="94" y2="-15.24" width="0.508" x2="10.16" y1="-15.24" x1="7.112"/>
+                    <wire layer="94" y2="-19.812" width="1.016" x2="5.08" y1="-20.828" x1="5.08"/>
+                    <wire layer="94" y2="-19.812" width="1.016" x2="7.62" y1="-19.812" x1="5.08"/>
+                    <wire layer="94" y2="-20.828" width="1.016" x2="7.62" y1="-19.812" x1="7.62"/>
+                    <wire layer="94" y2="-20.828" width="1.016" x2="5.08" y1="-20.828" x1="7.62"/>
+                    <wire layer="94" y2="-20.32" width="0.508" x2="10.16" y1="-20.32" x1="7.112"/>
+                    <wire layer="94" y2="-24.892" width="1.016" x2="5.08" y1="-25.908" x1="5.08"/>
+                    <wire layer="94" y2="-24.892" width="1.016" x2="7.62" y1="-24.892" x1="5.08"/>
+                    <wire layer="94" y2="-25.908" width="1.016" x2="7.62" y1="-24.892" x1="7.62"/>
+                    <wire layer="94" y2="-25.908" width="1.016" x2="5.08" y1="-25.908" x1="7.62"/>
+                    <wire layer="94" y2="-25.4" width="0.508" x2="10.16" y1="-25.4" x1="7.112"/>
+                    <wire layer="94" y2="-29.972" width="1.016" x2="5.08" y1="-30.988" x1="5.08"/>
+                    <wire layer="94" y2="-29.972" width="1.016" x2="7.62" y1="-29.972" x1="5.08"/>
+                    <wire layer="94" y2="-30.988" width="1.016" x2="7.62" y1="-29.972" x1="7.62"/>
+                    <wire layer="94" y2="-30.988" width="1.016" x2="5.08" y1="-30.988" x1="7.62"/>
+                    <wire layer="94" y2="-30.48" width="0.508" x2="10.16" y1="-30.48" x1="7.112"/>
+                    <wire layer="94" y2="-10.16" width="0.15" x2="10.16" y1="-10.16" x1="10.16"/>
+                    <wire layer="94" y2="-15.24" width="0.15" x2="10.16" y1="-15.24" x1="10.16"/>
+                    <wire layer="94" y2="-20.32" width="0.15" x2="10.16" y1="-20.32" x1="10.16"/>
+                    <wire layer="94" y2="-25.4" width="0.15" x2="10.16" y1="-25.4" x1="10.16"/>
+                    <wire layer="94" y2="-30.48" width="0.15" x2="10.16" y1="-30.48" x1="10.16"/>
+                    <text layer="95" align="top-left" y="-2.54" x="2.54" rot="R0" size="2.54">&gt;NAME</text>
+                    <text layer="95" align="top-left" y="-40.64" x="2.54" rot="R0" size="2.54">3220-10-0100-00</text>
+                    <pin direction="pas" name="2" visible="pad" length="middle" y="-10.16" x="15.24" rot="R180"/>
+                    <pin direction="pas" name="4" visible="pad" length="middle" y="-15.24" x="15.24" rot="R180"/>
+                    <pin direction="pas" name="6" visible="pad" length="middle" y="-20.32" x="15.24" rot="R180"/>
+                    <pin direction="pas" name="8" visible="pad" length="middle" y="-25.4" x="15.24" rot="R180"/>
+                    <pin direction="pas" name="10" visible="pad" length="middle" y="-30.48" x="15.24" rot="R180"/>
+                </symbol>
+            </symbols>
+            <devicesets>
+                <deviceset prefix="J" name="CNC_TECH_3220-10-0100-00">
+                    <description>BOX HEADER, 0.050 10 POS</description>
+                    <gates>
+                        <gate name="A" symbol="CNC_TECH_3220-10-0100-00_0_0" x="0"/>
+                        <gate name="B" symbol="CNC_TECH_3220-10-0100-00_0_1" x="25.08"/>
+                    </gates>
+                    <devices>
+                        <device name="CNC_TECH_3220-10-0100-00_0_0" package="CNC_TECH_3220-10-0100-00_0">
+                            <connects>
+                                <connect gate="A" pad="1" pin="1"/>
+                                <connect gate="B" pad="2" pin="2"/>
+                                <connect gate="A" pad="3" pin="3"/>
+                                <connect gate="B" pad="4" pin="4"/>
+                                <connect gate="A" pad="5" pin="5"/>
+                                <connect gate="B" pad="6" pin="6"/>
+                                <connect gate="A" pad="7" pin="7"/>
+                                <connect gate="B" pad="8" pin="8"/>
+                                <connect gate="A" pad="9" pin="9"/>
+                                <connect gate="B" pad="10" pin="10"/>
+                            </connects>
+                            <technologies>
+                                <technology>
+                                    <attribute name="prefix" value="J"/>
+                                    <attribute name="conn_gender" value="Male"/>
+                                    <attribute name="mfg_package_ident_date" value="0"/>
+                                    <attribute name="temperature_range_high" value="+105°C"/>
+                                    <attribute name="MPN" value="3220-10-0100-00"/>
+                                    <attribute name="digikey_description" value="CONN HEADER VERT 10POS 1.27MM"/>
+                                    <attribute name="device_class_L3" value="unset"/>
+                                    <attribute name="device_class_L1" value="Connectors"/>
+                                    <attribute name="digikey_part_number" value="1175-1627-ND"/>
+                                    <attribute name="current_rating" value="1A"/>
+                                    <attribute name="verification_version" value="0.0.0.1"/>
+                                    <attribute name="datasheet" value="http://www.cnctech.us/pdfs/3220-XX-0100-00.pdf"/>
+                                    <attribute name="mfg_package_ident_rev" value="0"/>
+                                    <attribute name="lead_free" value="Yes"/>
+                                    <attribute name="height" value="5.6mm"/>
+                                    <attribute name="automotive" value="No"/>
+                                    <attribute name="mfg_package_ident" value="3220-10-0100-00"/>
+                                    <attribute name="footprint_variant_name_0" value="Recommended_Land_Pattern"/>
+                                    <attribute name="device_class_L2" value="Headers and Wire Housings"/>
+                                    <attribute name="number_of_contacts" value="10"/>
+                                    <attribute name="conn_orientation" value="Straight"/>
+                                    <attribute name="temperature_range_low" value="-40°C"/>
+                                    <attribute name="rohs" value="Yes"/>
+                                    <attribute name="centroid_not_specified" value="No"/>
+                                    <attribute name="pitch" value="1.27mm"/>
+                                    <attribute name="number_of_rows" value="2"/>
+                                    <attribute name="MF" value="CNC Tech"/>
+                                    <attribute name="contact_material" value="Gold"/>
+                                    <attribute name="package" value="HDR10"/>
+                                </technology>
+                            </technologies>
+                        </device>
+                    </devices>
+                </deviceset>
+            </devicesets>
+        </library>
+    </drawing>
+</eagle>

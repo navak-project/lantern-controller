@@ -28,7 +28,7 @@ void MqttCallback(char* topic, byte* message, unsigned int length) {
   //  doConcat(lanternHeader, control, control);
 
   String control = String() + mqtt_clientTopic + "/control";
-  String audio = String() + mqtt_clientTopic + "/audio";
+  const char* audio = mqtt_clientTopic + "/audio";
 
   for (int i = 0; i < length; i++) {
     Serial.print((char)message[i]);
@@ -39,8 +39,23 @@ void MqttCallback(char* topic, byte* message, unsigned int length) {
   if (String(topic) == String(control)) {
     Serial.println("GOT CONTROL STRING");
     restart_esp32();
-  } else if (String(topic) == String(audio)) {
-    OSCMessage msg(messageTemp.c_str());
+  } else if (strcmp(topic, audio) == 0) {
+    int ctr = 0;
+    OSCMessage msg;
+
+    while (String item = getValue(String(messageTemp), ' ', ctr) && item != "") {
+      // address
+      if (ctr == 0) {
+        msg.setAddress(item.c_str());
+      // arguments
+      } else {
+        msg.add(item.c_str());
+      }
+
+      // increment counter
+      ctr++;
+    }
+
     //  msg.add(messageTemp);
     SendToTeensy(msg);
   }
@@ -76,4 +91,21 @@ void ConnectToMQTT() {
 void InitMQTT() {
   client.setServer(mqtt_broker, mqtt_port);
   client.setCallback(MqttCallback);
+}
+
+String getValue(String data, char separator, int index)
+{
+  int found = 0;
+  int strIndex[] = {0, -1};
+  int maxIndex = data.length()-1;
+
+  for(int i=0; i<=maxIndex && found<=index; i++){
+    if(data.charAt(i)==separator || i==maxIndex){
+        found++;
+        strIndex[0] = strIndex[1]+1;
+        strIndex[1] = (i == maxIndex) ? i+1 : i;
+    }
+  }
+
+  return found>index ? data.substring(strIndex[0], strIndex[1]) : "";
 }

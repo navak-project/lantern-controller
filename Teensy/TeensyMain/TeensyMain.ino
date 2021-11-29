@@ -18,58 +18,58 @@
 // GUItool: begin automatically generated code
 AudioSynthWavetable      hbSynth2; //xy=124.5,266
 AudioSynthWavetable      hbSynth3; //xy=125.5,307
-AudioSynthWavetable      hbSynth4;  //xy=125.5,346
+AudioSynthWavetable      hbSynth4;  //xy=125.5,347
 AudioSynthWavetable      hbSynth1;      //xy=126.5,224
-AudioSynthWaveform       sineMod1;      //xy=146,434
-AudioSynthWaveform       sineMod2; //xy=146,482
-AudioSynthWaveform       sineMod3; //xy=146,528
+AudioSynthWaveformSine   sineMod;          //xy=261,487
 AudioMixer4              hbWavetableMixer;         //xy=338.5,282
-AudioSynthNoiseWhite     noise1;         //xy=379,593
-AudioSynthWaveformModulated sineRing3; //xy=384,534
-AudioSynthWaveformModulated sineRing1;   //xy=386,440
-AudioSynthWaveformModulated sineRing2;  //xy=386,488
-AudioEffectMultiply      ringMod4; //xy=597,590
-AudioEffectMultiply      ringMod1;      //xy=600,441
-AudioEffectMultiply      ringMod3; //xy=600,540
-AudioEffectMultiply      ringMod2; //xy=601,490
-AudioMixer4              hbStaticMixer; //xy=794,514
-AudioEffectFade          hbPureFader;          //xy=978,294
-AudioEffectFade          hbStaticFader; //xy=978,337
-AudioFilterBiquad        staticFilter;        //xy=986,513
+AudioSynthWaveform       noiseFiltMod;      //xy=376,624
+AudioSynthNoiseWhite     noiseMod;         //xy=379,578
+AudioEffectMultiply      ringMod1;      //xy=445,480
+AudioFilterStateVariable noiseBP;        //xy=532,584
+AudioFilterBiquad        ringModLP;        //xy=631,477
+AudioEffectMultiply      ringMod2;      //xy=685,530
+AudioSynthWaveformSine   sineAM;          //xy=689,587
+AudioMixer4              staticMixer;         //xy=805,411
+AudioEffectMultiply      noiseAM;      //xy=842,562
+AudioEffectFade          pureFader;          //xy=978,294
+AudioEffectFade          staticFader; //xy=978,337
+AudioFilterStateVariable preDlyFilter;        //xy=978,568
 AudioPlaySdWav           lanternLoop;    //xy=1030,210
+AudioMixer4              preDlyMixer;         //xy=1148,631
 AudioMixer4              hbMixer;         //xy=1173,324
 AudioEffectFade          lanternLoopFade; //xy=1226,203
 AudioPlaySdWav           lanternEvents;  //xy=1227,134
+AudioEffectDelay         noiseDly;         //xy=1299,649
 AudioMixer4              mainMixer;         //xy=1479,214
 AudioOutputI2S           i2sOut;           //xy=1654,213
 AudioConnection          patchCord1(hbSynth2, 0, hbWavetableMixer, 1);
 AudioConnection          patchCord2(hbSynth3, 0, hbWavetableMixer, 2);
 AudioConnection          patchCord3(hbSynth4, 0, hbWavetableMixer, 3);
 AudioConnection          patchCord4(hbSynth1, 0, hbWavetableMixer, 0);
-AudioConnection          patchCord5(sineMod1, 0, sineRing1, 0);
-AudioConnection          patchCord6(sineMod2, 0, sineRing2, 0);
-AudioConnection          patchCord7(sineMod3, 0, sineRing3, 0);
-AudioConnection          patchCord8(hbWavetableMixer, 0, ringMod1, 0);
-AudioConnection          patchCord9(hbWavetableMixer, 0, ringMod2, 0);
-AudioConnection          patchCord10(hbWavetableMixer, 0, ringMod3, 1);
-AudioConnection          patchCord11(hbWavetableMixer, 0, ringMod4, 0);
-AudioConnection          patchCord12(hbWavetableMixer, fade1);
-AudioConnection          patchCord13(noise1, 0, ringMod4, 1);
-AudioConnection          patchCord14(sineRing3, 0, ringMod3, 0);
-AudioConnection          patchCord15(sineRing1, 0, ringMod1, 1);
-AudioConnection          patchCord16(sineRing2, 0, ringMod2, 1);
-AudioConnection          patchCord17(ringMod4, 0, hbStaticMixer, 3);
-AudioConnection          patchCord18(ringMod1, 0, hbStaticMixer, 0);
-AudioConnection          patchCord19(ringMod3, 0, hbStaticMixer, 2);
-AudioConnection          patchCord20(ringMod2, 0, hbStaticMixer, 1);
-AudioConnection          patchCord21(hbStaticMixer, staticFilter);
-AudioConnection          patchCord22(fade1, 0, hbMixer, 0);
-AudioConnection          patchCord23(fade2, 0, hbMixer, 1);
-AudioConnection          patchCord24(staticFilter, fade2);
-AudioConnection          patchCord25(lanternLoop, 0, lanternLoopFade, 0);
-AudioConnection          patchCord26(hbMixer, 0, mainMixer, 2);
-AudioConnection          patchCord27(lanternLoopFade, 0, mainMixer, 1);
-AudioConnection          patchCord28(lanternEvents, 0, mainMixer, 0);
+AudioConnection          patchCord5(sineMod, 0, ringMod1, 1);
+AudioConnection          patchCord6(hbWavetableMixer, pureFader);
+AudioConnection          patchCord7(hbWavetableMixer, 0, ringMod1, 0);
+AudioConnection          patchCord8(hbWavetableMixer, 0, ringMod2, 0);
+AudioConnection          patchCord9(noiseFiltMod, 0, noiseBP, 1);
+AudioConnection          patchCord10(noiseMod, 0, noiseBP, 0);
+AudioConnection          patchCord11(ringMod1, ringModLP);
+AudioConnection          patchCord12(noiseBP, 2, ringMod2, 1);
+AudioConnection          patchCord13(ringModLP, 0, staticMixer, 2);
+AudioConnection          patchCord14(ringMod2, 0, noiseAM, 0);
+AudioConnection          patchCord15(sineAM, 0, noiseAM, 1);
+AudioConnection          patchCord16(staticMixer, staticFader);
+AudioConnection          patchCord17(noiseAM, 0, preDlyFilter, 0);
+AudioConnection          patchCord18(pureFader, 0, hbMixer, 0);
+AudioConnection          patchCord19(staticFader, 0, hbMixer, 1);
+AudioConnection          patchCord20(preDlyFilter, 0, preDlyMixer, 0);
+AudioConnection          patchCord21(preDlyFilter, 1, staticMixer, 0);
+AudioConnection          patchCord22(lanternLoop, 0, lanternLoopFade, 0);
+AudioConnection          patchCord23(preDlyMixer, noiseDly);
+AudioConnection          patchCord24(hbMixer, 0, mainMixer, 2);
+AudioConnection          patchCord25(lanternLoopFade, 0, mainMixer, 1);
+AudioConnection          patchCord26(lanternEvents, 0, mainMixer, 0);
+AudioConnection          patchCord27(noiseDly, 0, preDlyMixer, 1);
+AudioConnection          patchCord28(noiseDly, 0, staticMixer, 1);
 AudioConnection          patchCord29(mainMixer, 0, i2sOut, 0);
 AudioConnection          patchCord30(mainMixer, 0, i2sOut, 1);
 AudioControlSGTL5000     sgtl5000_1;     //xy=601,53

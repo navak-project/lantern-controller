@@ -1,3 +1,5 @@
+#include <Audio.h>
+
 int heartRateBPM;
 unsigned long heartRateMillis;
 
@@ -29,57 +31,42 @@ void initHeartbeat() {
   hbWavetableMixer.gain(1, 1);
   hbWavetableMixer.gain(2, 1);
   hbWavetableMixer.gain(3, 1);
+  
 
+  // STATIC CONFIGURATION V2!!
 
-  // configure LFO parameters
-  sineMod1.frequency(0.08);
-  sineMod1.amplitude(0.5);
-  sineMod1.offset(0.5);
+  // first ring mod (sine wave, low frequency for good rumble)
+  sineMod.frequency(pow(2.0, ((float)(72 - 69)/12.0)) * 440.0 * 0.0976);
+  ringModLP.setLowpass(0, 1000, 0.3);
 
-  sineMod2.frequency(0.13);
-  sineMod2.amplitude(0.5);
-  sineMod2.offset(0.5);
+  // noisy ring mod w/ slight AM and filter modulation
+  noiseMod.amplitude(0.25);
+  noiseFiltMod.begin(WAVEFORM_SINE);
+  noiseFiltMod.frequency(0.07);
+  noiseFiltMod.amplitude(0.5);
+  noiseFiltMod.offset(0.5);
+  noiseBP.frequency(1500);
+  noiseBP.octaveControl(1);
+  sineAM.frequency(4);
 
-  sineMod3.frequency(0.11);
-  sineMod3.amplitude(0.5);
-  sineMod3.offset(0.5);
-
-
-  // configure RM network
-  sineRing1.frequency(5600);
-  sineRing1.amplitude(1);
-  sineRing1.frequencyModulation(0.07);    // [5600 - 6000]
-
-  sineRing2.frequency(2000);
-  sineRing2.amplitude(1);
-  sineRing2.frequencyModulation(0.1);     // [2000 - 2200]
-
-  sineRing3.frequency(140);
-  sineRing3.amplitude(1);
-  sineRing3.frequencyModulation(0.15);    // [140 - 161]
-
-
-  // configure static mixer gains
-  hbStaticMixer.gain(0, 0.125);
-  hbStaticMixer.gain(1, 0.25);
-  hbStaticMixer.gain(2, 0.5);
-  hbStaticMixer.gain(3, 0.125);
-
-
-  // configure static filter
-  staticFilter.setLowpass(0, 4000, 0.3);
+  // simple echo
+  preDlyFilter.frequency(4000);
+  noiseDly.delay(0, 300);
+  preDlyMixer.gain(1, 0.5);
+  staticMixer.gain(1, 0.5);
 
 
   // mix pure and static signals
   // TODO: react to tree area enter/leave events
   hbMixer.gain(0, 1);
   hbMixer.gain(1, 1);
-  mainMixer.gain(2, 1);
-
 
   // initialize faders
-  hbPureFader.fadeOut(10);
-  hbStaticFader.fadeOut(10);
+  pureFader.fadeOut(10);
+  staticFader.fadeOut(10);
+
+  // to main mixer
+  mainMixer.gain(2, 1);
 }
 
 void setHeartRate(int rate) {
@@ -138,7 +125,7 @@ void updateHeartbeat() {
 
 // utilities
 // TODO: optimize
-void playHeartNote(int note, int velo) {
+void pulseHeartNote(int note, int velo) {
   hbSynth1.playNote(note, velo);
   hbSynth2.playNote(note + 7, velo);
   hbSynth3.playNote(note + 14, velo);
@@ -147,11 +134,17 @@ void playHeartNote(int note, int velo) {
   isHeartNotePlaying = true;
 }
 
-void stopHeartNote() {
+void actionsOnPulse() {
+  // sine mod frequency
+}
+
+void releaseHeartNote() {
   hbSynth1.stop();
   hbSynth2.stop();
   hbSynth3.stop();
   hbSynth4.stop();
+
+  // play pulse drawback?
 
   isHeartNotePlaying = false;
 }

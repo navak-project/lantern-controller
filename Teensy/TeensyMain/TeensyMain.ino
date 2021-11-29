@@ -107,5 +107,5 @@ void loop() {
   updateHeartbeat();
 
   // test sequence
-  testSequence();
+  //testSequence();
 }

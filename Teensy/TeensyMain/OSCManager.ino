@@ -24,6 +24,8 @@ void receiveOSC(int byteLength) {
     bundleIN.dispatch("/lantern/extinguish", extinguishLantern);
 
     // organique events
+    bundleIN.dispatch("/organique/enter_tree", enterTree);
+    bundleIN.dispatch("/organique/leave_tree", leaveTree);
 
     // silva events
   }

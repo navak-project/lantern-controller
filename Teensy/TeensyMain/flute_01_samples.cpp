@@ -217,3 +217,4 @@ static const AudioSynthWavetable::sample_data flute_01_samples[3] = {
 static const uint8_t flute_01_ranges[] = {127, 127, 127, };
 
 const AudioSynthWavetable::instrument_data flute_01 = {3, flute_01_ranges, flute_01_samples };
+

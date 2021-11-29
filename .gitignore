@@ -50,3 +50,6 @@ Thumbs.db
 
 # Enivronement
 .env
+
+# SF2 files
+ARIAConverted/

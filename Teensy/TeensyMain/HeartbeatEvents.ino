@@ -2,6 +2,7 @@
 
 int heartRateBPM;
 unsigned long heartRateMillis;
+int heartNote = 74;
 
 bool heartbeatStarted = false;
 bool isHeartNotePlaying = false;
@@ -36,8 +37,8 @@ void initHeartbeat() {
   // STATIC CONFIGURATION V2!!
 
   // first ring mod (sine wave, low frequency for good rumble)
-  sineMod.frequency(pow(2.0, ((float)(72 - 69)/12.0)) * 440.0 * 0.0976);
-  ringModLP.setLowpass(0, 1000, 0.3);
+  sineMod.frequency(pow(2.0, ((float)(heartNote - 69)/12.0)) * 440.0 * 0.0976);
+  ringModLP.setLowpass(0, 1500, 0.3);
 
   // noisy ring mod w/ slight AM and filter modulation
   noiseMod.amplitude(0.25);
@@ -46,20 +47,23 @@ void initHeartbeat() {
   noiseFiltMod.amplitude(0.5);
   noiseFiltMod.offset(0.5);
   noiseBP.frequency(1500);
+  noiseBP.resonance(0.3);
   noiseBP.octaveControl(1);
+  sineAM.amplitude(1);
   sineAM.frequency(4);
 
   // simple echo
   preDlyFilter.frequency(4000);
+  preDlyFilter.resonance(0.3);
   noiseDly.delay(0, 300);
-  preDlyMixer.gain(1, 0.5);
-  staticMixer.gain(1, 0.5);
+  preDlyMixer.gain(1, 0.5);   // feedback level
+  staticMixer.gain(1, 0.25);
 
 
   // mix pure and static signals
   // TODO: react to tree area enter/leave events
   hbMixer.gain(0, 1);
-  hbMixer.gain(1, 1);
+  hbMixer.gain(1, 2);
 
   // initialize faders
   pureFader.fadeOut(10);
@@ -85,11 +89,13 @@ void startHeartbeat() {
   heartbeatTimer = 0;
   heartbeatStarted = true;
 
-  hbStaticFader.fadeIn(2000);
+  staticFader.fadeIn(2000);
 }
 
 void attenuateHeartbeat() {
   // lower filter for heartbeat
+  staticFader.fadeOut(1000);
+  pureFader.fadeIn(1000);
 }
 
 void toConstantLight() {
@@ -100,7 +106,7 @@ void toConstantLight() {
 void fadeOutAll() {
   // turn off all vital energy instruments
   heartbeatStarted = false;
-  stopHeartNote();
+  releaseHeartNote();
 }
 
 void updateHeartbeat() {
@@ -112,13 +118,14 @@ void updateHeartbeat() {
     // trigger instrument
     // NOTE TO SELF FOR THE FUTURE:
     // THIS IS MIDI VELOCITY!!!! NOT SIGNAL AMPLITUDE!!! LOLLL
-    int velo = random(30, 100);
-    playHeartNote(72, velo);
+    int velo = random(50, 100);
+    actionsOnPulse();
+    pulseHeartNote(heartNote, velo);
   }
 
   // play 250ms note (ie. release env after that time)
   if (heartbeatTimer > 250 && isHeartNotePlaying) {
-    stopHeartNote();
+    releaseHeartNote();
   }
 }
 
@@ -126,10 +133,13 @@ void updateHeartbeat() {
 // utilities
 // TODO: optimize
 void pulseHeartNote(int note, int velo) {
+  // TODO: velocity + note modulation
+  // so that each note does not play at the same velocity on its own
+
   hbSynth1.playNote(note, velo);
   hbSynth2.playNote(note + 7, velo);
   hbSynth3.playNote(note + 14, velo);
-  hbSynth4.playNote(note, velo);
+  hbSynth4.playNote(note, (int)(velo * 0.5));
 
   isHeartNotePlaying = true;
 }

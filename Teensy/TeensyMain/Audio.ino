@@ -8,9 +8,10 @@ struct AudioLoops {
 
 // initialize audio library
 void initAudio() {
-  AudioMemory(40);
+  AudioMemory(140);
   sgtl5000_1.enable();
   sgtl5000_1.volume(0.5);
+  sgtl5000_1.lineOutLevel(29);
 
   // immediately fade looper to 0
   // so that it can play without us hearing it until event is triggered
@@ -59,6 +60,7 @@ void playAudioFile(AudioPlaySdWav *file, String path, bool steal = false) {
 elapsedMillis testSeqTimer;
 bool ignited = false;
 bool extinguished = false;
+bool switched = false;
 
 void testSequence() {
   OSCMessage dummy;
@@ -66,6 +68,11 @@ void testSequence() {
   if (testSeqTimer > 2000 && !ignited) {
     igniteLantern(dummy);
     ignited = true;
+  }
+
+  if (testSeqTimer > 15000 && !switched) {
+    attenuateHeartbeat();
+    switched = true;
   }
 
   if (testSeqTimer > 27000 && !extinguished) {

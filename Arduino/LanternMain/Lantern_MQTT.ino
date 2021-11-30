@@ -28,7 +28,9 @@ void MqttCallback(char* topic, byte* message, unsigned int length) {
   //  doConcat(lanternHeader, control, control);
 
   String control = String() + mqtt_clientTopic + "/control";
-  String audio = String() + mqtt_clientTopic + "/audio";
+
+  String ignite = String() + mqtt_clientTopic + "/audio/ignite";
+  String extinguish = String() + mqtt_clientTopic + "/audio/extinguish";
 
   for (int i = 0; i < length; i++) {
     Serial.print((char)message[i]);
@@ -36,37 +38,19 @@ void MqttCallback(char* topic, byte* message, unsigned int length) {
   }
   Serial.println();
 
-  if (String(topic) == String(control)) {
-    Serial.println("GOT CONTROL STRING");
-    restart_esp32();
-  } else if (String(topic) == String(audio)) {
-    int ctr = 0;
-    OSCMessage msg("/lantern/ignite");
-    msg.add(100);
+  switch (String(topic)) {
+    case String(control):
+      Serial.println("GOT CONTROL STRING");
+      restart_esp32();
+      break;
+    
+    case String(ignite):
+      OSCMessage msg("/lantern/ignite");
+      msg.add(messageTemp.toInt());
 
-//    while (getValue(String(messageTemp), ' ', ctr) != String("")) {
-//      String item = getValue(String(messageTemp), ' ', ctr);
-//      
-//      // address
-//      if (ctr == 0) {
-//        msg.setAddress(item.c_str());
-//        Serial.print("address: ");
-//        Serial.println(item.c_str());
-//      // arguments
-//      } else {
-//        msg.add(item.c_str());
-//        Serial.print("argument: ");
-//        Serial.println(item);
-//      }
-//
-//      // increment counter
-//      Serial.print("counter: ");
-//      Serial.println(ctr);
-//      ctr++;
-//    }
+      SendToTeensy(msg);
 
-    //  msg.add(messageTemp);
-    SendToTeensy(msg);
+      break;
   }
 }
 

@@ -38,19 +38,19 @@ void MqttCallback(char* topic, byte* message, unsigned int length) {
   }
   Serial.println();
 
-  switch (String(topic)) {
-    case String(control):
-      Serial.println("GOT CONTROL STRING");
-      restart_esp32();
-      break;
-    
-    case String(ignite):
-      OSCMessage msg("/lantern/ignite");
-      msg.add(messageTemp.toInt());
+  if (String(topic) == String(control)) {
+    Serial.println("GOT CONTROL STRING");
+    restart_esp32();
+  }
+  else if (String(topic) == String(ignite)) {
+    OSCMessage msg("/lantern/ignite");
+    msg.add((int)messageTemp.toInt());
 
-      SendToTeensy(msg);
-
-      break;
+    SendToTeensy(msg);
+  }
+  else if (String(topic) == String(extinguish)) {
+    OSCMessage msg("/lantern/extinguish");
+    SendToTeensy(msg);
   }
 }
 

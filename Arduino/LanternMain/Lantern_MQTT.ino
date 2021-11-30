@@ -39,9 +39,29 @@ void MqttCallback(char* topic, byte* message, unsigned int length) {
   if (String(topic) == String(control)) {
     Serial.println("GOT CONTROL STRING");
     restart_esp32();
-  } else if (String(topic) == String(audio)) {
-    OSCMessage msg(messageTemp.c_str());
-    //  msg.add(messageTemp);
+  }
+  else if (String(topic) == String(ignite)) {
+    OSCMessage msg(topic);
+
+    int ctr = 0;
+    while (getValue(messageTemp, ' ', ctr) != String("")) {
+      String item = getValue(messageTemp, ' ', ctr);
+
+      if (item.toInt() != 0) {
+        msg.add((int)item.toInt());
+      } else if (item.toFloat() != 0) {
+        msg.add((float)item.toFloat());
+      } else {
+        msg.add(item.c_str());
+      }
+
+      ctr++;
+    }
+
+    SendToTeensy(msg);
+  }
+  else if (String(topic) == String(extinguish)) {
+    OSCMessage msg(topic);
     SendToTeensy(msg);
   }
 }

@@ -28,7 +28,7 @@ void MqttCallback(char* topic, byte* message, unsigned int length) {
   //  doConcat(lanternHeader, control, control);
 
   String control = String() + mqtt_clientTopic + "/control";
-  const char* audio = mqtt_clientTopic + "/audio";
+  String audio = String() + mqtt_clientTopic + "/audio";
 
   for (int i = 0; i < length; i++) {
     Serial.print((char)message[i]);
@@ -39,11 +39,13 @@ void MqttCallback(char* topic, byte* message, unsigned int length) {
   if (String(topic) == String(control)) {
     Serial.println("GOT CONTROL STRING");
     restart_esp32();
-  } else if (strcmp(topic, audio) == 0) {
+  } else if (String(topic) == String(audio)) {
     int ctr = 0;
     OSCMessage msg;
 
-    while (String item = getValue(String(messageTemp), ' ', ctr) && item != "") {
+    while (getValue(String(messageTemp), ' ', ctr) != String("")) {
+      String item = getValue(String(messageTemp), ' ', ctr);
+      
       // address
       if (ctr == 0) {
         msg.setAddress(item.c_str());

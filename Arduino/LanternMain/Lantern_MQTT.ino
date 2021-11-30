@@ -28,7 +28,9 @@ void MqttCallback(char* topic, byte* message, unsigned int length) {
   //  doConcat(lanternHeader, control, control);
 
   String control = String() + mqtt_clientTopic + "/control";
-  String audio = String() + mqtt_clientTopic + "/audio";
+
+  String ignite = String() + mqtt_clientTopic + "/audio/ignite";
+  String extinguish = String() + mqtt_clientTopic + "/audio/extinguish";
 
   for (int i = 0; i < length; i++) {
     Serial.print((char)message[i]);
@@ -96,4 +98,21 @@ void ConnectToMQTT() {
 void InitMQTT() {
   client.setServer(mqtt_broker, mqtt_port);
   client.setCallback(MqttCallback);
+}
+
+String getValue(String data, char separator, int index)
+{
+  int found = 0;
+  int strIndex[] = {0, -1};
+  int maxIndex = data.length()-1;
+
+  for(int i=0; i<=maxIndex && found<=index; i++){
+    if(data.charAt(i)==separator || i==maxIndex){
+        found++;
+        strIndex[0] = strIndex[1]+1;
+        strIndex[1] = (i == maxIndex) ? i+1 : i;
+    }
+  }
+
+  return found>index ? data.substring(strIndex[0], strIndex[1]) : "";
 }

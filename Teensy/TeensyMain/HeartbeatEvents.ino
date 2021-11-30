@@ -1,5 +1,3 @@
-#include <Audio.h>
-
 int heartRateBPM;
 unsigned long heartRateMillis;
 int heartNote = 74;

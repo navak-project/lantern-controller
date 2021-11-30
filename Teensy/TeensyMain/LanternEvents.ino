@@ -15,6 +15,8 @@ void setLanternID(OSCMessage &msg) {
 }
 
 void igniteLantern(OSCMessage &msg) {
+  setHeartRate(msg.getInt(0));
+
   // play momentary cue
   playAudioFile(&lanternEvents, "ignites/ignite_" + String(lanternID) + ".wav");
 
@@ -36,6 +38,10 @@ void extinguishLantern(OSCMessage &msg) {
 
   // turn off heartbeat
   fadeOutAll();
+}
+
+void attenuateLanternLoop() {
+
 }
 
 // called in loop()

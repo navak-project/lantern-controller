@@ -12,8 +12,8 @@ void AudioTest() {
 
 // through I2C communication
 void SendToTeensy(OSCMessage &msg) {
-  Serial.println("Sent Message to Teensy");
   Wire.beginTransmission(0x2D);
   msg.send(Wire);
   Wire.endTransmission();
+  Serial.println("Sent Message to Teensy");
 }

@@ -41,22 +41,29 @@ void MqttCallback(char* topic, byte* message, unsigned int length) {
     restart_esp32();
   } else if (String(topic) == String(audio)) {
     int ctr = 0;
-    OSCMessage msg;
+    OSCMessage msg("/lantern/ignite");
+    msg.add(100);
 
-    while (getValue(String(messageTemp), ' ', ctr) != String("")) {
-      String item = getValue(String(messageTemp), ' ', ctr);
-      
-      // address
-      if (ctr == 0) {
-        msg.setAddress(item.c_str());
-      // arguments
-      } else {
-        msg.add(item.c_str());
-      }
-
-      // increment counter
-      ctr++;
-    }
+//    while (getValue(String(messageTemp), ' ', ctr) != String("")) {
+//      String item = getValue(String(messageTemp), ' ', ctr);
+//      
+//      // address
+//      if (ctr == 0) {
+//        msg.setAddress(item.c_str());
+//        Serial.print("address: ");
+//        Serial.println(item.c_str());
+//      // arguments
+//      } else {
+//        msg.add(item.c_str());
+//        Serial.print("argument: ");
+//        Serial.println(item);
+//      }
+//
+//      // increment counter
+//      Serial.print("counter: ");
+//      Serial.println(ctr);
+//      ctr++;
+//    }
 
     //  msg.add(messageTemp);
     SendToTeensy(msg);

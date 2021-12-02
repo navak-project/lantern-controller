@@ -6,6 +6,10 @@ void initOSC() {
 }
 
 void receiveOSC(int byteLength) {
+  AudioNoInterrupts();
+  
+  Serial.println("receiving whatever the fuck");
+  
   // define OSC bundle
   OSCBundle bundleIN;
 
@@ -14,12 +18,12 @@ void receiveOSC(int byteLength) {
     bundleIN.fill(Wire1.read());
   }
 
-  if (!bundleIN.hasError()) {
+//  if (!bundleIN.hasError()) {
     // list of callbacks
     bundleIN.dispatch("/audio/test", audioTest);
 
     // lantern events
-    bundleIN.dispatch("/lantern/setID", setLanternID);
+    bundleIN.dispatch("/lantern/*/audio/setID", setLanternID);
     bundleIN.dispatch("/lantern/ignite", igniteLantern);
     bundleIN.dispatch("/lantern/extinguish", extinguishLantern);
 
@@ -28,5 +32,11 @@ void receiveOSC(int byteLength) {
     bundleIN.dispatch("/organique/leave_tree", leaveTree);
 
     // silva events
-  }
+    
+//  } else {
+//    Serial.println("error on receive OSC");
+//    Serial.println(bundleIN.getError());
+//  }
+
+  AudioInterrupts();
 }

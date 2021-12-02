@@ -90,23 +90,34 @@ void startHeartbeat() {
   staticFader.fadeIn(2000);
 }
 
-void attenuateHeartbeat() {
-  // lower filter for heartbeat
-  staticFader.fadeOut(1000);
-  pureFader.fadeIn(1000);
-}
 
+// enter/leave tree events
+void heartBeatToPure() {
+  staticFader.fadeOut(500);
+  pureFader.fadeIn(500);
+}
+void heartBeatToStatic() {
+  staticFader.fadeIn(500);
+  pureFader.fadeOut(500);
+} 
+
+
+// towards Silva ....
 void toConstantLight() {
   // fade out heartbeat,
   // fade in constant light
 }
 
+
+// ending
 void fadeOutAll() {
   // turn off all vital energy instruments
   heartbeatStarted = false;
   releaseHeartNote();
 }
 
+
+// called in loop()
 void updateHeartbeat() {
   if (!heartbeatStarted) return;
   

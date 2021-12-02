@@ -1,9 +1,10 @@
-elapsedMillis blockReportTimer;
+#ifndef AUDIO_MANAGER
+#define AUDIO_MANAGER
 
-struct AudioLoops {
-  AudioPlaySdWav *file;
-  const char* path;
-};
+#include "objects.h"
+
+
+elapsedMillis blockReportTimer;
 
 
 // initialize audio library
@@ -11,13 +12,7 @@ void initAudio() {
   AudioMemory(140);
   sgtl5000_1.enable();
   sgtl5000_1.volume(0.5);
-  sgtl5000_1.lineOutLevel(29);
-
-  // immediately fade looper to 0
-  // so that it can play without us hearing it until event is triggered
-  // apparently we can't fade out a signal that isn't playing... thanks Paul
-  mainMixer.gain(1, 0);
-  lanternLoopFade.fadeOut(10);
+  sgtl5000_1.lineOutLevel(31);
 }
 
 
@@ -51,32 +46,16 @@ void playAudioFile(AudioPlaySdWav *file, String path, bool steal = false) {
   if (file->isPlaying() == true && steal == false) return;
 
   // stop and replay file at path
+  AudioNoInterrupts();
   file->stop();
   file->play(path.c_str());
   delay(10);
+  AudioInterrupts();
 }
 
-
-elapsedMillis testSeqTimer;
-bool ignited = false;
-bool extinguished = false;
-bool switched = false;
-
-void testSequence() {
-  OSCMessage dummy;
-
-  if (testSeqTimer > 2000 && !ignited) {
-    igniteLantern(dummy);
-    ignited = true;
-  }
-
-  if (testSeqTimer > 15000 && !switched) {
-    attenuateHeartbeat();
-    switched = true;
-  }
-
-  if (testSeqTimer > 27000 && !extinguished) {
-    extinguishLantern(dummy);
-    extinguished = true;
-  }
+void playAudioFile(AudioPlaySdRaw *file, String path, bool steal = false) {
+  // stop and replay file at path
+  file->play(path.c_str(), true);
 }
+
+#endif

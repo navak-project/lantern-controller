@@ -1,3 +1,3 @@
 module.exports = {
-    url: "mongodb://localhost:27017/lantern"
-  };
+  url: "mongodb+srv://admin:root@silva.pikms.mongodb.net/lantern"
+};

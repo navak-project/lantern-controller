@@ -1,5 +1,6 @@
 const express = require("express");
 const cors = require("cors");
+var ping  = require('ping');
 
 const app = express();
 

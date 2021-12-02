@@ -46,7 +46,56 @@ void SetNetworkInfo(){
   esp_hostName_char = WiFi.getHostname();
 }
 
+void UpdateStatus(){
+  HTTPClient http;
+  DynamicJsonDocument doc(2048);
+  
+  String updateRequest = "{\"hostName\":\"" + esp_hostName_String + "\", \"macAddress\":\"" + esp_macAddress + "\", \"ipAddress\":\"" + esp_ip + "\", \"status\":\"" + true + "}";
+  
+  http.begin(registerUrl);
+  Serial.print("HTTP Requesting to: ");
+  Serial.println(updateStatusURL);
+  http.addHeader("Content-Type", "application/json");
 
+  Serial.print("HTTP UPDATE with: ");
+  Serial.println(updateStatusURL);
+  
+  int httpResponseCode = http.PUT(updateRequest);
+  String payload = "{}";
+
+  if (httpResponseCode > 0) {
+    Serial.print("HTTP Response code: ");
+    Serial.println(httpResponseCode);
+
+
+    deserializeJson(doc, http.getStream());
+//    startUniverse = doc["startUniverse"];
+//    mqtt_panID = doc["id"];
+    
+//    mqtt_panID = test;
+//    Serial.println("#### API INFO RESPONSE ####");
+//    Serial.print("startUniverse: ");
+//    Serial.println(startUniverse);
+//    Serial.print("panID: ");
+//    Serial.println(mqtt_panID);
+
+    payload = http.getString();
+    Serial.println(payload);
+
+//    doConcat(mqtt_topicParent, mqtt_panID, mqtt_clientTopic);
+//
+//    const char* wildcard = "/#";
+//    doConcat(mqtt_clientTopic, wildcard, mqtt_clientTopicWildCard);
+  }
+  else {
+    Serial.println("Error code: ");
+    Serial.print(httpResponseCode);
+    Serial.println();
+  }
+
+  http.end();
+
+}
 
 void Register() {
   HTTPClient http;

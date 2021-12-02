@@ -38,6 +38,7 @@ const String local_pc_ip = "192.168.1.195";
 const String local_pc_port = "8080";
 String serverName = "http://" + local_pc_ip + ":" + local_pc_port + "/";
 String registerUrl = serverName + "api/lanterns/register/";
+String updateStatusURL = serverName + "api/lanterns/status";
 //String registerRequest = "{\"hostName\":\"" + esp_hostName_String + "\", \"macAddress\":\"" + esp_macAddress + "\", \"ipAddress\":\"" + esp_ip + "\"}"; // SEE LANTERN WIFI FILE
 // ----------- [FASTLED] -----------
 #define DATA_PIN 19

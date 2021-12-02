@@ -49,6 +49,20 @@ exports.findAll = async (req, res) => {
     }
 };
 
+exports.findActive = async (req, res) => {
+    var query = {status : true};
+    try {
+        const allActive = await Lantern.find(query);
+        console.log(allActive);
+        res.send(allActive);
+    } catch (error) {
+        console.error(error);
+        res.status(500).send({
+            message: error
+        });
+    }
+};
+
   // Find a single User with an id
 //   exports.findOne = async (req, res) => {
 //     const id = req.params.id;

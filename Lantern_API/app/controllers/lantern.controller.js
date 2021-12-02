@@ -55,6 +55,7 @@ exports.findActive = async (req, res) => {
         const allActive = await Lantern.find(query);
         console.log(allActive);
         res.send(allActive);
+        
     } catch (error) {
         console.error(error);
         res.status(500).send({

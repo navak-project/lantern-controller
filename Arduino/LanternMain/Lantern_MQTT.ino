@@ -70,6 +70,7 @@ void MqttCallback(char* topic, byte* message, unsigned int length) {
 
 void LoopMQTT() {
   if (!client.connected()) {
+    DisplayConnectionCode(3);
     ConnectToMQTT();
   }
 
@@ -80,17 +81,21 @@ void ConnectToMQTT() {
   while (!client.connected()) {
     Serial.println("Attempting MQTT connection...");
 
-    if (client.connect(esp_hostName_char)) {
-      Serial.println("Connected to MQTT broker");
-      client.subscribe(mqtt_clientTopicWildCard);
-      Serial.print("Subscribed to: ");
-      Serial.println(mqtt_clientTopic);
-    } else {
-      Serial.print("MQTT connection failed, rc=");
-      Serial.print(client.state());
-      Serial.println(" trying again in 5 seconds");
+    if (millis() - mqttConnectionTimer > 5000) {
+      mqttConnectionTimer = millis();
+      if (client.connect(esp_hostName_char)) {
+        Serial.println("Connected to MQTT broker");
+        client.subscribe(mqtt_clientTopicWildCard);
+        Serial.print("Subscribed to: ");
+        Serial.println(mqtt_clientTopic);
+        AllOff();
+      } else {
+        Serial.print("MQTT connection failed, rc=");
+        Serial.print(client.state());
+        Serial.println(" trying again in 5 seconds");
 
-      delay(5000);
+        //      delay(5000);
+      }
     }
   }
 }
@@ -104,15 +109,15 @@ String getValue(String data, char separator, int index)
 {
   int found = 0;
   int strIndex[] = {0, -1};
-  int maxIndex = data.length()-1;
+  int maxIndex = data.length() - 1;
 
-  for(int i=0; i<=maxIndex && found<=index; i++){
-    if(data.charAt(i)==separator || i==maxIndex){
-        found++;
-        strIndex[0] = strIndex[1]+1;
-        strIndex[1] = (i == maxIndex) ? i+1 : i;
+  for (int i = 0; i <= maxIndex && found <= index; i++) {
+    if (data.charAt(i) == separator || i == maxIndex) {
+      found++;
+      strIndex[0] = strIndex[1] + 1;
+      strIndex[1] = (i == maxIndex) ? i + 1 : i;
     }
   }
 
-  return found>index ? data.substring(strIndex[0], strIndex[1]) : "";
+  return found > index ? data.substring(strIndex[0], strIndex[1]) : "";
 }

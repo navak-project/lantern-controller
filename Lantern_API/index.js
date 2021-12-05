@@ -3,6 +3,9 @@ const cors = require("cors");
 var ping  = require("net-ping");
 var piing = require("ping");
 
+// const db = require("../models");
+// const Lantern = db.lanterns;
+
 const app = express();
 
 var corsOptions = {
@@ -21,6 +24,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 const db = require("./app/models");
+const lanternRoutes = require("./app/routes/lantern.routes");
 db.mongoose
   .connect(db.url, {
     useNewUrlParser: true,
@@ -45,35 +49,34 @@ const PORT = process.env.PORT || 8080;
 require("./app/routes/lantern.routes")(app);
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}.`);
-  
+  GetAllActive();
   const pingInterval = setInterval(() => {
-    // GetStateOfLife(ips);
-  }, 10000);
+    GetAllActive();
+  }, 5000);
 
 });
 
 
-
-async function GetStateOfLife(targets) {
-  targets.forEach(t => {
+async function GetAllActive() {
+  var query = {status : true};
     try {
-      session.pingHost(t, (error, target) => {
-        if(error){
-          console.log(target + " is dead!");
-        } else {
-          console.log(target + " is alive!");
-        }
-    });
+        const allActive = await db.lanterns.find(query);
+        // console.log("ALL ACTIVE:")
+        allActive.forEach(lantern => {
+          session.pingHost(lantern['ipAddress'], (error, target) => {
+            if(error){
+              UpdateState(target);
+            }
+          });
+        });
     } catch (error) {
-      console.log(error)
+        console.error(error);
     }
-    
-  });
+}
 
-  // targets.forEach(t => {
-  //   piing.sys.probe(t, (state) => {
-  //     console.log(t + " is " + state);
-  //   })
-  // });
-
+async function UpdateState(ipAddress) {
+  var query = {ipAddress: ipAddress};
+  var newValues = {status: false};
+  const target = await db.lanterns.updateOne(query, newValues);
+  console.log(`Lantern ${ipAddress} is Offline!`);
 }

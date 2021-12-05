@@ -31,6 +31,7 @@ void connectToWiFi(const char * ssid, const char * pwd)
   Serial.println(esp_ip);
   
   Register();
+  UpdateStatus();
   
   AllOff();
 }
@@ -50,9 +51,8 @@ void UpdateStatus(){
   HTTPClient http;
   DynamicJsonDocument doc(2048);
   
-  String updateRequest = "{\"hostName\":\"" + esp_hostName_String + "\", \"macAddress\":\"" + esp_macAddress + "\", \"ipAddress\":\"" + esp_ip + "\", \"status\":\"" + true + "}";
-  
-  http.begin(registerUrl);
+  String updateRequest = "{\"hostName\":\"" + esp_hostName_String + "\", \"macAddress\":\"" + esp_macAddress + "\", \"ipAddress\":\"" + esp_ip + "\"}";
+  http.begin(updateStatusURL);
   Serial.print("HTTP Requesting to: ");
   Serial.println(updateStatusURL);
   http.addHeader("Content-Type", "application/json");

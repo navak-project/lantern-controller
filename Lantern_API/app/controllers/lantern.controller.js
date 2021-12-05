@@ -53,6 +53,7 @@ exports.findActive = async (req, res) => {
     var query = {status : true};
     try {
         const allActive = await Lantern.find(query);
+        console.log("ALL ACTIVE:")
         console.log(allActive);
         res.send(allActive);
         
@@ -63,6 +64,30 @@ exports.findActive = async (req, res) => {
         });
     }
 };
+
+  // Update a User by the id in the request
+  exports.updateStatus = async (req, res) => {
+    // console.log('req', req.body);
+    if (!req.body) {
+      return res.status(400).send({
+        message: "Data to update can not be empty!"
+      });
+    }
+    // const id = req.params.ipAddress;
+    try {
+        // const element = await Lantern.findOne({ macAddress: req.body.macAddress });
+        var query = {macAddress: req.body.macAddress};
+        var newValues = {status: true};
+        const target = await Lantern.updateOne(query, newValues);
+        console.log(`Lantern ${req.body.ipAddress} is Online!`);
+        res.send(`Lantern ${target['ipAddress']} is Online!`);
+    } catch (error) {
+      console.log('error', error);
+      res.status(500).send({
+        message: error
+      });
+    }
+  };
 
   // Find a single User with an id
 //   exports.findOne = async (req, res) => {

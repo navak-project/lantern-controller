@@ -77,6 +77,6 @@ async function GetAllActive() {
 async function UpdateState(ipAddress) {
   var query = {ipAddress: ipAddress};
   var newValues = {status: false};
-  const target = await db.lanterns.updateOne(query, newValues);
-  console.log(`Lantern ${ipAddress} is Offline!`);
+  const target = await db.lanterns.findOneAndUpdate(query, newValues);
+  console.log(`Lantern [ID: ${target.id} | IP: ${target.ipAddress} | MAC: ${target.macAddress}] is Offline!`);
 }

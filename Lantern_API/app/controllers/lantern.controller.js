@@ -13,7 +13,7 @@ exports.create = async (req, res) => {
         const element = await Lantern.findOne({ macAddress: req.body.macAddress });
         // console.log(test);
         if (element != null) {
-            console.log("Exists!")
+            console.log(`Lantern [ID: ${element.id} | IP: ${req.body.ipAddress} | MAC: ${req.body.macAddress}] already exists`)
             res.send(element);
         } else {
             const lantern = new Lantern({
@@ -24,7 +24,7 @@ exports.create = async (req, res) => {
 
             await lantern.save(lantern);
             res.send(lantern);
-            console.log("CREATED LANTERN");
+            console.log(`CREATED Lantern [ID: ${req.body.id} | IP: ${req.body.ipAddress}  | MAC: ${req.body.macAddress}]`)
         }
 
     } catch (error) {
@@ -73,13 +73,11 @@ exports.findActive = async (req, res) => {
         message: "Data to update can not be empty!"
       });
     }
-    // const id = req.params.ipAddress;
     try {
-        // const element = await Lantern.findOne({ macAddress: req.body.macAddress });
         var query = {macAddress: req.body.macAddress};
         var newValues = {status: true};
-        const target = await Lantern.updateOne(query, newValues);
-        console.log(`Lantern ${req.body.ipAddress} is Online!`);
+        const target = await Lantern.findOneAndUpdate(query, newValues);
+        console.log(`Lantern [ID: ${target.id} | IP: ${target.ipAddress} | MAC: ${target.macAddress}] is Online!`);
         res.send(`Lantern ${target['ipAddress']} is Online!`);
     } catch (error) {
       console.log('error', error);

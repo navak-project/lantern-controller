@@ -8,17 +8,11 @@ var pingcfg = {
   extra: ['-i', '2']
 }
 
-// const db = require("../models");
-// const Lantern = db.lanterns;
-
 const app = express();
 
 var corsOptions = {
   origin: "http://localhost:8081"
 };
-
-// Used to ping device to determine state of life
-var session = netping.createSession();
 
 app.use(cors(corsOptions));
 
@@ -47,7 +41,6 @@ db.mongoose
 app.get("/", (req, res) => {
   res.json({ message: "Welcome to wd application." });
 });
-var ips = ["192.168.1.10", "192.168.1.12", "192.168.1.13","192.168.1.11"]
 
 // set port, listen for requests
 const PORT = process.env.PORT || 8080;
@@ -66,22 +59,11 @@ async function GetAllActive() {
   var query = {status : true};
     try {
         const allActive = await db.lanterns.find(query);
-        // console.log("ALL ACTIVE:")
-        // allActive.forEach(lantern => {
-        //   session.pingHost(lantern['ipAddress'], (error, target) => {
-        //     if(error){
-        //       UpdateState(target);
-        //     }
-        //   });
-        // });
-
         allActive.forEach(lantern => {
           ping.sys.probe(lantern['ipAddress'], (status) => {
             if(!status){
               UpdateState(lantern['ipAddress']);
-              // console.log(lantern)
             }
-            // console.log(status);
           }, pingcfg);
         });
     } catch (error) {

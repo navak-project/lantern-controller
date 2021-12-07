@@ -2,6 +2,7 @@ const express = require("express");
 const cors = require("cors");
 var netping  = require("net-ping");
 var ping = require("ping");
+const utils = require("./app/utils");
 
 var pingcfg = { 
   timeout: 2,
@@ -9,6 +10,8 @@ var pingcfg = {
 }
 
 const app = express();
+
+
 
 var corsOptions = {
   origin: "http://localhost:8081"
@@ -76,4 +79,6 @@ async function UpdateState(ipAddress) {
   var newValues = {status: false};
   const target = await db.lanterns.findOneAndUpdate(query, newValues);
   console.log(`Lantern [ID: ${target.id} | IP: ${target.ipAddress} | MAC: ${target.macAddress}] is Offline!`);
+  utils.pulseOSC();
 }
+

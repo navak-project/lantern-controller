@@ -1,5 +1,6 @@
 const db = require("../models");
 const Lantern = db.lanterns;
+const utils = require("../utils");
 
 // Create and Save a new user
 exports.create = async (req, res) => {
@@ -79,6 +80,7 @@ exports.findActive = async (req, res) => {
         const target = await Lantern.findOneAndUpdate(query, newValues);
         console.log(`Lantern [ID: ${target.id} | IP: ${target.ipAddress} | MAC: ${target.macAddress}] is Online!`);
         res.send(`Lantern ${target['ipAddress']} is Online!`);
+        utils.pulseOSC();
     } catch (error) {
       console.log('error', error);
       res.status(500).send({

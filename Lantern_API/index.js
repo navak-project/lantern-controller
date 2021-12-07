@@ -1,7 +1,12 @@
 const express = require("express");
 const cors = require("cors");
-var ping  = require("net-ping");
-var piing = require("ping");
+var netping  = require("net-ping");
+var ping = require("ping");
+
+var pingcfg = { 
+  timeout: 2,
+  extra: ['-i', '2']
+}
 
 // const db = require("../models");
 // const Lantern = db.lanterns;
@@ -13,7 +18,7 @@ var corsOptions = {
 };
 
 // Used to ping device to determine state of life
-var session = ping.createSession();
+var session = netping.createSession();
 
 app.use(cors(corsOptions));
 
@@ -62,12 +67,22 @@ async function GetAllActive() {
     try {
         const allActive = await db.lanterns.find(query);
         // console.log("ALL ACTIVE:")
+        // allActive.forEach(lantern => {
+        //   session.pingHost(lantern['ipAddress'], (error, target) => {
+        //     if(error){
+        //       UpdateState(target);
+        //     }
+        //   });
+        // });
+
         allActive.forEach(lantern => {
-          session.pingHost(lantern['ipAddress'], (error, target) => {
-            if(error){
-              UpdateState(target);
+          ping.sys.probe(lantern['ipAddress'], (status) => {
+            if(!status){
+              UpdateState(lantern['ipAddress']);
+              // console.log(lantern)
             }
-          });
+            // console.log(status);
+          }, pingcfg);
         });
     } catch (error) {
         console.error(error);

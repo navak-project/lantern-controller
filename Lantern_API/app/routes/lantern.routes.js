@@ -8,6 +8,11 @@ module.exports = app => {
   
     // Retrieve all Lanterns
     router.get("/", lanterns.findAll);
+
+    // Retreive all ACTIVE Lanterns
+    router.get("/active", lanterns.findActive);
+
+    router.put("/updateStatus", lanterns.updateStatus);
   
     // // Retrieve a single User with id
     // router.get("/:id", lanterns.findOne);

@@ -1,5 +1,6 @@
 const db = require("../models");
 const Lantern = db.lanterns;
+const utils = require("../utils");
 
 // Create and Save a new user
 exports.create = async (req, res) => {
@@ -13,7 +14,7 @@ exports.create = async (req, res) => {
         const element = await Lantern.findOne({ macAddress: req.body.macAddress });
         // console.log(test);
         if (element != null) {
-            console.log("Exists!")
+            console.log(`Lantern [ID: ${element.id} | IP: ${req.body.ipAddress} | MAC: ${req.body.macAddress}] already exists`)
             res.send(element);
         } else {
             const lantern = new Lantern({
@@ -24,7 +25,7 @@ exports.create = async (req, res) => {
 
             await lantern.save(lantern);
             res.send(lantern);
-            console.log("CREATED LANTERN");
+            console.log(`CREATED Lantern [ID: ${req.body.id} | IP: ${req.body.ipAddress}  | MAC: ${req.body.macAddress}]`)
         }
 
     } catch (error) {
@@ -48,6 +49,45 @@ exports.findAll = async (req, res) => {
         });
     }
 };
+
+exports.findActive = async (req, res) => {
+    var query = {status : true};
+    try {
+        const allActive = await Lantern.find(query);
+        console.log("ALL ACTIVE:")
+        console.log(allActive);
+        res.send(allActive);
+        
+    } catch (error) {
+        console.error(error);
+        res.status(500).send({
+            message: error
+        });
+    }
+};
+
+  // Update a User by the id in the request
+  exports.updateStatus = async (req, res) => {
+    // console.log('req', req.body);
+    if (!req.body) {
+      return res.status(400).send({
+        message: "Data to update can not be empty!"
+      });
+    }
+    try {
+        var query = {macAddress: req.body.macAddress};
+        var newValues = {status: true};
+        const target = await Lantern.findOneAndUpdate(query, newValues);
+        console.log(`Lantern [ID: ${target.id} | IP: ${target.ipAddress} | MAC: ${target.macAddress}] is Online!`);
+        res.send(`Lantern ${target['ipAddress']} is Online!`);
+        utils.pulseOSC();
+    } catch (error) {
+      console.log('error', error);
+      res.status(500).send({
+        message: error
+      });
+    }
+  };
 
   // Find a single User with an id
 //   exports.findOne = async (req, res) => {

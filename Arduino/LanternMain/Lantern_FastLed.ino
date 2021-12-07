@@ -19,11 +19,16 @@ void ChaseLoop(int interval, int ledAmount, CRGB myColor) {
 
     // Set LED color
     //    leds[ledIndex[0]] = CRGB(0, 255, 255);
-    leds[ledIndex[0]] = targetColor;
+    for(int i = ledIndex[0]; i <= ledIndex[0] + 8; i++){
+       leds[i] = targetColor;
+    }
+    
+//    leds[40-8]
+//    leds[ledIndex[0]] = targetColor;
     FastLED.show();
 
     // Increment led index
-    ledIndex[0]++;
+    ledIndex[0]+= 8;
 //    Serial.println(ledIndex[0]);
 
     // Loop to start
@@ -74,6 +79,9 @@ void DisplayConnectionCode(int code) {
       break;
     case 2: // Connection Error
       ChaseLoop(500, NUM_LEDS, CRGB::Red);
+      break;
+    case 3: // Connecting to MQTT
+      ChaseLoop(500, NUM_LEDS, CRGB::Purple);
       break;
   }
 }

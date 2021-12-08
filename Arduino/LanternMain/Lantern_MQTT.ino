@@ -29,41 +29,42 @@ void MqttCallback(char* topic, byte* message, unsigned int length) {
 
   String control = String() + mqtt_clientTopic + "/control";
 
+  // audio events
   String ignite = String() + mqtt_clientTopic + "/audio/ignite";
   String extinguish = String() + mqtt_clientTopic + "/audio/extinguish";
+  String enterTree = String() + mqtt_clientTopic + "/audio/enterTree";
+  String exitTree = String() + mqtt_clientTopic + "/audio/exitTree";
 
+  // populate message string
   for (int i = 0; i < length; i++) {
     Serial.print((char)message[i]);
     messageTemp += (char)message[i];
   }
   Serial.println();
 
+  // callbacks
   if (String(topic) == String(control)) {
     Serial.println("GOT CONTROL STRING");
     restart_esp32();
   }
   else if (String(topic) == String(ignite)) {
-    OSCMessage msg(topic);
-
-    int ctr = 0;
-    while (getValue(messageTemp, ' ', ctr) != String("")) {
-      String item = getValue(messageTemp, ' ', ctr);
-
-      if (item.toInt() != 0) {
-        msg.add((int)item.toInt());
-      } else if (item.toFloat() != 0) {
-        msg.add((float)item.toFloat());
-      } else {
-        msg.add(item.c_str());
-      }
-
-      ctr++;
-    }
+    OSCMessage msg("/li");
+    msg.add((int)messageTemp.toInt());
 
     SendToTeensy(msg);
   }
   else if (String(topic) == String(extinguish)) {
-    OSCMessage msg(topic);
+    OSCMessage msg("/le");
+    
+    SendToTeensy(msg);
+  } else if (String(topic) == String(enterTree)) {
+    OSCMessage msg("/on");
+    msg.add((int)messageTemp.toInt());    // tree ID
+
+    SendToTeensy(msg);
+  } else if (String(topic) == String(exitTree)) {
+    OSCMessage msg("/ox");
+    
     SendToTeensy(msg);
   }
 }

@@ -14,7 +14,7 @@ void initLantern() {
   // so that it can play without us hearing it until event is triggered
   // apparently we can't fade out a signal that isn't playing... thanks Paul
   mainMixer.gain(1, 0);
-  lanternLoop.play("lantern_loops/lantern_loop_0.raw", true);
+  playAudioFile(&lanternLoop, "lantern_loops/lantern_loop_" + String(lanternID), true);
   lanternLoopFade.fadeOut(10);
 
   // initialize ID
@@ -36,19 +36,20 @@ void setLanternID(OSCMessage &msg) {
 void igniteLantern(OSCMessage &msg) {
   setHeartRate(msg.getInt(0));
 
-  // play momentary cue
-  playAudioFile(&lanternEvents, "ignites/ignite_" + String(lanternID) + ".wav");
+  // // play momentary cue
+  playAudioFile(&lanternEvents, "ignites/ignite_" + String(lanternID));
 
-  // fade in lantern loop
+  // // fade in lantern loop
   mainMixer.gain(1, 0.5);
   lanternLoopFade.fadeIn(5000);
 
-  // start heartbeat
+  // // start heartbeat
   startHeartbeat();
 }
 void extinguishLantern(OSCMessage &msg) {
+  AudioNoInterrupts();
   // play momentary cue
-  playAudioFile(&lanternEvents, "extinguishes/extinguish_" + String(lanternID) + ".wav");
+  playAudioFile(&lanternEvents, "extinguishes/extinguish_" + String(lanternID));
 
   // fade out lantern loop
   // sound will stop looping after 5000ms
@@ -56,6 +57,7 @@ void extinguishLantern(OSCMessage &msg) {
 
   // turn off heartbeat
   fadeOutAll();
+  AudioInterrupts();
 }
 
 
@@ -69,14 +71,5 @@ void accentLanternLoop() {
   loopFilterDC.amplitude(0, 1000);
 }
 
-
-// called in loop()
-void updateLanternLoop() {
-  // TODO: optimize so that it isn't constantly called
-  // TODO: remove this and replace w/ looping SdWav class that i found
-  
-  String path = "lantern_loops/lantern_loop_" + String(lanternID) + ".raw";
-  playAudioFile(&lanternLoop, path);
-}
 
 #endif

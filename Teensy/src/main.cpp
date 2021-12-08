@@ -18,6 +18,9 @@
 #include "osc_manager.h"
 
 
+void testSequence();
+
+
 void setup() {
   // init Teensy Audio + SD
   initAudio();
@@ -34,15 +37,15 @@ void setup() {
 
 void loop() {
   // for monitoring audio memory usage; uncomment if necessary
-  //monitorBlocks();
+  // monitorBlocks();
 
   // heartbeat manager
   updateHeartbeat();
 
   // test sequence
-  //testSequence();
+  // testSequence();
 
-  // delayMicroseconds(100);
+  delayMicroseconds(10);
 }
 
 

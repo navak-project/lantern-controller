@@ -9,7 +9,7 @@ void enterTree(OSCMessage &msg) {
     heartBeatToPure();
 }
 
-void leaveTree(OSCMessage &msg) {
+void exitTree(OSCMessage &msg) {
     accentLanternLoop();
     heartBeatToStatic();
 }

@@ -73,8 +73,6 @@ void initHeartbeat() {
   // simple echo
   preDlyFilter.frequency(4000);
   preDlyFilter.resonance(0.3);
-  noiseDly.delay(0, 300);
-  preDlyMixer.gain(1, 0.5);   // feedback level
   staticMixer.gain(1, 0.25);
 
 
@@ -113,13 +111,13 @@ void startHeartbeat() {
 
 // enter/leave tree events
 void heartBeatToPure() {
-  staticFader.fadeOut(500);
-  pureFader.fadeIn(500);
+  staticFader.fadeOut(250);
+  pureFader.fadeIn(250);
 }
 void heartBeatToStatic() {
-  staticFader.fadeIn(500);
-  pureFader.fadeOut(500);
-} 
+  staticFader.fadeIn(250);
+  pureFader.fadeOut(250);
+}
 
 
 // towards Silva ....

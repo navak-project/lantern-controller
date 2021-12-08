@@ -20,27 +20,42 @@ void initOSC() {
 
 void receiveOSC(int byteLength) {
   AudioNoInterrupts();
-  
-  Serial.println("receiving whatever the fuck");
+
+  Serial.println("receiving OSC...");
   
   // define OSC bundle
-  OSCBundle bundleIN;
+  OSCMessage bundleIN;
 
   // decode incoming OSC message
   while (Wire1.available()) {
-    bundleIN.fill(Wire1.read());
+    char c = Wire1.read();
+    Serial.print((byte)c);
+    Serial.print(" ");
+    bundleIN.fill(c);
+    // delayMicroseconds(100);
   }
+  Serial.println();
 
-  // lantern events
-  bundleIN.dispatch("/lantern/*/audio/setID", setLanternID);
-  bundleIN.dispatch("/lantern/ignite", igniteLantern);
-  bundleIN.dispatch("/lantern/extinguish", extinguishLantern);
+  Serial.print("err: ");
+  Serial.println(bundleIN.hasError());
+  
+  // char* addr;
+  // msg.getAddress(addr);
+  // Serial.print("addr: ");
+  // Serial.println(addr);
 
-  // organique events
-  bundleIN.dispatch("/organique/enter_tree", enterTree);
-  bundleIN.dispatch("/organique/leave_tree", leaveTree);
+  if (!bundleIN.hasError()) {
+    // // lantern events
+    // bundleIN.dispatch("/lantern/*/audio/setID", setLanternID);
+    bundleIN.dispatch("/li", igniteLantern);
+    bundleIN.dispatch("/le", extinguishLantern);
 
-  // silva events
+    // // organique events
+    bundleIN.dispatch("/on", enterTree);
+    bundleIN.dispatch("/ox", exitTree);
+
+    // // silva events
+  }
 
   AudioInterrupts();
 }

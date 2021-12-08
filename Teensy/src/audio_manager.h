@@ -9,10 +9,12 @@ elapsedMillis blockReportTimer;
 
 // initialize audio library
 void initAudio() {
-  AudioMemory(140);
+  AudioMemory(40);
   sgtl5000_1.enable();
   sgtl5000_1.volume(0.5);
-  sgtl5000_1.lineOutLevel(31);
+  sgtl5000_1.lineOutLevel(29);
+
+  ampOut.gain(1);
 }
 
 
@@ -39,23 +41,12 @@ void monitorBlocks() {
 }
 
 
-// play an audio file
-// TODO: fix looping
-void playAudioFile(AudioPlaySdWav *file, String path, bool steal = false) {
-  // block file playback if it's playing and we're not stealing its voice
-  if (file->isPlaying() == true && steal == false) return;
-
+// play an audio file (no need to specify the extension every time)
+void playAudioFile(AudioPlaySdRaw *file, String path, bool loop = false, bool steal = false) {
+  if (file->isPlaying() && !steal) return;
+  
   // stop and replay file at path
-  AudioNoInterrupts();
-  file->stop();
-  file->play(path.c_str());
-  delay(10);
-  AudioInterrupts();
-}
-
-void playAudioFile(AudioPlaySdRaw *file, String path, bool steal = false) {
-  // stop and replay file at path
-  file->play(path.c_str(), true);
+  file->play((path + ".raw").c_str(), loop);
 }
 
 #endif

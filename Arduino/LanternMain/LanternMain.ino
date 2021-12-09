@@ -34,7 +34,7 @@ const char * networkPswd = "silvaFTW";
 // const char * networkName = "BELL034";
 // const char * networkPswd = "D2AA4CA6F4F4";
 // ----------- [API] ---------------
-const String local_pc_ip = "192.168.1.195";
+const String local_pc_ip = "192.168.1.42";
 const String local_pc_port = "8080";
 String serverName = "http://" + local_pc_ip + ":" + local_pc_port + "/";
 String registerUrl = serverName + "api/lanterns/register/";

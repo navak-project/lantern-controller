@@ -29,8 +29,7 @@ void receiveOSC(int byteLength) {
   // decode incoming OSC message
   while (Wire1.available()) {
     char c = Wire1.read();
-    Serial.print((byte)c);
-    Serial.print(" ");
+    Serial.print(c);
     bundleIN.fill(c);
     // delayMicroseconds(100);
   }

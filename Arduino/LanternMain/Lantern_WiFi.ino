@@ -122,6 +122,7 @@ void Register() {
     deserializeJson(doc, http.getStream());
     startUniverse = doc["startUniverse"];
     mqtt_panID = doc["id"];
+    mqtt_panIDString = String(mqtt_panID);
     
 //    mqtt_panID = test;
     Serial.println("#### API INFO RESPONSE ####");

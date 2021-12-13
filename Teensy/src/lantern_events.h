@@ -4,9 +4,17 @@
 #include "objects.h"
 #include "heartbeat_events.h"
 #include "audio_manager.h"
+#include <map>
 
 
 int lanternID;
+// lanternID to index mapper
+// this will eventually need to be changed to use the lantern type instead
+std::map<String, int> idChart = {
+  { "0b85", 0 },
+  { "5a8e", 1 },
+  { "0a99", 2 },
+};
 
 
 void initLantern() {
@@ -30,11 +38,36 @@ void initLantern() {
 }
 
 void setLanternID(OSCMessage &msg) {
-  lanternID = msg.getInt(0);
+  Serial.println("setting lanternID");
+
+  int length = msg.getDataLength(0);
+  char id[length];
+  msg.getString(0, id, length);
+
+  Serial.print("id: ");
+  Serial.println(String(id));
+
+  std::map<String, int>::iterator it = idChart.begin();
+  while (it != idChart.end()) {
+    Serial.print(it->first);
+    Serial.print(": ");
+    Serial.println(it->second);
+    
+    if (it->first == String(id)) {
+      lanternID = it->second;
+      break;
+    }
+
+    it++;
+  }
+
+  Serial.print("lanternID: ");
+  Serial.println(lanternID);
 }
 
 void igniteLantern(OSCMessage &msg) {
-  setHeartRate(msg.getInt(0));
+  setLanternID(msg);
+  setHeartRate(msg.getInt(1));
 
   // // play momentary cue
   playAudioFile(&lanternEvents, "ignites/ignite_" + String(lanternID));

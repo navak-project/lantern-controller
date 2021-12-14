@@ -8,6 +8,7 @@
 #include <SerialFlash.h>
 #include <OSCMessage.h>
 #include <OSCBundle.h>
+#include <map>
 
 
 #include "objects.h"
@@ -15,7 +16,10 @@
 #include "lantern_events.h"
 #include "organique_events.h"
 #include "heartbeat_events.h"
+#include "narr_events.h"
 #include "osc_manager.h"
+
+using std::map;
 
 
 void testSequence();

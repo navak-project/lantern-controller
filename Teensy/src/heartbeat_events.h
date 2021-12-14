@@ -4,9 +4,16 @@
 #include "objects.h"
 
 
+// heart tone chart
+map<String, int[]> heartToneChart = {
+  { "0b85", { 75, 0, 7, 14, 0 } },
+  { "5a8e", { 80, 0, -1, 5, 11 } },
+  { "0a99", { 75, 0, 7, 14, 0 } },
+};
+
+
 int heartRateBPM;
 unsigned long heartRateMillis;
-int heartNote = 74;
 
 bool heartbeatStarted = false;
 bool isHeartNotePlaying = false;
@@ -55,7 +62,6 @@ void initHeartbeat() {
   // STATIC CONFIGURATION V2!!
 
   // first ring mod (sine wave, low frequency for good rumble)
-  sineMod.frequency(pow(2.0, ((float)(heartNote - 69)/12.0)) * 440.0 * 0.0976);
   ringModLP.setLowpass(0, 1500, 0.3);
 
   // noisy ring mod w/ slight AM and filter modulation
@@ -105,6 +111,10 @@ void startHeartbeat() {
   heartbeatTimer = 0;
   heartbeatStarted = true;
 
+  // reset sine mod frequency
+  sineMod.frequency(pow(2.0, ((float)(heartToneChart[lanternID][0] - 69)/12.0)) * 440.0 * 0.0976);
+
+  // fade in
   staticFader.fadeIn(2000);
 }
 
@@ -113,10 +123,12 @@ void startHeartbeat() {
 void heartBeatToPure() {
   staticFader.fadeOut(250);
   pureFader.fadeIn(250);
+  loopFilterDC.amplitude(-1, 500);
 }
 void heartBeatToStatic() {
   staticFader.fadeIn(250);
   pureFader.fadeOut(250);
+  loopFilterDC.amplitude(0, 500);
 }
 
 
@@ -147,7 +159,7 @@ void updateHeartbeat() {
     // THIS IS MIDI VELOCITY!!!! NOT SIGNAL AMPLITUDE!!! LOLLL
     int velo = random(50, 100);
     actionsOnPulse();
-    pulseHeartNote(heartNote, velo);
+    pulseHeartNote(heartToneChart[lanternID][0], velo);
   }
 
   // play 250ms note (ie. release env after that time)
@@ -163,10 +175,10 @@ void pulseHeartNote(int note, int velo) {
   // TODO: velocity + note modulation
   // so that each note does not play at the same velocity on its own
 
-  hbSynth1.playNote(note, velo);
-  hbSynth2.playNote(note + 7, velo);
-  hbSynth3.playNote(note + 14, velo);
-  hbSynth4.playNote(note, (int)(velo * 0.5));
+  hbSynth1.playNote(note + heartToneChart[lanternID][1], velo);
+  hbSynth2.playNote(note + heartToneChart[lanternID][2], velo);
+  hbSynth3.playNote(note + heartToneChart[lanternID][3], velo);
+  hbSynth4.playNote(note + heartToneChart[lanternID][4], (int)(velo * 0.5));
 
   isHeartNotePlaying = true;
 }

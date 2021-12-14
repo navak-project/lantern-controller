@@ -4,6 +4,7 @@
 #include "objects.h"
 #include "lantern_events.h"
 #include "organique_events.h"
+#include "narr_events.h"
 
 
 // functions
@@ -29,8 +30,7 @@ void receiveOSC(int byteLength) {
   // decode incoming OSC message
   while (Wire1.available()) {
     char c = Wire1.read();
-    Serial.print((byte)c);
-    Serial.print(" ");
+    Serial.print(c);
     bundleIN.fill(c);
     // delayMicroseconds(100);
   }
@@ -46,9 +46,11 @@ void receiveOSC(int byteLength) {
 
   if (!bundleIN.hasError()) {
     // // lantern events
-    // bundleIN.dispatch("/lantern/*/audio/setID", setLanternID);
     bundleIN.dispatch("/li", igniteLantern);
     bundleIN.dispatch("/le", extinguishLantern);
+
+    // narration event
+    bundleIN.dispatch("/n", triggerNarration);
 
     // // organique events
     bundleIN.dispatch("/on", enterTree);

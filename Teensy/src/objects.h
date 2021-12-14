@@ -23,18 +23,19 @@ AudioFilterBiquad        ringModLP;      //xy=857,493
 AudioPlaySdRaw           lanternLoop;    //xy=870,238
 AudioSynthWaveformSine   sineAM;         //xy=908,593
 AudioEffectMultiply      ringMod2;       //xy=911,546
-AudioSynthWaveformDc     loopAttenDC;    //xy=1028,137
+AudioSynthWaveformDc     loopAttenDC;    //xy=994,58
 AudioEffectFade          lanternLoopFade; //xy=1045,241
 AudioEffectMultiply      noiseAM;        //xy=1068,578
 AudioEffectMultiply      loopAtten;      //xy=1174,58
+AudioSynthWaveformDc     loopFilterDC;   //xy=1179,96
 AudioEffectFade          pureFader;      //xy=1204,310
 AudioEffectFade          staticFader;    //xy=1204,353
 AudioFilterStateVariable preDlyFilter;   //xy=1204,584
-AudioSynthWaveformDc     loopFilterDC;   //xy=1227,134
-AudioFilterStateVariable lanternLoopFilter; //xy=1353,46
 AudioMixer4              staticMixer;    //xy=1366,461
+AudioFilterStateVariable lanternLoopFilter; //xy=1371,76
 AudioMixer4              hbMixer;        //xy=1399,340
 AudioPlaySdRaw           lanternEvents;     //xy=1406,177
+AudioPlaySdRaw           narrationPlayer;     //xy=1619,336
 AudioMixer4              mainMixer;      //xy=1705,230
 AudioAmplifier           ampOut;           //xy=1865,230
 AudioOutputI2S           i2sOut;         //xy=2055,227
@@ -56,19 +57,20 @@ AudioConnection          patchCord15(sineAM, 0, noiseAM, 1);
 AudioConnection          patchCord16(ringMod2, 0, noiseAM, 0);
 AudioConnection          patchCord17(loopAttenDC, 0, loopAtten, 0);
 AudioConnection          patchCord18(lanternLoopFade, 0, loopAtten, 1);
-AudioConnection          patchCord19(lanternLoopFade, 0, mainMixer, 1);
-AudioConnection          patchCord20(noiseAM, 0, preDlyFilter, 0);
-AudioConnection          patchCord21(loopAtten, 0, lanternLoopFilter, 0);
+AudioConnection          patchCord19(noiseAM, 0, preDlyFilter, 0);
+AudioConnection          patchCord20(loopAtten, 0, lanternLoopFilter, 0);
+AudioConnection          patchCord21(loopFilterDC, 0, lanternLoopFilter, 1);
 AudioConnection          patchCord22(pureFader, 0, hbMixer, 0);
 AudioConnection          patchCord23(staticFader, 0, hbMixer, 1);
 AudioConnection          patchCord24(preDlyFilter, 1, staticMixer, 0);
-AudioConnection          patchCord25(loopFilterDC, 0, lanternLoopFilter, 1);
-AudioConnection          patchCord26(staticMixer, staticFader);
+AudioConnection          patchCord25(staticMixer, staticFader);
+AudioConnection          patchCord26(lanternLoopFilter, 0, mainMixer, 1);
 AudioConnection          patchCord27(hbMixer, 0, mainMixer, 2);
 AudioConnection          patchCord28(lanternEvents, 0, mainMixer, 0);
-AudioConnection          patchCord29(mainMixer, ampOut);
-AudioConnection          patchCord30(ampOut, 0, i2sOut, 0);
-AudioConnection          patchCord31(ampOut, 0, i2sOut, 1);
+AudioConnection          patchCord29(narrationPlayer, 0, mainMixer, 3);
+AudioConnection          patchCord30(mainMixer, ampOut);
+AudioConnection          patchCord31(ampOut, 0, i2sOut, 0);
+AudioConnection          patchCord32(ampOut, 0, i2sOut, 1);
 AudioControlSGTL5000     sgtl5000_1;     //xy=701,128
 // GUItool: end automatically generated code
 
@@ -78,6 +80,10 @@ AudioControlSGTL5000     sgtl5000_1;     //xy=701,128
 #define SDCARD_CS_PIN    10
 #define SDCARD_MOSI_PIN  7
 #define SDCARD_SCK_PIN   14
+
+// properties
+String lanternID;
+int lanternIndex;
 
 
 #endif

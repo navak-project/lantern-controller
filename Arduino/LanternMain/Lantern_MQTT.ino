@@ -30,11 +30,15 @@ void MqttCallback(char* topic, byte* message, unsigned int length) {
 
   // control events
   String control = String() + mqtt_clientTopic + "/control";
+
   // audio events
   String ignite = String() + mqtt_clientTopic + "/audio/ignite";
   String extinguish = String() + mqtt_clientTopic + "/audio/extinguish";
   String enterTree = String() + mqtt_clientTopic + "/audio/enterTree";
   String exitTree = String() + mqtt_clientTopic + "/audio/exitTree";
+
+  // narration
+  String narration = String() + mqtt_clientTopic + "/narration";
 
 
   // populate message string
@@ -55,8 +59,8 @@ void MqttCallback(char* topic, byte* message, unsigned int length) {
     OSCMessage msg("/li");
     
     msg
-      .add(mqtt_panIDString.c_str())                   // lantern ID
-      .add((int)messageTemp.toInt());                  // heart rate
+      .add(mqtt_panIDString.c_str())                    // lantern ID
+      .add((int)messageTemp.toInt());                   // heart rate
 
     SendToTeensy(msg);
   }
@@ -68,12 +72,19 @@ void MqttCallback(char* topic, byte* message, unsigned int length) {
   
   else if (String(topic) == String(enterTree)) {
     OSCMessage msg("/on");
-    msg.add((int)messageTemp.toInt());    // tree ID
+    msg.add((int)messageTemp.toInt());                  // tree ID
     SendToTeensy(msg);
   }
   
   else if (String(topic) == String(exitTree)) {
     OSCMessage msg("/ox");
+    SendToTeensy(msg);
+  }
+
+  else if (String(topic) == String(narration)) {
+    OSCMessage msg("/n");
+    msg.add(0);                                         // clip# (zone)
+    msg.add(1);                                         // state
     SendToTeensy(msg);
   }
 }

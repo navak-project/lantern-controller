@@ -61,17 +61,13 @@ void igniteLantern(OSCMessage &msg) {
 
   // set internal properties
   setLanternID(msg);
-  setHeartRate(msg.getInt(1));
-
-  // fade in
+  // play lantern loop
   playAudioFile(&lanternLoop, "lantern_loops/lantern_loop_" + String(lanternIndex), true);
   lanternLoopFade.fadeIn(5000);
-
   // play ignite cue
   playAudioFile(&lanternEvents, "ignites/ignite_" + String(lanternIndex));
-
   // start heartbeat
-  startHeartbeat();
+  startHeartbeat(msg.getInt(1));
 
   AudioInterrupts();
 }
@@ -80,14 +76,11 @@ void extinguishLantern(OSCMessage &msg) {
 
   // play momentary cue
   playAudioFile(&lanternEvents, "extinguishes/extinguish_" + String(lanternIndex));
-
   // fade out lantern loop
   lanternLoopFade.fadeOut(2000);
-
   // turn off lantern loop in 5s
   dly_loopEnd.start(5000, AsyncDelay::MILLIS);
   loopEnded = false;
-
   // turn off heartbeat
   fadeOutAll();
   

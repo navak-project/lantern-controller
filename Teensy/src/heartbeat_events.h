@@ -44,6 +44,11 @@ void initHeartbeat() {
   // TODO: remove this and manage from ESP32 messaging instead
   setHeartRate(70);
 
+  // reverb
+  hbReverb.roomsize(0.4);
+  hbReverb.damping(0.1);
+  hbReverbMixer.gain(1, 0.5);
+
 
   // configure WT instruments
   hbSynth1.setInstrument(hb_part1);
@@ -96,7 +101,7 @@ void initHeartbeat() {
   staticFader.fadeOut(10);
 
   // to main mixer
-  mainMixer.gain(2, 1);
+  mainMixer.gain(2, 0.75);
 }
 
 void setHeartRate(int rate) {
@@ -110,7 +115,9 @@ void setHeartRate(int rate) {
 ////// events ///////
 /////////////////////
 
-void startHeartbeat() {
+void startHeartbeat(int rate) {
+  setHeartRate(rate);
+
   // begin heartbeat loop
   heartbeatTimer = 0;
   heartbeatStarted = true;

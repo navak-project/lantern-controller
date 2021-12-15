@@ -5,10 +5,13 @@
 #include "heartbeat_events.h"
 #include "audio_manager.h"
 
+AsyncDelay dly_loopEnd;
+bool loopEnded = false;
+
 
 // lanternID to index mapper
 // this will eventually need to be changed to use the lantern type instead
-map<String, int> idChart = {
+std::map<String, int> idChart = {
   { "0b85", 0 },
   { "5a8e", 1 },
   { "0a99", 2 },
@@ -25,7 +28,10 @@ void initLantern() {
   loopFilterDC.amplitude(0);
   lanternLoopFilter.frequency(14000);
   lanternLoopFilter.resonance(0.2);
-  lanternLoopFilter.octaveControl(2.5);
+  lanternLoopFilter.octaveControl(3.5);
+
+  // lantern loop fade out
+  lanternLoopFade.fadeOut(10);
 }
 
 void setLanternID(OSCMessage &msg) {
@@ -38,42 +44,27 @@ void setLanternID(OSCMessage &msg) {
   // Serial.print("id: ");
   // Serial.println(String(id));
 
-  std::map<String, int>::iterator it = idChart.begin();
-  while (it != idChart.end()) {
-    Serial.print(it->first);
-    Serial.print(": ");
-    Serial.println(it->second);
-    
-    if (it->first == String(id)) {
-      lanternID = it->first;
-      lanternIndex = it->second;
-      break;
-    }
-
-    it++;
+  std::map<String, int>::iterator it = idChart.find(lanternID);
+  if (it != idChart.end()) {
+    lanternID = it->first;
+    lanternIndex = it->second;
   }
 
   // Serial.print("lanternID: ");
   // Serial.println(lanternID);
-  Serial.print("lanternIndex: ");
-  Serial.println(lanternIndex);
+  // Serial.print("lanternIndex: ");
+  // Serial.println(lanternIndex);
 }
 
 void igniteLantern(OSCMessage &msg) {
   AudioNoInterrupts();
 
+  // set internal properties
   setLanternID(msg);
   setHeartRate(msg.getInt(1));
 
-  // lantern loop init sequence:
-  // mute, play, fade out
-  mainMixer.gain(1, 0);
+  // fade in
   playAudioFile(&lanternLoop, "lantern_loops/lantern_loop_" + String(lanternIndex), true);
-  lanternLoopFade.fadeOut(10);
-  // wait...
-  delay(10);
-  // fade back in
-  mainMixer.gain(1, 0.5);
   lanternLoopFade.fadeIn(5000);
 
   // play ignite cue
@@ -91,16 +82,24 @@ void extinguishLantern(OSCMessage &msg) {
   playAudioFile(&lanternEvents, "extinguishes/extinguish_" + String(lanternIndex));
 
   // fade out lantern loop
-  // sound will stop looping after 5000ms
   lanternLoopFade.fadeOut(2000);
+
+  // turn off lantern loop in 5s
+  dly_loopEnd.start(5000, AsyncDelay::MILLIS);
+  loopEnded = false;
 
   // turn off heartbeat
   fadeOutAll();
   
   AudioInterrupts();
+}
 
-  delay(5000);
-  lanternLoop.stop();
+void updateLanternEvents() {
+  if (!loopEnded && dly_loopEnd.isExpired()) {
+    lanternLoop.stop();
+    loopEnded = true;
+    dly_loopEnd = AsyncDelay();
+  }
 }
 
 
@@ -110,7 +109,7 @@ void attenLanternLoop() {
   loopFilterDC.amplitude(-1, 200);
 }
 void accentLanternLoop() {
-  loopAttenDC.amplitude(1, 1000);
+  loopAttenDC.amplitude(1, 250);
   loopFilterDC.amplitude(0, 1000);
 }
 

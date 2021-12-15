@@ -3,21 +3,25 @@
 
 #include "objects.h"
 
+struct HeartTone {
+  int baseTone;
+  int tones[4];
+};
 
 // heart tone chart
-map<String, int[]> heartToneChart = {
-  { "0b85", { 75, 0, 7, 14, 0 } },
-  { "5a8e", { 80, 0, -1, 5, 11 } },
-  { "0a99", { 75, 0, 7, 14, 0 } },
+std::map<String, HeartTone> heartToneChart = {
+  { "0b85", {75, { 0, 7, 14, 0 }} },
+  { "5a8e", {80, { 0, -1, 5, 11 }} },
+  { "0a99", {75, { 0, 7, 14, 0 }} },
 };
 
 
 int heartRateBPM;
 unsigned long heartRateMillis;
 
+elapsedMillis heartbeatTimer;
 bool heartbeatStarted = false;
 bool isHeartNotePlaying = false;
-elapsedMillis heartbeatTimer;
 
 
 // functions
@@ -112,7 +116,7 @@ void startHeartbeat() {
   heartbeatStarted = true;
 
   // reset sine mod frequency
-  sineMod.frequency(pow(2.0, ((float)(heartToneChart[lanternID][0] - 69)/12.0)) * 440.0 * 0.0976);
+  sineMod.frequency(pow(2.0, ((float)(heartToneChart[lanternID].baseTone - 69)/12.0)) * 440.0 * 0.0976);
 
   // fade in
   staticFader.fadeIn(2000);
@@ -121,14 +125,18 @@ void startHeartbeat() {
 
 // enter/leave tree events
 void heartBeatToPure() {
+  // play transition clip
+
+  // crossfade
   staticFader.fadeOut(250);
   pureFader.fadeIn(250);
-  loopFilterDC.amplitude(-1, 500);
 }
 void heartBeatToStatic() {
+  // play transition clip
+
+  // crossfade
   staticFader.fadeIn(250);
   pureFader.fadeOut(250);
-  loopFilterDC.amplitude(0, 500);
 }
 
 
@@ -143,7 +151,7 @@ void toConstantLight() {
 void fadeOutAll() {
   // turn off all vital energy instruments
   heartbeatStarted = false;
-  releaseHeartNote();
+  //releaseHeartNote();
 }
 
 
@@ -153,13 +161,12 @@ void updateHeartbeat() {
   
   if (heartbeatTimer > heartRateMillis) {
     heartbeatTimer = 0;
-
     // trigger instrument
     // NOTE TO SELF FOR THE FUTURE:
     // THIS IS MIDI VELOCITY!!!! NOT SIGNAL AMPLITUDE!!! LOLLL
     int velo = random(50, 100);
     actionsOnPulse();
-    pulseHeartNote(heartToneChart[lanternID][0], velo);
+    pulseHeartNote(heartToneChart[lanternID].baseTone, velo);
   }
 
   // play 250ms note (ie. release env after that time)
@@ -175,10 +182,10 @@ void pulseHeartNote(int note, int velo) {
   // TODO: velocity + note modulation
   // so that each note does not play at the same velocity on its own
 
-  hbSynth1.playNote(note + heartToneChart[lanternID][1], velo);
-  hbSynth2.playNote(note + heartToneChart[lanternID][2], velo);
-  hbSynth3.playNote(note + heartToneChart[lanternID][3], velo);
-  hbSynth4.playNote(note + heartToneChart[lanternID][4], (int)(velo * 0.5));
+  hbSynth1.playNote(note + heartToneChart[lanternID].tones[0], velo);
+  hbSynth2.playNote(note + heartToneChart[lanternID].tones[1], velo);
+  hbSynth3.playNote(note + heartToneChart[lanternID].tones[2], velo);
+  hbSynth4.playNote(note + heartToneChart[lanternID].tones[3], (int)(velo * 0.5));
 
   isHeartNotePlaying = true;
 }

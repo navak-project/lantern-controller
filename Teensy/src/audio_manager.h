@@ -14,7 +14,10 @@ void initAudio() {
   sgtl5000_1.volume(0.5);
   sgtl5000_1.lineOutLevel(29);
 
+  // global amp
   ampOut.gain(1);
+  // hum (fixes lantern loop fade out bug when not playing...?)
+  hum.amplitude(0.001);
 }
 
 

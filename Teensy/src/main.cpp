@@ -2,6 +2,7 @@
 // FUN FACT: using this Wire library will require you to change
 // every single instance of Wire.h in the entirety of Teensyduino's code :o)
 #include <Audio.h>
+#include <AsyncDelay.h>
 #include <i2c_driver_wire.h>
 #include <SPI.h>
 #include <SD.h>
@@ -18,8 +19,6 @@
 #include "heartbeat_events.h"
 #include "narr_events.h"
 #include "osc_manager.h"
-
-using std::map;
 
 
 void testSequence();
@@ -43,12 +42,14 @@ void loop() {
   // for monitoring audio memory usage; uncomment if necessary
   // monitorBlocks();
 
-  // heartbeat manager
+  // loop managers
   updateHeartbeat();
+  updateLanternEvents();
 
   // test sequence
   // testSequence();
 
+  // complimentary delay :o)
   delayMicroseconds(10);
 }
 

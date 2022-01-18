@@ -45,21 +45,25 @@ void receiveOSC(int byteLength) {
   // Serial.println(addr);
 
   if (!bundleIN.hasError()) {
-    // // lantern events
-    bundleIN.dispatch("/li", igniteLantern);
-    bundleIN.dispatch("/le", extinguishLantern);
-
-    // narration event
-    bundleIN.dispatch("/n", triggerNarration);
-
-    // // organique events
-    bundleIN.dispatch("/on", enterTree);
-    bundleIN.dispatch("/ox", exitTree);
-
-    // // silva events
+    dispatcher(bundleIN);
   }
 
   AudioInterrupts();
+}
+
+void dispatcher(OSCMessage &bundleIN) {
+  // lantern events
+  bundleIN.dispatch("/li", igniteLantern);
+  bundleIN.dispatch("/le", extinguishLantern);
+
+  // narration event
+  bundleIN.dispatch("/n", triggerNarration);
+
+  // organique events
+  bundleIN.dispatch("/on", enterTree);
+  bundleIN.dispatch("/ox", exitTree);
+
+  // silva events
 }
 
 #endif

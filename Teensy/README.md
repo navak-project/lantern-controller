@@ -27,7 +27,7 @@ Le crochet sert à **compiler** le code, et la flèche vers la droite sert à le
 Puisque ce projet est configuré avec PlatformIO, le code Arduino est organisé en classes C++ au lieu d'utiliser l'extension `.ino`. Le fichier correspondant au sketch principal est `main.cpp`.
 
 Les modules d'action se divisent comme suit:
-- `objects.h`: tous les objets requis pour la chaîne DSP du projet sont déclarés ici. Ça inclut les instruments .sf2 et certaines propriétés globales.
+- `objects.h`: tous les objets requis pour la chaîne DSP du projet sont déclarés ici (voir plus loin pour plus d'infos). Ça inclut les instruments .sf2 et certaines propriétés globales.
 - `audio_manager.h`: fonctions relatives au moteur audio du Teensy (initialisation des librairies concernées et lecture de fichiers).
 - `osc_manager.h`: gestion des messages OSC en provenance du module ESP32. C'est généralement dans la fonction `dispatcher` qu'on va vouloir déclarer de nouveaux événements; et l'adressage devra naturellement être reflété dans le code de l'ESP32.
 - `lantern_events.h`: fonctions internes et événements globaux de la lanterne (surtout l'allumage et l'éteinte)
@@ -35,3 +35,11 @@ Les modules d'action se divisent comme suit:
 - `organique_events.h`: callbacks d'événements relatifs à la section Organique
 - `silva_events.h`: callbacks d'événements relatifs à la section Silva
 - `narr_events.h`: callbacks d'événements relatifs à la narration
+
+## La chaîne DSP
+
+Teensy offre une librairie sonore en DSP ("digital signal processing") permettant de créer des réseaux de signaux sonores complexes, de façon similaire à Max/MSP mais en moins complexe. La personne qui développe l'environnement Teensy offre [cet outil de design](https://www.pjrc.com/teensy/gui) afin de faciliter l'interprétation vers du code. Le site sert aussi de référence pour toutes les fonctions que chaque objet peut accomplir.
+
+Afin d'importer le code qui existe déjà au sein de ce projet, copiez tout ce qui se trouve entre les deux commentaires débutant par `GUItool` dans `objects.h` et collez-le dans la boîte texte qui apparaît lorsque vous cliquez sur le bouton "Import". 
+
+Similairement, pour exporter les modifications que vous avez faites dans l'outil GUI, cliquez sur le bouton "Export" et **NE COPIEZ QUE CE QUI SE TROUVE ENTRE LES DEUX COMMENTAIRES DÉBUTANT PAR `GUItool`!!!** C'est très important, puisque le projet utilise une version différente de la librairie `Wire` qui ne doit PAS être surchargée; et, en plus, les importations de librairies se font ailleurs, donc vous ne voudriez pas avoir des doublons!

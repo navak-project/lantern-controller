@@ -10,7 +10,7 @@ Une fenêtre s'affichera automatiquement lorsque vous ouvrirez ce dossier dans V
 Vous n'avez qu'à cliquer sur "Install" pour démarrer le processus d'installation. Lorsque ce sera terminé, redémarrez VS Code.
 
 ### Remplacement de la librairie Teensy
-À cause de certains problèmes de compatibilité avec une librairie tierce et parce que j'y ai moi-même rajouté quelques personnalisations, j'ai dû effectuer quelques modifications à même librairie de Teensy. Le code complet est disponible [ici](https://codex.netherwaves.com/media/files/framework-arduinoteensy.zip).
+À cause de certains problèmes de compatibilité avec une librairie tierce et parce que j'y ai moi-même rajouté quelques personnalisations, j'ai dû effectuer quelques modifications à même librairie de Teensy. Le code complet est disponible [**ici**](https://codex.netherwaves.com/media/files/framework-arduinoteensy.zip).
 
 Après l'avoir extrait de l'archive, vous devez remplacer le dossier qui existe à l'adresse suivante: `~/.platformio/packages/framework-arduinoteensy` (c'est la même pour Windows et Unix).
 
@@ -43,8 +43,33 @@ Les modules d'action se divisent comme suit:
 
 ## La chaîne DSP
 
-Teensy offre une librairie sonore en DSP ("digital signal processing") permettant de créer des réseaux de signaux sonores complexes, de façon similaire à Max/MSP mais en moins complexe. La personne qui développe l'environnement Teensy offre [cet outil de design](https://www.pjrc.com/teensy/gui) afin de faciliter l'interprétation vers du code. Le site sert aussi de référence pour toutes les fonctions que chaque objet peut accomplir.
+Teensy offre une librairie sonore en DSP ("digital signal processing") permettant de créer des réseaux de signaux sonores complexes, de façon similaire à Max/MSP mais en moins complexe. La personne qui développe l'environnement Teensy offre [**cet outil de design**](https://www.pjrc.com/teensy/gui) afin de faciliter l'interprétation vers du code. Le site sert aussi de référence pour toutes les fonctions que chaque objet peut accomplir.
 
 Afin d'importer le code qui existe déjà au sein de ce projet, copiez tout ce qui se trouve entre les deux commentaires débutant par `GUItool` dans `objects.h` et collez-le dans la boîte texte qui apparaît lorsque vous cliquez sur le bouton "Import". 
 
 Similairement, pour exporter les modifications que vous avez faites dans l'outil GUI, cliquez sur le bouton "Export" et **NE COPIEZ QUE CE QUI SE TROUVE ENTRE LES DEUX COMMENTAIRES DÉBUTANT PAR `GUItool`!!!** C'est très important, puisque le projet utilise une version différente de la librairie `Wire` qui ne doit PAS être surchargée; et, en plus, les importations de librairies se font ailleurs, donc vous ne voudriez pas avoir des doublons!
+
+---
+
+## Gestion des fichiers audio
+
+La librairie Teensy permet la lecture et le traitement en temps réel de fichiers audio à partir d'une carte microSD. La plupart des déclenchements reposent sur ce procédé, et chaque lanterne se doit donc d'être munie d'une carte préalablement remplie avec tous les fichiers audio nécessaires au bon fonctionnement des interactions programmées. À noter que **le programme du Teensy ne fonctionnera jamais si aucune carte n'est insérée!**
+
+### Récupérer les fichiers audio
+[25 janvier 2022] La totalité des fichiers audio se trouve [**ici**](https://codex.netherwaves.com/media/files/teensy_sd_01.25.22.zip).
+
+### Nomenclature
+La nomenclature repose sur un un système d'assignation d'identifiant afin de jouer certains clips en fonction de la lanterne spécifique qui est appelée. En date de janvier 2022, trois lanternes avec trois identifiants spécifiques étaient programmées, et les identifiants à quatre caractères étaient enregistrés manuellement dans une grille de données statique, assignant chacun d'eux à un index. Ce processus est utilisé à deux endroits:
+
+- dans `lantern_events.h` > `idChart`, L.14: id de lanterne --> index (lecture dynamique de triggers: ex. `ignites/ignite_1`);
+- dans `heartbeat_events.h` > `heartToneChart`, L.12: id de lanterne --> accord musical à 4 voix (voir `updateHeartbeat` plus bas).
+
+### Standards de conversion
+
+Les fichiers audio doivent **impérativement** être:
+- des fichiers **.raw**;
+- à une résolution de **16 bits**;
+- et une fréquence d'échantillonnage de **44.1kHz**.
+
+Audacity reste le logiciel le plus accessible afin de faire la conversion vers du RAW. Audition ne le fait malheureusement pas...
+

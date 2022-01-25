@@ -16,15 +16,15 @@ std::map<String, HeartTone> heartToneChart = {
 };
 
 
-int heartRateBPM;
-unsigned long heartRateMillis;
+int heartRateBPM;                 // heart rate in beats per second
+unsigned long heartRateMillis;    // heart rate as a millisecond interval between each beat
 
-elapsedMillis heartbeatTimer;
+elapsedMillis heartbeatTimer;     // interval timer
 bool heartbeatStarted = false;
 bool isHeartNotePlaying = false;
 
 
-// functions
+// function headers
 void initHeartbeat();
 void setHeartRate(int rate);
 void startHeartbeat();
@@ -39,6 +39,7 @@ void releaseHeartNote();
 
 // NICE TO HAVE: occasional (40% chance) intermediate random-offset pulse
 
+// initialize heartbeat properties/DSP
 void initHeartbeat() {
   // set initial heart rate
   // TODO: remove this and manage from ESP32 messaging instead
@@ -104,6 +105,8 @@ void initHeartbeat() {
   mainMixer.gain(2, 0.75);
 }
 
+
+// convert heart rate to ms interval
 void setHeartRate(int rate) {
   heartRateBPM = rate;
   heartRateMillis = 60000 / rate;
@@ -115,6 +118,8 @@ void setHeartRate(int rate) {
 ////// events ///////
 /////////////////////
 
+// begin heartbeat pulse
+// (called when a lantern ignites)
 void startHeartbeat(int rate) {
   setHeartRate(rate);
 
@@ -130,7 +135,7 @@ void startHeartbeat(int rate) {
 }
 
 
-// enter/leave tree events
+// called when lantern enters tree zone
 void heartBeatToPure() {
   // play transition clip
 
@@ -138,6 +143,8 @@ void heartBeatToPure() {
   staticFader.fadeOut(250);
   pureFader.fadeIn(250);
 }
+
+// called when lantern leaves tree zone
 void heartBeatToStatic() {
   // play transition clip
 
@@ -147,14 +154,15 @@ void heartBeatToStatic() {
 }
 
 
-// towards Silva ....
+// towards Silva .... (todo)
 void toConstantLight() {
   // fade out heartbeat,
   // fade in constant light
 }
 
 
-// ending
+// stop heartbeat
+// (this will probably need some more work)
 void fadeOutAll() {
   // turn off all vital energy instruments
   heartbeatStarted = false;
@@ -163,11 +171,15 @@ void fadeOutAll() {
 
 
 // called in loop()
+// 
 void updateHeartbeat() {
   if (!heartbeatStarted) return;
   
+  // after heart rate interval (derived from BPM value)
   if (heartbeatTimer > heartRateMillis) {
+    // reset timer
     heartbeatTimer = 0;
+
     // trigger instrument
     // NOTE TO SELF FOR THE FUTURE:
     // THIS IS MIDI VELOCITY!!!! NOT SIGNAL AMPLITUDE!!! LOLLL
@@ -189,26 +201,30 @@ void pulseHeartNote(int note, int velo) {
   // TODO: velocity + note modulation
   // so that each note does not play at the same velocity on its own
 
+  // play each voice (attack + decay slope) depending on the heart tone chart values and current lantern ID
   hbSynth1.playNote(note + heartToneChart[lanternID].tones[0], velo);
   hbSynth2.playNote(note + heartToneChart[lanternID].tones[1], velo);
   hbSynth3.playNote(note + heartToneChart[lanternID].tones[2], velo);
   hbSynth4.playNote(note + heartToneChart[lanternID].tones[3], (int)(velo * 0.5));
 
+  // toggle flag
   isHeartNotePlaying = true;
 }
 
+// called on each pulse
 void actionsOnPulse() {
   // sine mod frequency
 }
 
+// called some time after the heart has beaten
 void releaseHeartNote() {
+  // stop all notes (release slope)
   hbSynth1.stop();
   hbSynth2.stop();
   hbSynth3.stop();
   hbSynth4.stop();
 
-  // play pulse drawback?
-
+  // toggle flag
   isHeartNotePlaying = false;
 }
 

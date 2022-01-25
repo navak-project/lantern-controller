@@ -48,7 +48,9 @@ void monitorBlocks() {
 
 // play an audio file (no need to specify the extension every time)
 void playAudioFile(AudioPlaySdRaw *file, String path, bool loop = false, bool steal = false) {
+  // if steal is set to false, the clip will not restart if it already is playing
   if (file->isPlaying() && !steal) return;
+
   // stop and replay file at path
   file->play((path + ".raw").c_str(), loop);
 }

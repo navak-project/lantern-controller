@@ -90,7 +90,10 @@ void extinguishLantern(OSCMessage &msg) {
 }
 
 void updateLanternEvents() {
+  // check if delay has expired
   if (!loopEnded && dly_loopEnd.isExpired()) {
+    // if so, stop the lantern loop clip
+    // (it is assumed that the lantern loop gain is at 0 when this happens)
     lanternLoop.stop();
     loopEnded = true;
     dly_loopEnd = AsyncDelay();
@@ -98,11 +101,13 @@ void updateLanternEvents() {
 }
 
 
-// on enter/leave tree
+// when entering a tree zone
 void attenLanternLoop() {
   loopAttenDC.amplitude(0.5, 1000);
   loopFilterDC.amplitude(-1, 200);
 }
+
+// when leaving a tree zone
 void accentLanternLoop() {
   loopAttenDC.amplitude(1, 250);
   loopFilterDC.amplitude(0, 1000);

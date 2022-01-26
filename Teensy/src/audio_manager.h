@@ -14,7 +14,12 @@ void initAudio() {
   sgtl5000_1.volume(0.5);
   sgtl5000_1.lineOutLevel(29);
 
+  // global EQ
+  mainEq.setHighShelf(0, 4000, 6, 0.5);
+  // global amp
   ampOut.gain(1);
+  // hum (fixes lantern loop fade out bug when not playing...?)
+  hum.amplitude(0.001);
 }
 
 
@@ -43,8 +48,9 @@ void monitorBlocks() {
 
 // play an audio file (no need to specify the extension every time)
 void playAudioFile(AudioPlaySdRaw *file, String path, bool loop = false, bool steal = false) {
+  // if steal is set to false, the clip will not restart if it already is playing
   if (file->isPlaying() && !steal) return;
-  
+
   // stop and replay file at path
   file->play((path + ".raw").c_str(), loop);
 }

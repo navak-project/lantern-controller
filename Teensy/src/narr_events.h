@@ -14,7 +14,7 @@ String narrClipList[4] = {
 };
 
 
-// functions
+// OSC callback for narration triggers
 void triggerNarration(OSCMessage &msg) {
     int clip = msg.getInt(0);
     bool play = (bool)msg.getInt(1);

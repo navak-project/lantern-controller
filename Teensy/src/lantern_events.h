@@ -37,13 +37,15 @@ void initLantern() {
 void setLanternID(OSCMessage &msg) {
   // Serial.println("setting lanternID");
 
+  // decode OSC message
   int length = msg.getDataLength(0);
   char id[length];
   msg.getString(0, id, length);
+  // set lantern ID
+  lanternID = id;
 
-  // Serial.print("id: ");
-  // Serial.println(String(id));
-
+  // find index
+  // will be removed eventually
   std::map<String, int>::iterator it = idChart.find(lanternID);
   if (it != idChart.end()) {
     lanternID = it->first;
@@ -88,7 +90,10 @@ void extinguishLantern(OSCMessage &msg) {
 }
 
 void updateLanternEvents() {
+  // check if delay has expired
   if (!loopEnded && dly_loopEnd.isExpired()) {
+    // if so, stop the lantern loop clip
+    // (it is assumed that the lantern loop gain is at 0 when this happens)
     lanternLoop.stop();
     loopEnded = true;
     dly_loopEnd = AsyncDelay();
@@ -96,11 +101,13 @@ void updateLanternEvents() {
 }
 
 
-// on enter/leave tree
+// when entering a tree zone
 void attenLanternLoop() {
   loopAttenDC.amplitude(0.5, 1000);
   loopFilterDC.amplitude(-1, 200);
 }
+
+// when leaving a tree zone
 void accentLanternLoop() {
   loopAttenDC.amplitude(1, 250);
   loopFilterDC.amplitude(0, 1000);

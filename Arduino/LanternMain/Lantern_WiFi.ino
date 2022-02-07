@@ -1,5 +1,4 @@
 #include <HTTPClient.h>
-//#include <Arduino_JSON.h>
 
 void printLine()
 {
@@ -15,7 +14,6 @@ void connectToWiFi(const char * ssid, const char * pwd)
 
   printLine();
   Serial.println("Connecting to WiFi network: " + String(ssid));
-  //  WiFi.setHostname(hostname.c_str());
   WiFi.begin(ssid, pwd);
 
   while (WiFi.status() != WL_CONNECTED)

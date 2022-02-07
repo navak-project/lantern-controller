@@ -1,13 +1,11 @@
+// Read incoming artnet packet
 void ReadArtnet() {
   artnet.read();
-
-//  artnet.printPacketHeader();
 }
 
 void onDmxFrame(uint16_t universe, uint16_t length, uint8_t sequence, uint8_t* data)
 {
   sendFrame = 1;
-  // set brightness of the whole strip
   if (universe == 15)
   {
     FastLED.setBrightness(data[0]);
@@ -30,7 +28,6 @@ void onDmxFrame(uint16_t universe, uint16_t length, uint8_t sequence, uint8_t* d
   {
     if (universesReceived[i] == 0)
     {
-      //Serial.println("Broke");
       sendFrame = 0;
       break;
     }

@@ -34,8 +34,8 @@ const char * networkPswd = "silvaFTW";
 // const char * networkName = "BELL034";
 // const char * networkPswd = "D2AA4CA6F4F4";
 // ----------- [API] ---------------
-const String local_pc_ip = "192.168.1.42";
-const String local_pc_port = "8181";
+const String local_pc_ip = "192.168.1.15";
+const String local_pc_port = "8080";
 String serverName = "http://" + local_pc_ip + ":" + local_pc_port + "/";
 String registerUrl = serverName + "api/lanterns/register/";
 String updateStatusURL = serverName + "api/lanterns/updateStatus";
@@ -52,7 +52,7 @@ bool universesReceived[maxUniverses];
 bool sendFrame = 1;
 int previousDataLength = 0;
 // ----------- [MQTT] --------------
-const char* mqtt_broker = "192.168.1.13";
+const char* mqtt_broker = "192.168.1.212";
 const int mqtt_port = 1883;
 // ----------- [UDP] ---------------
 //const unsigned int outPort = 9999;          // remote port (not needed for receive)

@@ -34,8 +34,8 @@ const char * networkPswd = "silvaFTW";
 // const char * networkName = "BELL034";
 // const char * networkPswd = "D2AA4CA6F4F4";
 // ----------- [API] ---------------
-const String local_pc_ip = "192.168.1.42";
-const String local_pc_port = "8181";
+const String local_pc_ip = "192.168.1.15";
+const String local_pc_port = "8081";
 String serverName = "http://" + local_pc_ip + ":" + local_pc_port + "/";
 String registerUrl = serverName + "api/lanterns/register/";
 String updateStatusURL = serverName + "api/lanterns/updateStatus";
@@ -52,7 +52,7 @@ bool universesReceived[maxUniverses];
 bool sendFrame = 1;
 int previousDataLength = 0;
 // ----------- [MQTT] --------------
-const char* mqtt_broker = "192.168.1.13";
+const char* mqtt_broker = "192.168.1.212";
 const int mqtt_port = 1883;
 // ----------- [UDP] ---------------
 //const unsigned int outPort = 9999;          // remote port (not needed for receive)
@@ -88,25 +88,18 @@ void setup()
 
 void loop()
 {
-  if (digitalRead(BUTTON_PIN) == LOW)
-  { // Check if button has been pressed
-    while (digitalRead(BUTTON_PIN) == LOW); // Wait for button to be released
-
-    digitalWrite(LED_PIN, HIGH); // Turn on LED
-//    requestURL(hostDomain, hostPort); // Connect to server
-    digitalWrite(LED_PIN, LOW); // Turn off LED
-  }
-
   // Artnet
   ReadArtnet();
-
+  // MQTT
   LoopMQTT();
 }
 
+// Externaly called function trhough MQTT
 void restart_esp32(){
   ESP.restart();
 }
 
+// MQTT String Parsing
 void doConcat(const char *a, const char *b, char *out) {
     strcpy(out, a);
     strcat(out, b);

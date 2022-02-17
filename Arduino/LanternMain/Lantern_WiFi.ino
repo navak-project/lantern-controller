@@ -1,5 +1,4 @@
 #include <HTTPClient.h>
-//#include <Arduino_JSON.h>
 
 void printLine()
 {
@@ -15,7 +14,6 @@ void connectToWiFi(const char * ssid, const char * pwd)
 
   printLine();
   Serial.println("Connecting to WiFi network: " + String(ssid));
-  //  WiFi.setHostname(hostname.c_str());
   WiFi.begin(ssid, pwd);
 
   while (WiFi.status() != WL_CONNECTED)
@@ -60,7 +58,7 @@ void UpdateStatus(){
   Serial.print("HTTP UPDATE with: ");
   Serial.println(updateStatusURL);
   
-  int httpResponseCode = http.PUT(updateRequest);
+  int httpResponseCode = http.POST(updateRequest);
   String payload = "{}";
 
   if (httpResponseCode > 0) {
@@ -69,23 +67,8 @@ void UpdateStatus(){
 
 
     deserializeJson(doc, http.getStream());
-//    startUniverse = doc["startUniverse"];
-//    mqtt_panID = doc["id"];
-    
-//    mqtt_panID = test;
-//    Serial.println("#### API INFO RESPONSE ####");
-//    Serial.print("startUniverse: ");
-//    Serial.println(startUniverse);
-//    Serial.print("panID: ");
-//    Serial.println(mqtt_panID);
-
     payload = http.getString();
     Serial.println(payload);
-
-//    doConcat(mqtt_topicParent, mqtt_panID, mqtt_clientTopic);
-//
-//    const char* wildcard = "/#";
-//    doConcat(mqtt_clientTopic, wildcard, mqtt_clientTopicWildCard);
   }
   else {
     Serial.println("Error code: ");

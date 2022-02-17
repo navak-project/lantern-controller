@@ -23,13 +23,10 @@ void ChaseLoop(int interval, int ledAmount, CRGB myColor) {
        leds[i] = targetColor;
     }
     
-//    leds[40-8]
-//    leds[ledIndex[0]] = targetColor;
     FastLED.show();
 
     // Increment led index
     ledIndex[0]+= 8;
-//    Serial.println(ledIndex[0]);
 
     // Loop to start
     if (ledIndex[0] > NUM_LEDS) {
@@ -48,15 +45,11 @@ void ChaseLoopMore(int interval, int ledAmount, int jump, CRGB myColor) {
     timer[0] = millis();
 
     // Set LED color
-    //    leds[ledIndex[0]] = CRGB(0, 255, 255);
-//    for(int  = lastIndex, i < jump
-      
     leds[ledIndex[0]] = targetColor;
     FastLED.show();
 
     // Increment led index
     ledIndex[0]++;
-//    Serial.println(ledIndex[0]);
 
     // Loop to start
     if (ledIndex[0] > NUM_LEDS) {

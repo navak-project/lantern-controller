@@ -10,6 +10,7 @@
 // function headers
 void receiveOSC(int byteLength);
 void initOSC();
+void dispatcher(OSCMessage &bundleIN);
 
 
 // initialize wire communication (used for OSC)

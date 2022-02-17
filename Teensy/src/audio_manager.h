@@ -3,23 +3,33 @@
 
 #include "objects.h"
 
+int volumePotValue = 0;
+int updateFilter[5];
 
 elapsedMillis blockReportTimer;
 
 
 // initialize audio library
 void initAudio() {
-  AudioMemory(40);
+  AudioMemory(80);
   sgtl5000_1.enable();
   sgtl5000_1.volume(0.5);
+  sgtl5000_1.audioPostProcessorEnable();
   sgtl5000_1.lineOutLevel(29);
-
-  // global EQ
-  mainEq.setHighShelf(0, 4000, 6, 0.5);
+  
+  // equalization
+  sgtl5000_1.eqSelect(PARAMETRIC_EQUALIZER);
+  // -- 1. midbass attenuation
+  calcBiquad(FILTER_PARAEQ, 500, -6, 0.3, 524288, 44100, updateFilter);
+  sgtl5000_1.eqFilter(0, updateFilter);
+  // -- 2. high shelf gain
+  // calcBiquad(FILTER_HISHELF, 4000, 6, 0.5, 524288, 44100, updateFilter);
+  // sgtl5000_1.eqFilter(1, updateFilter);
+  
   // global amp
-  ampOut.gain(1);
+  ampOut.gain(0.5);
   // hum (fixes lantern loop fade out bug when not playing...?)
-  hum.amplitude(0.001);
+  hum.amplitude(0.0001);
 }
 
 
@@ -53,6 +63,16 @@ void playAudioFile(AudioPlaySdRaw *file, String path, bool loop = false, bool st
 
   // stop and replay file at path
   file->play((path + ".raw").c_str(), loop);
+}
+
+
+// update global amp with value from A1 pin
+void updateVolumePot() {
+  int val = analogRead(A1);
+  if (val != volumePotValue) {
+    volumePot.gain((float)val / 1024.0);
+    volumePotValue = val;
+  }
 }
 
 #endif

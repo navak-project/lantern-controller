@@ -128,8 +128,8 @@ void updateLanternEvents() {
     playAudioFile(&lightRaw, "lights/light_" + String(lanternIndex), true);
     
     // crossfade to light
-    wooshFade.fadeOut(5000);
-    lightFade.fadeIn(5000);
+    wooshFade.fadeOut(12000);
+    lightFade.fadeIn(12000);
 
     // turn off delay
     wooshEnded = true;

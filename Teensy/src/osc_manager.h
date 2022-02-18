@@ -62,15 +62,16 @@ void receiveOSC(int byteLength) {
 // make sure the addresses are reflected in the ESP32 code
 void dispatcher(OSCMessage &bundleIN) {
   // lantern events
-  bundleIN.dispatch("/li", igniteLantern);      // "li" = Lantern Ignite
-  bundleIN.dispatch("/le", extinguishLantern);  // "le" = Lantern Extinguish
+  bundleIN.dispatch("/li",    igniteLantern);           // "li" = Lantern Ignite
+  bundleIN.dispatch("/t",     switchToConstantLight);   // "t"  = Transition (to constant light)
+  bundleIN.dispatch("/le",    extinguishLantern);       // "le" = Lantern Extinguish
 
   // narration event
-  bundleIN.dispatch("/n", triggerNarration);    // "n" = Narration
+  bundleIN.dispatch("/n",     triggerNarration);        // "n" = Narration
 
   // organique events
-  bundleIN.dispatch("/on", enterTree);          // "on" = Organique eNter
-  bundleIN.dispatch("/ox", exitTree);           // "ox" = Organique eXit
+  bundleIN.dispatch("/on",    enterTree);               // "on" = Organique eNter
+  bundleIN.dispatch("/ox",    exitTree);                // "ox" = Organique eXit
 
   // silva events
 }

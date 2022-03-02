@@ -8,7 +8,7 @@ void AllOff() {
 
 void InitLeds(){
   FastLED.addLeds<WS2812B, DATA_PIN, GRB>(leds, NUM_LEDS);  // GRB ordering is typical
-  FastLED.setBrightness(254);
+  FastLED.setBrightness(200);
   AllOff();
 }
 

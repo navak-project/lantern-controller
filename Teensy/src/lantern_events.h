@@ -22,9 +22,11 @@ std::map<String, int> idChart = {
 
 
 void initLantern() {
+  AudioNoInterrupts();
+
   // initialize ID to default value
   lanternID = "0b85";
-  lanternIndex = 0;
+  lanternIndex = 1;
 
   // DCs and filters...
   fireAttenDC.amplitude(1);
@@ -33,18 +35,16 @@ void initLantern() {
   fireFilter.resonance(0.2);
   fireFilter.octaveControl(3.5);
 
-  // mixer shit
-  ambMixer.gain(0, 1);
+  // ambience mixer: turn off everything...
+  ambMixer.gain(0, 0);
+  ambMixer.gain(1, 0);
+  ambMixer.gain(2, 0);
 
-  // lantern loop fade out
-  fireFade.fadeOut(10);
-  lightFade.fadeOut(10);
-  wooshFade.fadeOut(10);
+  AudioInterrupts();
 }
 
-void setLanternID(OSCMessage &msg) {
-  // Serial.println("setting lanternID");
 
+void setLanternID(OSCMessage &msg) {
   // decode OSC message
   int length = msg.getDataLength(0);
   char id[length];
@@ -61,12 +61,8 @@ void setLanternID(OSCMessage &msg) {
   }
 
   Serial.println(lanternIndex);
-
-  // Serial.print("lanternID: ");
-  // Serial.println(lanternID);
-  // Serial.print("lanternIndex: ");
-  // Serial.println(lanternIndex);
 }
+
 
 void igniteLantern(OSCMessage &msg) {
   AudioNoInterrupts();
@@ -74,9 +70,13 @@ void igniteLantern(OSCMessage &msg) {
   // set internal properties
   setLanternID(msg);
 
-  // start lantern loop layer 1
+  // start all loops here (theyre muted)
   playAudioFile(&fireRaw, "fires/fire_" + String(lanternIndex), true);
-  fireFade.fadeIn(5000);
+  //playAudioFile(&wooshRaw, "wooshes/woosh_" + String(lanternIndex), true);
+  //playAudioFile(&lightRaw, "lights/light_" + String(lanternIndex), true);
+
+  // fade in first fire...
+  unmuteFadeIn(&ambMixer, 0, &fireFade, 5000);
 
   // play ignite cue
   playAudioFile(&lanternEvents, "ignites/ignite_" + String(lanternIndex));
@@ -87,17 +87,23 @@ void igniteLantern(OSCMessage &msg) {
   AudioInterrupts();
 }
 
+
 void switchToConstantLight(OSCMessage &msg) {
-  // start woosh sound
-  playAudioFile(&wooshRaw, "wooshes/woosh_" + String(lanternIndex), true);
+  AudioNoInterrupts();
   
   // crossfade to woosh
   fireFade.fadeOut(3000);
-  wooshFade.fadeIn(6000);
+  unmuteFadeIn(&ambMixer, 1, &wooshFade, 6000);
 
   // delay (10s)
+  // TODO: make a better system for this... some kinda delay queue
   dly_wooshEnd.start(10000, AsyncDelay::MILLIS);
   wooshEnded = false;
+
+  // fade out heartbeat
+  fadeOutHeartbeat();
+
+  AudioInterrupts();
 }
 
 void extinguishLantern(OSCMessage &msg) {
@@ -119,17 +125,13 @@ void extinguishLantern(OSCMessage &msg) {
   AudioInterrupts();
 }
 
+
 void updateLanternEvents() {
   // woosh fade in end delay
   if (!wooshEnded && dly_wooshEnd.isExpired()) {
-    fireRaw.stop();
-
-    // start light clip
-    playAudioFile(&lightRaw, "lights/light_" + String(lanternIndex), true);
-    
     // crossfade to light
     wooshFade.fadeOut(12000);
-    lightFade.fadeIn(12000);
+    unmuteFadeIn(&ambMixer, 2, &lightFade, 12000);
 
     // turn off delay
     wooshEnded = true;
@@ -140,9 +142,6 @@ void updateLanternEvents() {
   if (!loopEnded && dly_loopEnd.isExpired()) {
     // if so, stop the lantern loop clip
     // (it is assumed that the lantern loop gain is at 0 when this happens)
-    wooshRaw.stop();
-    lightRaw.stop();
-
     loopEnded = true;
     dly_loopEnd = AsyncDelay();
   }

@@ -3,6 +3,9 @@
 
 #include "objects.h"
 
+AsyncDelay dly_hbEnd;
+bool hbEnded = false;
+
 struct HeartTone {
   int baseTone;
   int tones[4];
@@ -154,15 +157,18 @@ void heartBeatToStatic() {
 }
 
 
-// towards Silva .... (todo)
-void toConstantLight() {
-  // fade out heartbeat,
-  // fade in constant light
+// towards Silva ....
+void fadeOutHeartbeat() {
+  // fade out heartbeat
+  hbFade.fadeOut(10000);
+
+  // start heart beat stop timer
+  hbEnded = false;
+  dly_hbEnd.start(10000, AsyncDelay::MILLIS);
 }
 
 
-// stop heartbeat
-// (this will probably need some more work)
+// stop heartbeat (DEPRECATED)
 void fadeOutAll() {
   // turn off all vital energy instruments
   heartbeatStarted = false;
@@ -174,6 +180,15 @@ void fadeOutAll() {
 // 
 void updateHeartbeat() {
   if (!heartbeatStarted) return;
+
+  // check for heart beat delay end
+  if (!hbEnded && dly_hbEnd.isExpired()) {
+    heartbeatStarted = false;
+
+    // kill timer
+    hbEnded = true;
+    dly_hbEnd = AsyncDelay();
+  }
   
   // after heart rate interval (derived from BPM value)
   if (heartbeatTimer > heartRateMillis) {

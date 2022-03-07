@@ -15,6 +15,7 @@
 
 #include "objects.h"
 #include "audio_manager.h"
+#include "flash_manager.h"
 #include "lantern_events.h"
 #include "organique_events.h"
 #include "heartbeat_events.h"
@@ -27,14 +28,17 @@ void testSequence();
 
 
 void setup() {
-  // init Teensy Audio + SD
-  initAudio();
+  // init SD + flash memory
   initSD();
+  // initFlashMem();
 
-  // init OSC thru Wire
+  // init teensy audio
+  initAudio();
+  
+  // init OSC
   initOSC();
 
-  // init props
+  // init systems
   initLantern();
   initHeartbeat();
 }
@@ -54,7 +58,7 @@ void loop() {
   // testSequence();
 
   // complimentary delay :o)
-  delayMicroseconds(10);
+  // delayMicroseconds(10);
 }
 
 
@@ -74,9 +78,9 @@ void testSequence() {
   }
 
   // after 27 seconds:
-  if (testSeqTimer > 27000 && !extinguished) {
+  if (testSeqTimer > 20000 && !extinguished) {
     // extinguish
-    extinguishLantern(dummy);
+    switchToConstantLight(dummy);
     extinguished = true;
   }
 }

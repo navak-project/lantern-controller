@@ -12,6 +12,7 @@ PubSubClient client(mqtt_client);
 //String lanternSound;
 
 unsigned long mqttConnectionTimer = millis();
+unsigned long voltageTimer = millis();
 
 void MqttCallback(char* topic, byte* message, unsigned int length) {
   Serial.print("Message arrived on topic: ");
@@ -58,10 +59,10 @@ void MqttCallback(char* topic, byte* message, unsigned int length) {
 
   else if (String(topic) == ignite) {
     OSCMessage msg("/li");
-    
+
     msg
-      .add(mqtt_panIDString.c_str())                    // lantern ID
-      .add((int)messageTemp.toInt());                   // heart rate
+    .add(mqtt_panIDString.c_str())                    // lantern ID
+    .add((int)messageTemp.toInt());                   // heart rate
 
     SendToTeensy(msg);
   }
@@ -75,13 +76,13 @@ void MqttCallback(char* topic, byte* message, unsigned int length) {
     OSCMessage msg("/le");
     SendToTeensy(msg);
   }
-  
+
   else if (String(topic) == enterTree) {
     OSCMessage msg("/on");
     msg.add((int)messageTemp.toInt());                  // tree ID
     SendToTeensy(msg);
   }
-  
+
   else if (String(topic) == exitTree) {
     OSCMessage msg("/ox");
     SendToTeensy(msg);
@@ -102,6 +103,8 @@ void LoopMQTT() {
   }
 
   client.loop();
+
+  
 }
 
 void ConnectToMQTT() {

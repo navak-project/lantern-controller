@@ -39,6 +39,7 @@ const String local_pc_port = "8081";
 String serverName = "http://" + local_pc_ip + ":" + local_pc_port + "/";
 String registerUrl = serverName + "api/lanterns/register/";
 String updateStatusURL = serverName + "api/lanterns/updateStatus";
+String updateLanternInfo = serverName + "api/lanterns";
 //String registerRequest = "{\"hostName\":\"" + esp_hostName_String + "\", \"macAddress\":\"" + esp_macAddress + "\", \"ipAddress\":\"" + esp_ip + "\"}"; // SEE LANTERN WIFI FILE
 // ----------- [FASTLED] -----------
 #define DATA_PIN 19
@@ -62,28 +63,30 @@ const int mqtt_port = 1883;
 // ----------- [TIMERS] ------------
 unsigned long timer[2] = {millis(), millis()};
 int ledIndex[12] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
-const int BUTTON_PIN = 0;
-const int LED_PIN = 13; //On board LED
+unsigned long lanternInfoTimer = millis();
+int lanternInfoMaxTime = 5000;
 bool flashState = false;
 float ledState = 0;
 // ----------- [TEENSY COM] ---------
 const String COM_OUT_HEADER = "/audio/";
 
+char result[8];
+char signalStrenght[8];
+//
+
+int sensorValue;
+int wifiValue;
 
 void setup()
 {
   // Initilize hardware:
   Serial.begin(115200);
-  pinMode(BUTTON_PIN, INPUT_PULLUP);
-  pinMode(LED_PIN, OUTPUT);
 
   InitLeds();
   InitWifi();
   InitMQTT();
   InitArtnet();
   InitWire();
-
-  digitalWrite(LED_PIN, LOW); // LED off
 }
 
 void loop()
@@ -92,17 +95,24 @@ void loop()
   ReadArtnet();
   // MQTT
   LoopMQTT();
+
+  // Lantern battery and wifi signal strength
+  GetLanternStatusInfo();
+
+//  Serial.println(sensorValue);
 }
 
+
+
 // Externaly called function trhough MQTT
-void restart_esp32(){
+void restart_esp32() {
   ESP.restart();
 }
 
 // MQTT String Parsing
 void doConcat(const char *a, const char *b, char *out) {
-    strcpy(out, a);
-    strcat(out, b);
+  strcpy(out, a);
+  strcat(out, b);
 }
 
 //Dont mind me

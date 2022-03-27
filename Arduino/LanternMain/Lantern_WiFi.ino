@@ -18,7 +18,7 @@ void connectToWiFi(const char * ssid, const char * pwd)
 
   while (WiFi.status() != WL_CONNECTED)
   {
-    DisplayConnectionCode(0);
+    DisplayConnectionCode(4);
   }
   
   SetNetworkInfo();
@@ -45,6 +45,19 @@ void SetNetworkInfo(){
   esp_hostName_char = WiFi.getHostname();
 }
 
+void GetLanternStatusInfo(){
+  if (millis() - lanternInfoTimer > lanternInfoMaxTime) {
+    lanternInfoTimer = millis();
+    sensorValue = map(analogRead(34), 3150, 3250, 0, 100);
+    wifiValue = map(WiFi.RSSI(), -90, -30, 5, 100);
+    Serial.print(sensorValue);
+    Serial.print(" || ");
+    Serial.print(analogRead(34));
+    Serial.println("");
+    UpdateLanternInternalInfo();
+  }
+}
+
 void UpdateStatus(){
   HTTPClient http;
   DynamicJsonDocument doc(2048);
@@ -59,6 +72,43 @@ void UpdateStatus(){
   Serial.println(updateStatusURL);
   
   int httpResponseCode = http.POST(updateRequest);
+  String payload = "{}";
+
+  if (httpResponseCode > 0) {
+    Serial.print("HTTP Response code: ");
+    Serial.println(httpResponseCode);
+
+
+    deserializeJson(doc, http.getStream());
+    payload = http.getString();
+    Serial.println(payload);
+  }
+  else {
+    Serial.println("Error code: ");
+    Serial.print(httpResponseCode);
+    Serial.println();
+  }
+
+  http.end();
+
+}
+
+void UpdateLanternInternalInfo(){
+  HTTPClient http;
+  DynamicJsonDocument doc(2048);
+
+  
+  
+  String updateRequest = "{\"battery\":\"" + String(sensorValue) + "\", \"wifiSignal\":\"" + String(wifiValue) + "\"}";
+  http.begin(updateLanternInfo + "/" + mqtt_panIDString);
+  Serial.print("HTTP Requesting to: ");
+  Serial.println(updateLanternInfo + "/" + mqtt_panIDString);
+  http.addHeader("Content-Type", "application/json");
+
+  Serial.print("HTTP UPDATE with: ");
+  Serial.println(updateLanternInfo + "/" + mqtt_panIDString);
+  
+  int httpResponseCode = http.PUT(updateRequest);
   String payload = "{}";
 
   if (httpResponseCode > 0) {

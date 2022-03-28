@@ -50,10 +50,10 @@ void GetLanternStatusInfo(){
     lanternInfoTimer = millis();
     sensorValue = map(analogRead(34), 3150, 3250, 0, 100);
     wifiValue = map(WiFi.RSSI(), -90, -30, 5, 100);
-    Serial.print(sensorValue);
-    Serial.print(" || ");
-    Serial.print(analogRead(34));
-    Serial.println("");
+//    Serial.print(sensorValue);
+//    Serial.print(" || ");
+//    Serial.print(analogRead(34));
+//    Serial.println("");
     UpdateLanternInternalInfo();
   }
 }

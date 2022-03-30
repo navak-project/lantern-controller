@@ -25,7 +25,7 @@ void initAudio() {
   // equalization
   sgtl5000_1.eqSelect(PARAMETRIC_EQUALIZER);
   // -- 1. midbass attenuation
-  calcBiquad(FILTER_PARAEQ, 500, -6, 0.3, 524288, 44100, updateFilter);
+  calcBiquad(FILTER_PARAEQ, 500, -4, 0.3, 524288, 44100, updateFilter);
   sgtl5000_1.eqFilter(0, updateFilter);
   // -- 2. high shelf gain
   // calcBiquad(FILTER_HISHELF, 4000, 6, 0.5, 524288, 44100, updateFilter);

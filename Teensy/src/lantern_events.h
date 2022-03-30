@@ -15,9 +15,10 @@ bool wooshEnded = false;
 // lanternID to index mapper
 // this will eventually need to be changed to use the lantern type instead
 std::map<String, int> idChart = {
-  { "0b85", 1 },
-  { "5a8e", 2 },
-  { "0a99", 3 },
+  { "cf9b", 1 },
+  { "c51c", 2 },
+  { "c52e", 3 },
+  { "ce17", 1 },
 };
 
 
@@ -25,7 +26,7 @@ void initLantern() {
   AudioNoInterrupts();
 
   // initialize ID to default value
-  lanternID = "0b85";
+  lanternID = "cf9b";
   lanternIndex = 1;
 
   // DCs and filters...
@@ -39,6 +40,10 @@ void initLantern() {
   ambMixer.gain(0, 0);
   ambMixer.gain(1, 0);
   ambMixer.gain(2, 0);
+
+  mainMixer.gain(1, 0.75);
+
+  fireFade.fadeOut(10);
 
   AudioInterrupts();
 }
@@ -113,6 +118,7 @@ void extinguishLantern(OSCMessage &msg) {
   playAudioFile(&lanternEvents, "extinguishes/extinguish_" + String(lanternIndex));
 
   // fade out lantern loop
+  fireFade.fadeOut(2000);
   lightFade.fadeOut(2000);
 
   // turn off lantern loop in 5s

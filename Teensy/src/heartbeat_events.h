@@ -13,9 +13,10 @@ struct HeartTone {
 
 // heart tone chart
 std::map<String, HeartTone> heartToneChart = {
-  { "0b85", {75, { 0, 7, 14, 0 }} },
-  { "5a8e", {80, { 0, -1, 5, 11 }} },
-  { "0a99", {75, { 0, 7, 14, 0 }} },
+  { "cf9b", {71, { 0, 7, 16, -2 }} },
+  { "c51c", {75, { 0, 5, 10, -2 }} },
+  { "c52e", {66, { 7, 0, 12, -9 }} },
+  { "ce17", {73, { 2, 0, 7,  -4 }} },
 };
 
 
@@ -105,7 +106,7 @@ void initHeartbeat() {
   staticFader.fadeOut(10);
 
   // to main mixer
-  mainMixer.gain(2, 0.75);
+  mainMixer.gain(2, 1.2);
 }
 
 
@@ -181,14 +182,14 @@ void fadeOutAll() {
 void updateHeartbeat() {
   if (!heartbeatStarted) return;
 
-  // check for heart beat delay end
-  if (!hbEnded && dly_hbEnd.isExpired()) {
-    heartbeatStarted = false;
+  // // check for heart beat delay end
+  // if (!hbEnded && dly_hbEnd.isExpired()) {
+  //   heartbeatStarted = false;
 
-    // kill timer
-    hbEnded = true;
-    dly_hbEnd = AsyncDelay();
-  }
+  //   // kill timer
+  //   hbEnded = true;
+  //   dly_hbEnd = AsyncDelay();
+  // }
   
   // after heart rate interval (derived from BPM value)
   if (heartbeatTimer > heartRateMillis) {

@@ -14,6 +14,7 @@
 #include "ESP_osc.h"
 #include "ESP_wifi.h"
 
+
 void setup()
 {
   // Initilize hardware:
@@ -34,7 +35,7 @@ void loop()
   LoopMQTT();
 
   // Lantern battery and wifi signal strength
-  GetLanternStatusInfo();
+  // GetLanternStatusInfo();
 
 //  Serial.println(sensorValue);
 }

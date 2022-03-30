@@ -1,9 +1,11 @@
 #ifndef __ESP_OSC_H__
 #define __ESP_OSC_H__
 
+#include <Wire.h>
 #include "global.h"
 
 void InitWire() {
+  Wire.setPins(21, 22);
   Wire.begin();
 }
 

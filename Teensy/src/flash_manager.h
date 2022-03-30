@@ -1,3 +1,11 @@
+#ifndef FLASH_MANAGER
+#define FLASH_MANAGER
+
+void initFlashMem();
+void copyFromSD(const char *dir);
+bool compareFiles(File &file, SerialFlashFile &ffile);
+
+
 void initFlashMem()
 {
     // initialize
@@ -123,3 +131,6 @@ bool compareFiles(File &file, SerialFlashFile &ffile)
     }
     return true; // all data identical
 }
+
+
+#endif

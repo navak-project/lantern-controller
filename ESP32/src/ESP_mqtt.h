@@ -97,6 +97,9 @@ void MqttCallback(char* topic, byte* message, unsigned int length) {
   }
 
   else if (String(topic) == sync) {
+    int state = (int)messageTemp.toInt();
+    if (state == 0) return;
+
     OSCMessage msg("/b");
     SendToTeensy(msg);
   }

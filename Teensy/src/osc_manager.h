@@ -23,9 +23,7 @@ void initOSC() {
 
 // catchall OSC receiver callback
 void receiveOSC(int byteLength) {
-  AudioNoInterrupts();
-
-  //Serial.println("receiving OSC...");
+  Serial.println("receiving OSC...");
   
   // define OSC bundle
   OSCMessage bundleIN;
@@ -53,8 +51,6 @@ void receiveOSC(int byteLength) {
     // ...dispatch
     dispatcher(bundleIN);
   }
-
-  AudioInterrupts();
 }
 
 
@@ -72,6 +68,7 @@ void dispatcher(OSCMessage &bundleIN) {
   // organique events
   bundleIN.dispatch("/on",    enterTree);               // "on" = Organique eNter
   bundleIN.dispatch("/ox",    exitTree);                // "ox" = Organique eXit
+  bundleIN.dispatch("/b",     triggerHeartbeat);        // "b"  = (heart)Beat
 
   // silva events
 }

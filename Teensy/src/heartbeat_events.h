@@ -1,17 +1,23 @@
 #ifndef HEARTBEAT_EVENTS
 #define HEARTBEAT_EVENTS
 
+
+// includes
+#include <map>
+
 #include "objects.h"
 
+// timers
 AsyncDelay dly_hbEnd;
 bool hbEnded = false;
 
+
+// heart tone chart
 struct HeartTone {
   int baseTone;
   int tones[4];
 };
 
-// heart tone chart
 std::map<String, HeartTone> heartToneChart = {
   { "cf9b", {71, { 0, 7, 16, -2 }} },
   { "c51c", {75, { 0, 5, 10, -2 }} },
@@ -20,12 +26,14 @@ std::map<String, HeartTone> heartToneChart = {
 };
 
 
+// props
 int heartRateBPM;                 // heart rate in beats per second
 unsigned long heartRateMillis;    // heart rate as a millisecond interval between each beat
 
 elapsedMillis heartbeatTimer;     // interval timer
 bool heartbeatStarted = false;
 bool isHeartNotePlaying = false;
+bool cuePulse = false;
 
 
 // function headers
@@ -41,7 +49,6 @@ void pulseHeartNote(int note, int velo);
 void actionsOnPulse();
 void releaseHeartNote();
 
-// NICE TO HAVE: occasional (40% chance) intermediate random-offset pulse
 
 // initialize heartbeat properties/DSP
 void initHeartbeat() {
@@ -129,13 +136,18 @@ void startHeartbeat(int rate) {
 
   // begin heartbeat loop
   heartbeatTimer = 0;
-  heartbeatStarted = true;
+  // heartbeatStarted = true;
 
   // reset sine mod frequency
   sineMod.frequency(pow(2.0, ((float)(heartToneChart[lanternID].baseTone - 69)/12.0)) * 440.0 * 0.0976);
 
   // fade in
   staticFader.fadeIn(2000);
+}
+
+
+void pulse() {
+  cuePulse = true;
 }
 
 
@@ -180,7 +192,7 @@ void fadeOutAll() {
 // called in loop()
 // 
 void updateHeartbeat() {
-  if (!heartbeatStarted) return;
+  if (!cuePulse) return;
 
   // // check for heart beat delay end
   // if (!hbEnded && dly_hbEnd.isExpired()) {
@@ -240,8 +252,9 @@ void releaseHeartNote() {
   hbSynth3.stop();
   hbSynth4.stop();
 
-  // toggle flag
+  // toggle flags
   isHeartNotePlaying = false;
+  cuePulse = false;
 }
 
 #endif

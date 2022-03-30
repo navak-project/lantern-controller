@@ -11,7 +11,12 @@ elapsedMillis blockReportTimer;
 
 // initialize audio library
 void initAudio() {
-  AudioMemory(80);
+  // global amp
+  ampOut.gain(0.75);
+  // hum (fixes lantern loop fade out bug when not playing...?)
+  hum.amplitude(0.001);
+
+  AudioMemory(40);
   sgtl5000_1.enable();
   sgtl5000_1.volume(0.5);
   sgtl5000_1.audioPostProcessorEnable();
@@ -20,16 +25,11 @@ void initAudio() {
   // equalization
   sgtl5000_1.eqSelect(PARAMETRIC_EQUALIZER);
   // -- 1. midbass attenuation
-  calcBiquad(FILTER_PARAEQ, 500, -6, 0.3, 524288, 44100, updateFilter);
+  calcBiquad(FILTER_PARAEQ, 500, -4, 0.3, 524288, 44100, updateFilter);
   sgtl5000_1.eqFilter(0, updateFilter);
   // -- 2. high shelf gain
   // calcBiquad(FILTER_HISHELF, 4000, 6, 0.5, 524288, 44100, updateFilter);
   // sgtl5000_1.eqFilter(1, updateFilter);
-  
-  // global amp
-  ampOut.gain(0.5);
-  // hum (fixes lantern loop fade out bug when not playing...?)
-  hum.amplitude(0.0001);
 }
 
 
@@ -44,6 +44,8 @@ void initSD() {
       delay(500);
     }
   }
+
+  delay(500);
 }
 
 
@@ -73,6 +75,17 @@ void updateVolumePot() {
     volumePot.gain((float)val / 1024.0);
     volumePotValue = val;
   }
+}
+
+
+// fade/mute
+void muteFadeOut(AudioMixer4 *mixer, int mxChannel, AudioEffectFade *fader, uint32_t ms) {
+  fader->fadeOut(ms);
+}
+
+void unmuteFadeIn(AudioMixer4 *mixer, int mxChannel, AudioEffectFade *fader, uint32_t ms) {
+  mixer->gain(mxChannel, 1);
+  fader->fadeIn(ms);
 }
 
 #endif

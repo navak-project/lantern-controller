@@ -33,14 +33,12 @@ void MqttCallback(char* topic, byte* message, unsigned int length) {
   String control = String() + mqtt_clientTopic + "/control";
 
   // audio events
-  String ignite = String() + mqtt_clientTopic + "/audio/ignite";
-  String transition = String() + mqtt_clientTopic + "/audio/transition";
-  String extinguish = String() + mqtt_clientTopic + "/audio/extinguish";
-  String enterTree = String() + mqtt_clientTopic + "/audio/enterTree";
-  String exitTree = String() + mqtt_clientTopic + "/audio/exitTree";
-
-  // narration
-  String narration = String() + mqtt_clientTopic + "/narration";
+  String ignite =       String() + mqtt_clientTopic + "/audio/ignite";
+  String transition =   String() + mqtt_clientTopic + "/audio/transition";
+  String extinguish =   String() + mqtt_clientTopic + "/audio/extinguish";
+  String enterTree =    String() + mqtt_clientTopic + "/audio/enterTree";
+  String exitTree =     String() + mqtt_clientTopic + "/audio/exitTree";
+  String sync =         String() + mqtt_clientTopic + "/audio/sync";
 
 
   // populate message string
@@ -88,10 +86,8 @@ void MqttCallback(char* topic, byte* message, unsigned int length) {
     SendToTeensy(msg);
   }
 
-  else if (String(topic) == narration) {
-    OSCMessage msg("/n");
-    msg.add(0);                                         // clip# (zone)
-    msg.add(1);                                         // state
+  else if (String(topic) == sync) {
+    OSCMessage msg("/b");
     SendToTeensy(msg);
   }
 }

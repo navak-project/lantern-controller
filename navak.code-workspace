@@ -1,0 +1,12 @@
+{
+	"folders": [
+		{
+			"path": "ESP32"
+		},
+		{
+			"name": "Teensy",
+			"path": "Teensy"
+		}
+	],
+	"settings": {}
+}

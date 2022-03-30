@@ -5,8 +5,7 @@
 #include "global.h"
 
 void InitWire() {
-  Wire.setPins(21, 22);
-  Wire.begin();
+  Wire.begin(21, 22);
 }
 
 // through I2C communication

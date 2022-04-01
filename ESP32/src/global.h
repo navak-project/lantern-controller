@@ -73,7 +73,10 @@ const int mqtt_port = 1883;
 // ----------- [TEENSY COM] ---------
 const String COM_OUT_HEADER = "/audio/";
 
-//
+// ----------- [PCB LED] ------------
+#define AUX_WIFI 14
+#define AUX_MQTT 12
+// ----------------------------------
 
 int sensorValue;
 int wifiValue;
@@ -89,6 +92,14 @@ void doConcat(const char *a, const char *b, char *out) {
   strcpy(out, a);
   strcat(out, b);
 }
+
+// void Init_PCB(){
+//   pinMode(AUX_MQTT, OUTPUT);
+//   pinMode(AUX_WIFI, OUTPUT);
+
+//   digitalWrite(AUX_MQTT, LOW);
+//   digitalWrite(AUX_WIFI, LOW);
+// }
 
 
 #endif // __GLOBAL_H__

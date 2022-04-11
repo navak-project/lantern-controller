@@ -12,8 +12,6 @@ void UpdateStatus();
 void ConnectToMQTT();
 void UpdateLanternInternalInfo();
 
-
-
 void printLine()
 {
   Serial.println();
@@ -24,7 +22,10 @@ void printLine()
 
 void connectToWiFi(const char * ssid, const char * pwd)
 {
-  int ledState = 0;
+  String mac = WiFi.macAddress();
+  mac.replace(":", "");
+  
+  WiFi.setHostname(mac.c_str());
 
   printLine();
   Serial.println("Connecting to WiFi network: " + String(ssid));

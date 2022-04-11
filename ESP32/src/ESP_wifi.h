@@ -24,7 +24,6 @@ void connectToWiFi(const char * ssid, const char * pwd)
 {
   String mac = WiFi.macAddress();
   mac.replace(":", "");
-  
   WiFi.setHostname(mac.c_str());
 
   printLine();
@@ -33,7 +32,7 @@ void connectToWiFi(const char * ssid, const char * pwd)
 
   while (WiFi.status() != WL_CONNECTED)
   {
-    DisplayConnectionCode(4);
+    DisplayConnectionCode(0);
   }
   
   SetNetworkInfo();
@@ -64,11 +63,7 @@ void GetLanternStatusInfo(){
   if (millis() - lanternInfoTimer > lanternInfoMaxTime) {
     lanternInfoTimer = millis();
     sensorValue = map(analogRead(34), 3150, 3250, 0, 100);
-    wifiValue = map(WiFi.RSSI(), -90, -30, 5, 100);
-//    Serial.print(sensorValue);
-//    Serial.print(" || ");
-//    Serial.print(analogRead(34));
-//    Serial.println("");
+    wifiValue = map(WiFi.RSSI(), -120, 0, 5, 100);
     UpdateLanternInternalInfo();
   }
 }
@@ -112,37 +107,17 @@ void UpdateLanternInternalInfo(){
   HTTPClient http;
   DynamicJsonDocument doc(2048);
 
-  
-  
   String updateRequest = "{\"battery\":\"" + String(sensorValue) + "\", \"wifiSignal\":\"" + String(wifiValue) + "\"}";
   http.begin(updateLanternInfo + "/" + mqtt_panIDString);
-  Serial.print("HTTP Requesting to: ");
-  Serial.println(updateLanternInfo + "/" + mqtt_panIDString);
+  // Serial.print("HTTP Requesting to: ");
+  // Serial.println(updateLanternInfo + "/" + mqtt_panIDString);
   http.addHeader("Content-Type", "application/json");
 
-  Serial.print("HTTP UPDATE with: ");
-  Serial.println(updateLanternInfo + "/" + mqtt_panIDString);
+  Serial.print("HTTP PUT with: ");
+  Serial.println(String(sensorValue) + "/" + String(wifiValue));
   
-  int httpResponseCode = http.PUT(updateRequest);
-  String payload = "{}";
-
-  if (httpResponseCode > 0) {
-    Serial.print("HTTP Response code: ");
-    Serial.println(httpResponseCode);
-
-
-    deserializeJson(doc, http.getStream());
-    payload = http.getString();
-    Serial.println(payload);
-  }
-  else {
-    Serial.println("Error code: ");
-    Serial.print(httpResponseCode);
-    Serial.println();
-  }
-
+  http.PUT(updateRequest);
   http.end();
-
 }
 
 void Register() {

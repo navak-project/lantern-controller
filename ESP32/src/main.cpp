@@ -36,7 +36,7 @@ void loop()
   LoopMQTT();
 
   // Lantern battery and wifi signal strength
-  // GetLanternStatusInfo();
+  GetLanternStatusInfo();
 
 //  Serial.println(sensorValue);
 }

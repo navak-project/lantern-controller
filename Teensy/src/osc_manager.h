@@ -4,7 +4,7 @@
 #include "objects.h"
 #include "lantern_events.h"
 #include "organique_events.h"
-#include "narr_events.h"
+#include "silva_events.h"
 
 
 // function headers
@@ -62,15 +62,13 @@ void dispatcher(OSCMessage &bundleIN) {
   bundleIN.dispatch("/t",     switchToConstantLight);   // "t"  = Transition (to constant light)
   bundleIN.dispatch("/le",    extinguishLantern);       // "le" = Lantern Extinguish
 
-  // narration event
-  bundleIN.dispatch("/n",     triggerNarration);        // "n" = Narration
-
   // organique events
   bundleIN.dispatch("/on",    enterTree);               // "on" = Organique eNter
   bundleIN.dispatch("/ox",    exitTree);                // "ox" = Organique eXit
   bundleIN.dispatch("/b",     triggerHeartbeat);        // "b"  = (heart)Beat
 
   // silva events
+  bundleIN.dispatch("/tr",    toggleRumble);            // "tr" = Toggle Rumble
 }
 
 #endif

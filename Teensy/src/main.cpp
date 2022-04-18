@@ -18,7 +18,6 @@
 #include "lantern_events.h"
 #include "organique_events.h"
 #include "heartbeat_events.h"
-#include "narr_events.h"
 #include "osc_manager.h"
 
 
@@ -42,6 +41,7 @@ void setup() {
   // init systems
   initLantern();
   initHeartbeat();
+  initRumble();
 }
 
 
@@ -53,6 +53,7 @@ void loop() {
   // updateVolumePot();
   updateHeartbeat();
   updateLanternEvents();
+  updateRumble();
 
   // test sequence
   // uncomment if you want to test a predetermined chain of events from the moment the Teensy is powered on

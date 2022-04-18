@@ -11,7 +11,7 @@ AsyncDelay dly_wooshEnd;
 bool loopEnded = true;
 bool wooshEnded = true;
 
-bool isIgnited = false;
+bool hasIgnited = false;
 bool hasTransitioned = false;
 
 
@@ -35,16 +35,6 @@ void initLantern() {
   fireFilterDC.amplitude(0);
   fireFilter.frequency(14000);
   fireFilter.resonance(0.2);
-  fireFilter.octaveControl(3.5);
-
-  // ambience mixer: turn off everything...
-  ambMixer.gain(0, 0);
-  ambMixer.gain(1, 0);
-
-  mainMixer.gain(1, 0.75);
-
-  fireFade.fadeOut(30);
-  wooshFade.fadeOut(30);
 }
 
 
@@ -69,18 +59,20 @@ void setLanternID(OSCMessage &msg) {
 
 
 void igniteLantern(OSCMessage &msg) {
+  if (hasIgnited) return;
+  hasIgnited = true;
+
   AudioNoInterrupts();
 
   // set internal properties
   setLanternID(msg);
 
-  // start all loops here (theyre muted)
-  playAudioFile(&fireRaw, "fires/fire_" + String(lanternIndex), true);
-  //playAudioFile(&wooshRaw, "wooshes/woosh_" + String(lanternIndex), true);
-  //playAudioFile(&lightRaw, "lights/light_" + String(lanternIndex), true);
+  // start fire loop here
+  playAudioFile(&fireRaw, "fires/fire_" + String(lanternIndex), true, true);
 
   // fade in first fire...
-  unmuteFadeIn(&ambMixer, 0, &fireFade, 5000);
+  fireFade.fadeIn(5000);
+  mainMixer.gain(1, 0.75);
 
   // play ignite cue
   playAudioFile(&lanternEvents, "ignites/ignite_" + String(lanternIndex));
@@ -93,12 +85,15 @@ void igniteLantern(OSCMessage &msg) {
 
 
 void switchToConstantLight(OSCMessage &msg) {
+  if (hasTransitioned) return;
+  hasTransitioned = true;
+
   AudioNoInterrupts();
   
   // crossfade to woosh
   fireFade.fadeOut(3000);
-  playAudioFile(&wooshRaw, "wooshes/woosh_" + String(lanternIndex), true);
-  unmuteFadeIn(&ambMixer, 1, &wooshFade, 6000);
+  wooshFade.fadeIn(6000);
+  playAudioFile(&wooshRaw, "wooshes/woosh_" + String(lanternIndex), true, true);
 
   // delay (10s)
   // TODO: make a better system for this... some kinda delay queue
@@ -112,7 +107,13 @@ void switchToConstantLight(OSCMessage &msg) {
 }
 
 void extinguishLantern(OSCMessage &msg) {
+  if (!hasIgnited) return;
+  hasIgnited = false;
+
   AudioNoInterrupts();
+
+  // stop woosh here..
+  wooshRaw.stop();
 
   // play momentary cue
   playAudioFile(&lanternEvents, "extinguishes/extinguish_" + String(lanternIndex));
@@ -153,6 +154,8 @@ void updateLanternEvents() {
   if (!loopEnded && dly_loopEnd.isExpired()) {
     // if so, stop the lantern loop clip
     // (it is assumed that the lantern loop gain is at 0 when this happens)
+    fireRaw.stop();
+
     loopEnded = true;
     dly_loopEnd = AsyncDelay();
   }

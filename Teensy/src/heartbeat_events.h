@@ -104,13 +104,8 @@ void initHeartbeat() {
 
 
   // mix pure and static signals
-  // TODO: react to tree area enter/leave events
   hbMixer.gain(0, 1);
   hbMixer.gain(1, 2);
-
-  // initialize faders
-  pureFader.fadeOut(10);
-  staticFader.fadeOut(10);
 
   // to main mixer
   mainMixer.gain(2, 1.2);

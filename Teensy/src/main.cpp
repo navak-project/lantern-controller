@@ -57,7 +57,7 @@ void loop() {
 
   // test sequence
   // uncomment if you want to test a predetermined chain of events from the moment the Teensy is powered on
-  // testSequence();
+  testSequence();
 
   // complimentary delay :o)
   // delayMicroseconds(10);
@@ -81,6 +81,8 @@ void testSequence() {
 
   // after 27 seconds:
   if (testSeqTimer > 20000 && !extinguished) {
+    rumbleOn();
+
     // extinguish
     switchToConstantLight(dummy);
     extinguished = true;

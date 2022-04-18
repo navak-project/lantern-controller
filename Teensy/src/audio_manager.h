@@ -13,10 +13,10 @@ elapsedMillis blockReportTimer;
 void initAudio() {
   // global amp
   ampOut.gain(0.75);
-  // hum (fixes lantern loop fade out bug when not playing...?)
-  hum.amplitude(0.001);
 
+  // allocate memory
   AudioMemory(40);
+  // turn on audio chip
   sgtl5000_1.enable();
   sgtl5000_1.volume(0.5);
   sgtl5000_1.audioPostProcessorEnable();

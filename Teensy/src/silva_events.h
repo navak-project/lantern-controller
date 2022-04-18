@@ -19,17 +19,18 @@ void rumbleOff();
 
 void initRumble() {
     // carrier
-    rmb_carrier.begin(0.3, 70, WAVEFORM_SINE);
+    rmb_carrier.begin(0.8, 70, WAVEFORM_SINE);
     rmb_carrier.frequencyModulation(2);
     // modulator
     rmb_mod.begin(0.5, 100, WAVEFORM_SINE);
     rmb_mod.frequencyModulation(0.3);
     // noise
     rmb_noise.amplitude(1);
-
-    // mute on start
-    ambMixer.gain(3, 0);
-    rmb_fader.fadeOut(30);
+    // wavefolder   [0.1 ; 1.1]
+    rmb_wavemod.begin(0.1, 2.5, WAVEFORM_SINE);
+    rmb_wavemod.offset(0.1);    // a little bit of over-gain.. >:3
+    // out filter
+    biquad1.setLowpass(0, 400, 0.5);
 
     // start offset generator
     dly_rumble.start(rumbleTime, AsyncDelay::MILLIS);
@@ -57,7 +58,7 @@ void toggleRumble(OSCMessage &msg) {
 
 void rumbleOn() {
     // initially turned off
-    ambMixer.gain(3, 1);
+    ambMixer.gain(3, 0.3);
     rmb_fader.fadeIn(4000);
 }
 void rumbleOff() {

@@ -49,6 +49,7 @@ void MqttCallback(char* topic, byte* message, unsigned int length) {
   String enterTree =    String() + mqtt_clientTopic + "/audio/enterTree";
   String exitTree =     String() + mqtt_clientTopic + "/audio/exitTree";
   String sync =         String() + mqtt_clientTopic + "/audio/sync";
+  String rumble =       String() + mqtt_clientTopic + "/audio/rumble";
 
 
   // populate message string
@@ -101,6 +102,14 @@ void MqttCallback(char* topic, byte* message, unsigned int length) {
     if (state == 0) return;
 
     OSCMessage msg("/b");
+    SendToTeensy(msg);
+  }
+
+  else if (String(topic) == rumble) {
+    int state = (int)messageTemp.toInt();
+    
+    OSCMessage msg("/tr");
+    msg.add(state);
     SendToTeensy(msg);
   }
 }

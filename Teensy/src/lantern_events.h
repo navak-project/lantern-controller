@@ -8,8 +8,11 @@
 AsyncDelay dly_loopEnd;
 AsyncDelay dly_wooshEnd;
 
-bool loopEnded = false;
-bool wooshEnded = false;
+bool loopEnded = true;
+bool wooshEnded = true;
+
+bool isIgnited = false;
+bool hasTransitioned = false;
 
 
 // lanternID to index mapper
@@ -23,8 +26,6 @@ std::map<String, int> idChart = {
 
 
 void initLantern() {
-  AudioNoInterrupts();
-
   // initialize ID to default value
   lanternID = "cf9b";
   lanternIndex = 1;
@@ -39,13 +40,11 @@ void initLantern() {
   // ambience mixer: turn off everything...
   ambMixer.gain(0, 0);
   ambMixer.gain(1, 0);
-  ambMixer.gain(2, 0);
 
   mainMixer.gain(1, 0.75);
 
-  fireFade.fadeOut(10);
-
-  AudioInterrupts();
+  fireFade.fadeOut(30);
+  wooshFade.fadeOut(30);
 }
 
 
@@ -98,6 +97,7 @@ void switchToConstantLight(OSCMessage &msg) {
   
   // crossfade to woosh
   fireFade.fadeOut(3000);
+  playAudioFile(&wooshRaw, "wooshes/woosh_" + String(lanternIndex), true);
   unmuteFadeIn(&ambMixer, 1, &wooshFade, 6000);
 
   // delay (10s)
@@ -119,7 +119,6 @@ void extinguishLantern(OSCMessage &msg) {
 
   // fade out lantern loop
   fireFade.fadeOut(2000);
-  lightFade.fadeOut(2000);
 
   // turn off lantern loop in 5s
   dly_loopEnd.start(5000, AsyncDelay::MILLIS);
@@ -135,13 +134,19 @@ void extinguishLantern(OSCMessage &msg) {
 void updateLanternEvents() {
   // woosh fade in end delay
   if (!wooshEnded && dly_wooshEnd.isExpired()) {
+    AudioNoInterrupts();
+    
+    playAudioFile(&fireRaw, "lights/light_" + String(lanternIndex), true, true);
+ 
     // crossfade to light
     wooshFade.fadeOut(12000);
-    unmuteFadeIn(&ambMixer, 2, &lightFade, 12000);
+    fireFade.fadeIn(6000);
 
     // turn off delay
     wooshEnded = true;
     dly_wooshEnd = AsyncDelay();
+
+    AudioInterrupts();
   }
 
   // check if delay has expired

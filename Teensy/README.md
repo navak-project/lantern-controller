@@ -56,7 +56,7 @@ Similairement, pour exporter les modifications que vous avez faites dans l'outil
 La librairie Teensy permet la lecture et le traitement en temps réel de fichiers audio à partir d'une carte microSD. La plupart des déclenchements reposent sur ce procédé, et chaque lanterne se doit donc d'être munie d'une carte préalablement remplie avec tous les fichiers audio nécessaires au bon fonctionnement des interactions programmées. À noter que **le programme du Teensy ne fonctionnera jamais si aucune carte n'est insérée!**
 
 ### Récupérer les fichiers audio
-[25 janvier 2022] La totalité des fichiers audio se trouve [**ici**](https://codex.netherwaves.com/media/files/teensy_sd_01.25.22.zip).
+[25 janvier 2022] La totalité des fichiers audio se trouve [**ici**](https://codex.netherwaves.com/media/files/teensy_sd_04.22.22.zip).
 
 ### Nomenclature
 La nomenclature repose sur un un système d'assignation d'identifiant afin de jouer certains clips en fonction de la lanterne spécifique qui est appelée. En date de janvier 2022, trois lanternes avec trois identifiants spécifiques étaient programmées, et les identifiants à quatre caractères étaient enregistrés manuellement dans une grille de données statique, assignant chacun d'eux à un index. Ce processus est utilisé à deux endroits:

@@ -1,9 +1,6 @@
 #ifndef HEARTBEAT_EVENTS
 #define HEARTBEAT_EVENTS
 
-
-#define NUM_HEARTTONES 4
-
 // includes
 #include <map>
 
@@ -20,14 +17,15 @@ struct HeartTone {
   int tones[4];
 };
 
+// chart
+#define NUM_HEARTTONES 4
 vector<HeartTone> heartToneChart = {
   {71, { 0, 7, 16, -2 }},
   {75, { 0, 5, 10, -2 }},
   {66, { 7, 0, 12, -9 }},
   {73, { 2, 0, 7,  -4 }},
 };
-
-HeartTone *currentTone;
+HeartTone currentTone;
 
 
 // props
@@ -138,10 +136,10 @@ void startHeartbeat(int rate) {
   // heartbeatStarted = true;
 
   // set current tone
-  currentTone = &heartToneChart[lanternIndex % NUM_HEARTTONES];
+  currentTone = heartToneChart.at(lanternIndex % NUM_HEARTTONES);
 
   // reset sine mod frequency
-  sineMod.frequency(pow(2.0, ((float)(currentTone->baseTone - 69)/12.0)) * 440.0 * 0.0976);
+  sineMod.frequency(pow(2.0, ((float)(currentTone.baseTone - 69)/12.0)) * 440.0 * 0.0976);
 
   // fade in
   staticFader.fadeIn(2000);
@@ -194,7 +192,7 @@ void fadeOutAll() {
 // called in loop()
 // 
 void updateHeartbeat() {
-  if (!cuePulse) return;
+  if (!cuePulse || !hasIgnited) return;
 
   // // check for heart beat delay end
   // if (!hbEnded && dly_hbEnd.isExpired()) {
@@ -215,7 +213,7 @@ void updateHeartbeat() {
     // THIS IS MIDI VELOCITY!!!! NOT SIGNAL AMPLITUDE!!! LOLLL
     int velo = random(50, 100);
     actionsOnPulse();
-    pulseHeartNote(currentTone->baseTone, velo);
+    pulseHeartNote(currentTone.baseTone, velo);
   }
 
   // play 250ms note (ie. release env after that time)
@@ -232,10 +230,10 @@ void pulseHeartNote(int note, int velo) {
   // so that each note does not play at the same velocity on its own
 
   // play each voice (attack + decay slope) depending on the heart tone chart values and current lantern ID
-  hbSynth1.playNote(note + currentTone->tones[0], velo);
-  hbSynth2.playNote(note + currentTone->tones[1], velo);
-  hbSynth3.playNote(note + currentTone->tones[2], velo);
-  hbSynth4.playNote(note + currentTone->tones[3], (int)(velo * 0.5));
+  hbSynth1.playNote(note + currentTone.tones[0], velo);
+  hbSynth2.playNote(note + currentTone.tones[1], velo);
+  hbSynth3.playNote(note + currentTone.tones[2], velo);
+  hbSynth4.playNote(note + currentTone.tones[3], (int)(velo * 0.5));
 
   // toggle flag
   isHeartNotePlaying = true;

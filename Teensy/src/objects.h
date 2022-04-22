@@ -124,6 +124,11 @@ AudioControlSGTL5000     sgtl5000_1;     //xy=1043,496
 String lanternID = "5d82";
 int lanternIndex = 0;
 
+// state values
+bool hasIgnited = false;
+bool hasTransitioned = false;
+
+// lantern ID register
 vector<String> lanternIDs = {
     "5d82",
     // "abcd",

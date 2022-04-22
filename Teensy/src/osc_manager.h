@@ -38,13 +38,11 @@ void receiveOSC(int byteLength) {
   }
   //Serial.println();
 
-  // Serial.print("err: ");
-  // Serial.println(bundleIN.hasError());
-  
-  // char* addr;
-  // msg.getAddress(addr);
-  // Serial.print("addr: ");
-  // Serial.println(addr);
+  if (bundleIN.hasError() > 0) {
+    Serial.print("err: ");
+    Serial.println(bundleIN.hasError());
+    Serial.println("----------------------");
+  }
 
   // if all is well in the world of wire messaging...
   if (!bundleIN.hasError()) {
@@ -57,6 +55,8 @@ void receiveOSC(int byteLength) {
 // where all callbacks are assigned
 // make sure the addresses are reflected in the ESP32 code
 void dispatcher(OSCMessage &bundleIN) {
+  Serial.println("dispatching...");
+
   // lantern events
   bundleIN.dispatch("/li",    igniteLantern);           // "li" = Lantern Ignite
   bundleIN.dispatch("/t",     switchToConstantLight);   // "t"  = Transition (to constant light)
@@ -69,6 +69,9 @@ void dispatcher(OSCMessage &bundleIN) {
 
   // silva events
   bundleIN.dispatch("/tr",    toggleRumble);            // "tr" = Toggle Rumble
+
+  Serial.println("done dispatching!");
+  Serial.println("----------------------");
 }
 
 #endif

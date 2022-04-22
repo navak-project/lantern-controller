@@ -13,9 +13,6 @@ AsyncDelay dly_wooshEnd;
 bool loopEnded = true;
 bool wooshEnded = true;
 
-bool hasIgnited = false;
-bool hasTransitioned = false;
-
 
 
 void initLantern() {

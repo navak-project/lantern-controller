@@ -130,10 +130,13 @@ bool hasTransitioned = false;
 
 // lantern ID register
 vector<String> lanternIDs = {
-    "5d82",
-    "8c1b",
-    "888c",
-    // "abcd",
+    "1d34",     "4c9e",     "4d38",
+    "512e",     "5313",     "5714",
+    "5a13",     "5c0a",     "5c82",
+    "5d82",     "5da0",     "888c",
+    "8c05",     "5c1b",     "c51c",
+    "c52e",     "cdb2",     "ce17",
+    "cf9b",
 };
 
 

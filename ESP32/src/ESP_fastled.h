@@ -37,7 +37,7 @@ void ChaseLoop(int interval, int ledAmount, CRGB myColor) {
 
     // Set LED color
     //    leds[ledIndex[0]] = CRGB(0, 255, 255);
-    for (int i = ledIndex[0]; i <= ledIndex[0] + 8; i++) {
+    for (int i = ledIndex[0]; i <= ledIndex[0] + 7; i++) {
       leds[i] = targetColor;
     }
 

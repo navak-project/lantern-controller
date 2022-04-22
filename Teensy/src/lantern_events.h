@@ -5,6 +5,8 @@
 #include "heartbeat_events.h"
 #include "audio_manager.h"
 
+#define NUM_LANTERNS 3
+
 AsyncDelay dly_loopEnd;
 AsyncDelay dly_wooshEnd;
 
@@ -15,21 +17,8 @@ bool hasIgnited = false;
 bool hasTransitioned = false;
 
 
-// lanternID to index mapper
-// this will eventually need to be changed to use the lantern type instead
-std::map<String, int> idChart = {
-  { "cf9b", 1 },
-  { "c51c", 2 },
-  { "c52e", 3 },
-  { "ce17", 1 },
-};
-
 
 void initLantern() {
-  // initialize ID to default value
-  lanternID = "cf9b";
-  lanternIndex = 1;
-
   // DCs and filters...
   fireAttenDC.amplitude(1);
   fireFilterDC.amplitude(0);
@@ -43,17 +32,23 @@ void setLanternID(OSCMessage &msg) {
   int length = msg.getDataLength(0);
   char id[length];
   msg.getString(0, id, length);
+
   // set lantern ID
   lanternID = id;
 
   // find index
   // will be removed eventually
-  std::map<String, int>::iterator it = idChart.find(lanternID);
-  if (it != idChart.end()) {
-    lanternID = it->first;
-    lanternIndex = it->second;
+  vector<String>::iterator it = find(lanternIDs.begin(), lanternIDs.end(), lanternID);
+  if (it != lanternIDs.end()) {
+    lanternID = *it;
+    lanternIndex = it - lanternIDs.begin();
   }
 
+  // log
+  Serial.print("lanternID: ");
+  Serial.println(lanternID);
+
+  Serial.print("lanternIndex: ");
   Serial.println(lanternIndex);
 }
 
@@ -68,14 +63,14 @@ void igniteLantern(OSCMessage &msg) {
   setLanternID(msg);
 
   // start fire loop here
-  playAudioFile(&fireRaw, "fires/fire_" + String(lanternIndex), true, true);
+  playAudioFile(&fireRaw, "fires/fire_" + String(lanternIndex % NUM_LANTERNS + 1), true, true);
 
   // fade in first fire...
   fireFade.fadeIn(5000);
   mainMixer.gain(1, 0.75);
 
   // play ignite cue
-  playAudioFile(&lanternEvents, "ignites/ignite_" + String(lanternIndex));
+  playAudioFile(&lanternEvents, "ignites/ignite_" + String(lanternIndex % NUM_LANTERNS + 1));
 
   // start heartbeat
   startHeartbeat(msg.getInt(1));
@@ -93,7 +88,7 @@ void switchToConstantLight(OSCMessage &msg) {
   // crossfade to woosh
   fireFade.fadeOut(3000);
   wooshFade.fadeIn(6000);
-  playAudioFile(&wooshRaw, "wooshes/woosh_" + String(lanternIndex), true, true);
+  playAudioFile(&wooshRaw, "wooshes/woosh_" + String(lanternIndex % NUM_LANTERNS + 1), true, true);
 
   // delay (10s)
   // TODO: make a better system for this... some kinda delay queue

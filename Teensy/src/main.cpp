@@ -26,7 +26,7 @@ void testSequence();
 
 
 void setup() {
-  Serial.begin(9600);
+  Serial.begin(115200);
 
   // init SD + flash memory
   initSD();
@@ -57,7 +57,7 @@ void loop() {
 
   // test sequence
   // uncomment if you want to test a predetermined chain of events from the moment the Teensy is powered on
-  testSequence();
+  // testSequence();
 
   // complimentary delay :o)
   // delayMicroseconds(10);

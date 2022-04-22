@@ -1,6 +1,10 @@
 #ifndef T4_OBJECTS
 #define T4_OBJECTS
 
+#include <algorithm>
+#include <vector>
+using namespace std;
+
 
 // instruments
 #include "instruments/hb_part1_samples.h"
@@ -117,8 +121,13 @@ AudioControlSGTL5000     sgtl5000_1;     //xy=1043,496
 #define FLASH_CS_PIN        6
 
 // properties
-String lanternID;
-int lanternIndex;
+String lanternID = "5d82";
+int lanternIndex = 0;
+
+vector<String> lanternIDs = {
+    "5d82",
+    // "abcd",
+};
 
 
 #endif

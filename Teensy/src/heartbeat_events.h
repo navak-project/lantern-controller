@@ -139,6 +139,7 @@ void startHeartbeat(int rate) {
   sineMod.frequency(pow(2.0, ((float)(currentTone.baseTone - 69)/12.0)) * 440.0 * 0.0976);
 
   // fade in
+  hbFade.fadeIn(10);
   staticFader.fadeIn(2000);
 }
 

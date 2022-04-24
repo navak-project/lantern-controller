@@ -8,9 +8,9 @@
 // headers (C++)
 void SetNetworkInfo();
 void Register();
-void UpdateStatus();
+void OnStartUpdateStatus();
 void ConnectToMQTT();
-void UpdateLanternInternalInfo();
+void LoopUpdateLanternInfo();
 
 void printLine()
 {
@@ -43,7 +43,7 @@ void connectToWiFi(const char * ssid, const char * pwd)
   Serial.println(esp_ip);
   
   Register();
-  UpdateStatus();
+  OnStartUpdateStatus();
   
   AllOff();
 }
@@ -64,24 +64,24 @@ void GetLanternStatusInfo(){
     lanternInfoTimer = millis();
     sensorValue = map(analogRead(34), 3150, 3250, 0, 100);
     wifiValue = map(WiFi.RSSI(), -120, 0, 5, 100);
-    UpdateLanternInternalInfo();
+    LoopUpdateLanternInfo();
   }
 }
 
-void UpdateStatus(){
+void OnStartUpdateStatus(){
   HTTPClient http;
   DynamicJsonDocument doc(2048);
   
   String updateRequest = "{\"hostName\":\"" + esp_hostName_String + "\", \"macAddress\":\"" + esp_macAddress + "\", \"ipAddress\":\"" + esp_ip + "\"}";
-  http.begin(updateStatusURL);
+  http.begin(OnStartUpdateStatusURL + "/" + mqtt_panIDString);
   Serial.print("HTTP Requesting to: ");
-  Serial.println(updateStatusURL);
+  Serial.println(OnStartUpdateStatusURL);
   http.addHeader("Content-Type", "application/json");
 
   Serial.print("HTTP UPDATE with: ");
-  Serial.println(updateStatusURL);
+  Serial.println(OnStartUpdateStatusURL);
   
-  int httpResponseCode = http.POST(updateRequest);
+  int httpResponseCode = http.PUT(updateRequest);
   String payload = "{}";
 
   if (httpResponseCode > 0) {
@@ -103,20 +103,20 @@ void UpdateStatus(){
 
 }
 
-void UpdateLanternInternalInfo(){
+void LoopUpdateLanternInfo(){
   HTTPClient http;
   DynamicJsonDocument doc(2048);
 
   String updateRequest = "{\"battery\":\"" + String(sensorValue) + "\", \"wifiSignal\":\"" + String(wifiValue) + "\"}";
-  http.begin(updateLanternInfo + "/" + mqtt_panIDString);
+  http.begin(LoopUpdateStatusURL + "/" + mqtt_panIDString);
   // Serial.print("HTTP Requesting to: ");
   // Serial.println(updateLanternInfo + "/" + mqtt_panIDString);
   http.addHeader("Content-Type", "application/json");
 
-  Serial.print("HTTP PUT with: ");
+  // Serial.print("HTTP PUT with: ");
   Serial.println(String(sensorValue) + "/" + String(wifiValue));
   
-  http.PUT(updateRequest);
+  http.POST(updateRequest);
   http.end();
 }
 

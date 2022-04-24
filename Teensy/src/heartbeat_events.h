@@ -35,7 +35,6 @@ unsigned long heartRateMillis;    // heart rate as a millisecond interval betwee
 elapsedMillis heartbeatTimer;     // interval timer
 bool heartbeatStarted = false;
 bool isHeartNotePlaying = false;
-bool cuePulse = false;
 
 
 // function headers
@@ -47,9 +46,8 @@ void heartBeatToStatic();
 void toConstantLight();
 void fadeOutAll();
 void updateHeartbeat();
-void pulseHeartNote(int note, int velo);
-void actionsOnPulse();
-void releaseHeartNote();
+void pulse();
+void depulse();
 
 
 // initialize heartbeat properties/DSP
@@ -132,8 +130,7 @@ void startHeartbeat(int rate) {
   setHeartRate(rate);
 
   // begin heartbeat loop
-  heartbeatTimer = 0;
-  // heartbeatStarted = true;
+  heartbeatStarted = true;
 
   // set current tone
   currentTone = heartToneChart.at(lanternIndex % NUM_HEARTTONES);
@@ -143,11 +140,6 @@ void startHeartbeat(int rate) {
 
   // fade in
   staticFader.fadeIn(2000);
-}
-
-
-void pulse() {
-  cuePulse = true;
 }
 
 
@@ -192,42 +184,28 @@ void fadeOutAll() {
 // called in loop()
 // 
 void updateHeartbeat() {
-  if (!cuePulse || !hasIgnited) return;
-
-  // // check for heart beat delay end
-  // if (!hbEnded && dly_hbEnd.isExpired()) {
-  //   heartbeatStarted = false;
-
-  //   // kill timer
-  //   hbEnded = true;
-  //   dly_hbEnd = AsyncDelay();
-  // }
-  
-  // after heart rate interval (derived from BPM value)
-  if (heartbeatTimer > heartRateMillis) {
-    // reset timer
-    heartbeatTimer = 0;
-
-    // trigger instrument
-    // NOTE TO SELF FOR THE FUTURE:
-    // THIS IS MIDI VELOCITY!!!! NOT SIGNAL AMPLITUDE!!! LOLLL
-    int velo = random(50, 100);
-    actionsOnPulse();
-    pulseHeartNote(currentTone.baseTone, velo);
-  }
+  if (!hasIgnited) return;
 
   // play 250ms note (ie. release env after that time)
   if (heartbeatTimer > 250 && isHeartNotePlaying) {
-    releaseHeartNote();
+    depulse();
   }
 }
 
 
 // utilities
 // TODO: optimize
-void pulseHeartNote(int note, int velo) {
+void pulse() {
   // TODO: velocity + note modulation
   // so that each note does not play at the same velocity on its own
+  int note = currentTone.baseTone;
+  int velo = random(50, 100);
+
+  // reset timer
+  heartbeatTimer = 0;
+
+  // sine mod frequency
+  // TODO
 
   // play each voice (attack + decay slope) depending on the heart tone chart values and current lantern ID
   hbSynth1.playNote(note + currentTone.tones[0], velo);
@@ -239,13 +217,8 @@ void pulseHeartNote(int note, int velo) {
   isHeartNotePlaying = true;
 }
 
-// called on each pulse
-void actionsOnPulse() {
-  // sine mod frequency
-}
-
 // called some time after the heart has beaten
-void releaseHeartNote() {
+void depulse() {
   // stop all notes (release slope)
   hbSynth1.stop();
   hbSynth2.stop();
@@ -254,7 +227,6 @@ void releaseHeartNote() {
 
   // toggle flags
   isHeartNotePlaying = false;
-  cuePulse = false;
 }
 
 #endif

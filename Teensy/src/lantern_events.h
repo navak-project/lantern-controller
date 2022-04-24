@@ -108,7 +108,7 @@ void extinguishLantern(OSCMessage &msg) {
   wooshRaw.stop();
 
   // play momentary cue
-  playAudioFile(&lanternEvents, "extinguishes/extinguish_" + String(lanternIndex));
+  playAudioFile(&lanternEvents, "extinguishes/extinguish_" + String(lanternIndex % NUM_LANTERNS + 1));
 
   // fade out lantern loop
   fireFade.fadeOut(2000);
@@ -129,7 +129,7 @@ void updateLanternEvents() {
   if (!wooshEnded && dly_wooshEnd.isExpired()) {
     AudioNoInterrupts();
     
-    playAudioFile(&fireRaw, "lights/light_" + String(lanternIndex), true, true);
+    playAudioFile(&fireRaw, "lights/light_" + String(lanternIndex % NUM_LANTERNS + 1), true, true);
  
     // crossfade to light
     wooshFade.fadeOut(12000);

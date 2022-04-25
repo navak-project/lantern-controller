@@ -1,16 +1,12 @@
 // includes
 #include <Audio.h>
 #include <AsyncDelay.h>
-// FUN FACT: using this Wire library will require you to change
-// every single instance of Wire.h in the entirety of Teensyduino's code :o)
-// (you probably won't need to if you know how to replace the library)
 #include <i2c_driver_wire.h>
 #include <SPI.h>
 #include <SD.h>
 #include <SerialFlash.h>
 #include <OSCMessage.h>
 #include <OSCBundle.h>
-
 
 #include "objects.h"
 #include "audio_manager.h"

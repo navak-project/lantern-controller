@@ -3,14 +3,13 @@
 
 #include <algorithm>
 #include <vector>
-using namespace std;
-
-
 // instruments
 #include "instruments/hb_part1_samples.h"
 #include "instruments/hb_part2_samples.h"
 #include "instruments/hb_part3_samples.h"
 #include "instruments/hb_part4_samples.h"
+
+using namespace std;
 
 // GUItool: begin automatically generated code
 AudioSynthWavetable      hbSynth2;       //xy=114,649
@@ -130,7 +129,7 @@ bool hasTransitioned = false;
 
 // lantern ID register
 vector<String> lanternIDs = {
-    "1d34",     "4c9e",     "4d38",
+    "d597",     "4c9e",     "4d38",
     "512e",     "5313",     "5714",
     "5a13",     "5c0a",     "5c82",
     "5d82",     "5da0",     "888c",

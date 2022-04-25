@@ -117,8 +117,9 @@ void extinguishLantern(OSCMessage &msg) {
   dly_loopEnd.start(5000, AsyncDelay::MILLIS);
   loopEnded = false;
 
-  // turn off heartbeat
-  fadeOutAll();
+  // turn off rumble if it is open
+  // for prevention
+  rmb_fader.fadeOut(1000);
   
   AudioInterrupts();
 }
@@ -155,15 +156,15 @@ void updateLanternEvents() {
 
 
 // when entering a tree zone
-void attenLanternLoop() {
-  fireAttenDC.amplitude(0.5, 1000);
-  fireFilterDC.amplitude(-1, 200);
+void attenLanternLoop(float time = 1000) {
+  fireAttenDC.amplitude(0.5, time);
+  fireFilterDC.amplitude(-1, time / 5);
 }
 
 // when leaving a tree zone
-void accentLanternLoop() {
-  fireAttenDC.amplitude(1, 250);
-  fireFilterDC.amplitude(0, 1000);
+void accentLanternLoop(float time = 1000) {
+  fireAttenDC.amplitude(1, time / 4);
+  fireFilterDC.amplitude(0, time);
 }
 
 

@@ -69,6 +69,7 @@ void dispatcher(OSCMessage &bundleIN) {
 
   // silva events
   bundleIN.dispatch("/tr",    toggleRumble);            // "tr" = Toggle Rumble
+  bundleIN.dispatch("/sr",    switchRumble);      // "sr" = Switch Rumble (preset)
 
   Serial.println("done dispatching!");
   Serial.println("----------------------");

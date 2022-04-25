@@ -50,6 +50,7 @@ void MqttCallback(char* topic, byte* message, unsigned int length) {
   String exitTree =     String() + mqtt_clientTopic + "/audio/exitTree";
   String sync =         String() + mqtt_clientTopic + "/audio/sync";
   String rumble =       String() + mqtt_clientTopic + "/audio/rumble";
+  String switchRumble = String() + mqtt_clientTopic + "/audio/switchrumble";
 
 
   // populate message string
@@ -61,6 +62,7 @@ void MqttCallback(char* topic, byte* message, unsigned int length) {
 
 
   // callbacks
+
   if (String(topic) == control) {
     Serial.println("GOT CONTROL STRING");
     restart_esp32();
@@ -110,6 +112,14 @@ void MqttCallback(char* topic, byte* message, unsigned int length) {
     
     OSCMessage msg("/tr");
     msg.add(state);
+    SendToTeensy(msg);
+  }
+
+  else if (String(topic) == switchRumble) {
+    int preset = (int)messageTemp.toInt();
+
+    OSCMessage msg("/sr");
+    msg.add(preset);
     SendToTeensy(msg);
   }
 }

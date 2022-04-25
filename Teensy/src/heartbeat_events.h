@@ -3,7 +3,6 @@
 
 // includes
 #include <map>
-
 #include "objects.h"
 
 // timers
@@ -44,7 +43,6 @@ void startHeartbeat();
 void heartBeatToPure();
 void heartBeatToStatic();
 void toConstantLight();
-void fadeOutAll();
 void updateHeartbeat();
 void pulse();
 void depulse();
@@ -147,6 +145,7 @@ void startHeartbeat(int rate) {
 // called when lantern enters tree zone
 void heartBeatToPure() {
   // play transition clip
+  // TODO
 
   // crossfade
   staticFader.fadeOut(250);
@@ -171,14 +170,6 @@ void fadeOutHeartbeat() {
   // start heart beat stop timer
   hbEnded = false;
   dly_hbEnd.start(10000, AsyncDelay::MILLIS);
-}
-
-
-// stop heartbeat (DEPRECATED)
-void fadeOutAll() {
-  // turn off all vital energy instruments
-  heartbeatStarted = false;
-  //releaseHeartNote();
 }
 
 

@@ -3,14 +3,13 @@
 
 #include <algorithm>
 #include <vector>
-using namespace std;
-
-
 // instruments
 #include "instruments/hb_part1_samples.h"
 #include "instruments/hb_part2_samples.h"
 #include "instruments/hb_part3_samples.h"
 #include "instruments/hb_part4_samples.h"
+
+using namespace std;
 
 // GUItool: begin automatically generated code
 AudioSynthWavetable      hbSynth2;       //xy=114,649

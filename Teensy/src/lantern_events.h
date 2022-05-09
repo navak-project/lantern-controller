@@ -5,7 +5,7 @@
 #include "heartbeat_events.h"
 #include "audio_manager.h"
 
-#define NUM_LANTERNS 3
+#define NUM_LANTERNS 5
 
 AsyncDelay dly_loopEnd;
 AsyncDelay dly_wooshEnd;
@@ -85,7 +85,7 @@ void switchToConstantLight(OSCMessage &msg) {
   // crossfade to woosh
   fireFade.fadeOut(3000);
   wooshFade.fadeIn(6000);
-  playAudioFile(&wooshRaw, "wooshes/woosh_" + String(lanternIndex % NUM_LANTERNS + 1), true, true);
+  playAudioFile(&wooshRaw, "woosh", true, true);
 
   // delay (10s)
   // TODO: make a better system for this... some kinda delay queue

@@ -21,6 +21,8 @@ void initLantern() {
   fireFilterDC.amplitude(0);
   fireFilter.frequency(14000);
   fireFilter.resonance(0.2);
+
+  ambMixer.gain(0, 0.6);
 }
 
 
@@ -101,6 +103,7 @@ void switchToConstantLight(OSCMessage &msg) {
 void extinguishLantern(OSCMessage &msg) {
   if (!hasIgnited) return;
   hasIgnited = false;
+  hasTransitioned = false;
 
   AudioNoInterrupts();
 

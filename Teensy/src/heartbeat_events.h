@@ -98,7 +98,7 @@ void initHeartbeat() {
 
   // mix pure and static signals
   hbMixer.gain(0, 1);
-  hbMixer.gain(1, 2);
+  hbMixer.gain(1, 3);
 
   // to main mixer
   mainMixer.gain(2, 1.2);

@@ -65,7 +65,7 @@ void dispatcher(OSCMessage &bundleIN) {
   // organique events
   bundleIN.dispatch("/on",    enterTree);               // "on" = Organique eNter
   bundleIN.dispatch("/ox",    exitTree);                // "ox" = Organique eXit
-  bundleIN.dispatch("/b",     triggerHeartbeat);        // "b"  = (heart)Beat
+  bundleIN.dispatch("/b",     forceSync);               // "b"  = (heart)Beat
 
   // silva events
   bundleIN.dispatch("/tr",    toggleRumble);            // "tr" = Toggle Rumble

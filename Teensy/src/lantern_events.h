@@ -69,7 +69,7 @@ void igniteLantern(OSCMessage &msg) {
   // play ignite cue
   playAudioFile(&lanternEvents, "ignites/ignite_" + String(lanternIndex % NUM_LANTERNS + 1));
 
-  // start heartbeat
+  // start heartbeat here
   startHeartbeat(msg.getInt(1));
 
   AudioInterrupts();

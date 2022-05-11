@@ -5,10 +5,6 @@
 #include <map>
 #include "objects.h"
 
-// timers
-AsyncDelay dly_hbEnd;
-bool hbEnded = false;
-
 
 // heart tone chart
 struct HeartTone {
@@ -16,7 +12,7 @@ struct HeartTone {
   int tones[4];
 };
 
-// chart
+// registry
 #define NUM_HEARTTONES 4
 vector<HeartTone> heartToneChart = {
   {71, { 0, 7, 16, -2 }},
@@ -26,14 +22,12 @@ vector<HeartTone> heartToneChart = {
 };
 HeartTone currentTone;
 
+// rate
+uint32_t rate_millis;
 
-// props
-int heartRateBPM;                 // heart rate in beats per second
-unsigned long heartRateMillis;    // heart rate as a millisecond interval between each beat
-
-elapsedMillis heartbeatTimer;     // interval timer
-bool heartbeatStarted = false;
-bool isHeartNotePlaying = false;
+// timer stuff
+AsyncDelay dly_pulse;
+bool hasPulsed = false;
 
 
 // function headers
@@ -46,6 +40,7 @@ void toConstantLight();
 void updateHeartbeat();
 void pulse();
 void depulse();
+void forceSync();
 
 
 // initialize heartbeat properties/DSP
@@ -112,8 +107,8 @@ void initHeartbeat() {
 
 // convert heart rate to ms interval
 void setHeartRate(int rate) {
-  heartRateBPM = rate;
-  heartRateMillis = 60000 / rate;
+  // BPM to millis
+  rate_millis = 60000 / rate;
 }
 
 
@@ -125,10 +120,11 @@ void setHeartRate(int rate) {
 // begin heartbeat pulse
 // (called when a lantern ignites)
 void startHeartbeat(int rate) {
+  // set heart rate
   setHeartRate(rate);
 
-  // begin heartbeat loop
-  heartbeatStarted = true;
+  // begin clocker
+  dly_pulse.start(rate_millis, AsyncDelay::MILLIS);
 
   // set current tone
   currentTone = heartToneChart.at(lanternIndex % NUM_HEARTTONES);
@@ -166,10 +162,6 @@ void heartBeatToStatic() {
 void fadeOutHeartbeat() {
   // fade out heartbeat
   hbFade.fadeOut(10000);
-
-  // start heart beat stop timer
-  hbEnded = false;
-  dly_hbEnd.start(10000, AsyncDelay::MILLIS);
 }
 
 
@@ -178,47 +170,67 @@ void fadeOutHeartbeat() {
 void updateHeartbeat() {
   if (!hasIgnited) return;
 
-  // play 250ms note (ie. release env after that time)
-  if (heartbeatTimer > 250 && isHeartNotePlaying) {
+  uint32_t elapsed = rate_millis - (dly_pulse.getExpiry() - millis());
+
+  // check if timer is expired:
+  if (dly_pulse.isExpired())
+  {
+    //Serial.println("pulse");
+    pulse();
+    dly_pulse.repeat();
+
+    Serial.print("expiry: ");
+    Serial.println(dly_pulse.getExpiry());
+    Serial.print("duration: ");
+    Serial.println(dly_pulse.getDuration());
+  }
+  
+  // after 250ms, depulse()
+  else if (elapsed > 250)
+  {
     depulse();
   }
+
+  // play 250ms note (ie. release env after that time)
+}
+
+
+// invoked from ESP32 to force resync
+void forceSync(OSCMessage &msg) {
+  pulse();
+  dly_pulse.restart();
 }
 
 
 // utilities
 // TODO: optimize
 void pulse() {
-  // TODO: velocity + note modulation
-  // so that each note does not play at the same velocity on its own
+  if (hasPulsed) return;
+  hasPulsed = true;
+
+
+  // pitch + amp
   int note = currentTone.baseTone;
   int velo = random(50, 100);
-
-  // reset timer
-  heartbeatTimer = 0;
-
-  // sine mod frequency
-  // TODO
 
   // play each voice (attack + decay slope) depending on the heart tone chart values and current lantern ID
   hbSynth1.playNote(note + currentTone.tones[0], velo);
   hbSynth2.playNote(note + currentTone.tones[1], velo);
   hbSynth3.playNote(note + currentTone.tones[2], velo);
   hbSynth4.playNote(note + currentTone.tones[3], (int)(velo * 0.5));
-
-  // toggle flag
-  isHeartNotePlaying = true;
 }
 
 // called some time after the heart has beaten
 void depulse() {
+  if (!hasPulsed) return;
+  hasPulsed = false;
+
+
   // stop all notes (release slope)
   hbSynth1.stop();
   hbSynth2.stop();
   hbSynth3.stop();
   hbSynth4.stop();
-
-  // toggle flags
-  isHeartNotePlaying = false;
 }
 
 #endif

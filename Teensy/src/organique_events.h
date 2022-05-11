@@ -5,12 +5,6 @@
 #include "heartbeat_events.h"
 
 
-// OSC callback -- when lantern pulses
-void triggerHeartbeat(OSCMessage &msg) {
-    pulse();
-}
-
-
 // OSC callback -- when lantern enters tree zone
 void enterTree(OSCMessage &msg) {
     attenLanternLoop();     // in lantern_events

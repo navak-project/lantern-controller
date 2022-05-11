@@ -56,7 +56,7 @@ void loop() {
   // testSequence();
 
   // complimentary delay :o)
-  // delayMicroseconds(10);
+  delayMicroseconds(10);
 }
 
 
